@@ -5,18 +5,21 @@ var MongoClient = require('mongodb').MongoClient;
 
 var DB = null;
 
-MongoClient.connect(
+
+
+/*删除数据库*/
+/*MongoClient.connect(
     'mongodb://localhost/demoDB',
     function (err, db) {
         if (!err){
             db.dropDatabase(function (err, results) {
                 if (!err){
-                    console.log('Delete Databvase demoDB Success!');
+                    console.log('Delete Database demoDB Success!');
                 }
             })
         }
     }
-);
+);*/
 
 /*创建数据库和集合*/
 /*MongoClient.connect(

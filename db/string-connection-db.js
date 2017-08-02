@@ -1,16 +1,16 @@
 /**
  * Created by lzy on 2017/8/1.
  */
-var conf = require('../conf/conf');
+var dbConfig = require('../config/conf').DB;
 var mongo = require('mongodb');
 var MongoClient = mongo.MongoClient;
 
 
 
 
-var conne_str = 'mongodb://' + conf.db.username
-+ ':' + conf.db.password + '@' + conf.db.ip
-+ ':' + conf.db.port + '/' + conf.db.name;
+var connectUri = 'mongodb://' + dbConfig.username
++ ':' + dbConfig.password + '@' + dbConfig.ip
++ ':' + dbConfig.port + '/' + dbConfig.database;
 
 var opt = {
     db: {
@@ -28,7 +28,7 @@ var opt = {
 
 var DB = null;
 MongoClient.connect(
-    conne_str,
+    connectUri,
     opt,
     function (err, db) {
         if (err){

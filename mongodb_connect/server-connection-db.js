@@ -37,7 +37,7 @@ client.open(function(err, client){
         if (DB){
             console.log('Connection Success!');
         }
-        db.authenticate(dbConf.username, dbConf.password, function (err, results) {
+        DB.authenticate(dbConf.username, dbConf.password, function (err, results) {
             if (err){
                 console.log('Authentication Failed!');
                 client.close();

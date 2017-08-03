@@ -14,19 +14,6 @@ var dbAdmin = require('../config/sys-config').DA;
 var mongoClient = require('mongodb').MongoClient;
 
 var mongoUri = "mongodb://" + dbAdmin.username + ':' + dbAdmin.password + '@' + dbConfig.ip + ':' + dbConfig.port + '/admin';
-var opt = {
-    db: {
-        w:1,
-        native_parser: false
-    },
-    server: {
-        poolSize: 5,
-        socketOptions: {connecTimeoutMS: 500},
-        auto_reconnect: true
-    },
-    replSet: {},
-    mongos: {}
-};
 
 mongoClient.connect(
     mongoUri,

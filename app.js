@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-require('./mongodb_connect/server-connection-db');
+require('./mongodb_script/innovate_blogger_mongodb_script');
 
 var app = express();
 

@@ -1,7 +1,7 @@
 /**
  * Created by lzy on 2017/8/1.
  *
- * system config
+ * mongodb config
  */
 var SysConfig = {};
 var DB = {};

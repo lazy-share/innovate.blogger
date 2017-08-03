@@ -8,9 +8,9 @@
  * node v6.11.1
  * mongodb v3.4.6
  */
-var dbConfig = require('../config/sys-config').DB;
-var userAdmin = require('../config/sys-config').UA;
-var dbAdmin = require('../config/sys-config').DA;
+var dbConfig = require('./config').DB;
+var userAdmin = require('./config').UA;
+var dbAdmin = require('./config').DA;
 var mongoClient = require('mongodb').MongoClient;
 
 var mongoUri = "mongodb://" + dbAdmin.username + ':' + dbAdmin.password + '@' + dbConfig.ip + ':' + dbConfig.port + '/admin';

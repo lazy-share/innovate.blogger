@@ -44,9 +44,8 @@ function connectSuccessCallback(db){
 
 /*添加用户*/
 function addUser(db){
-    var admin = db.admin();
     var bloggerDB = db.db(dbConfig.database);
-    admin.authenticate(userAdmin.username, userAdmin.password, function(err, results){
+    db.authenticate(userAdmin.username, userAdmin.password, function(err, results){
         if (err){
             console.log('Authenticate userAdmin Failed! result:' + err);
         }else {

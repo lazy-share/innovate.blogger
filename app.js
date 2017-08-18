@@ -4,16 +4,19 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var dbConfig = require('./mongodb/config').DB;
+require('mongoose').connect('mongodb://' + dbConfig.username + ':' + dbConfig.password + '@' + dbConfig.ip + ':' + dbConfig.port + '/' + dbConfig.database);
 
-var index = require('./routes/index');
-var users = require('./routes/users');
-require('./mongodb_script/innovate_blogger_mongodb_script');
 
 var app = express();
 
+//load route
+var example = require('./routes/example')(app);
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+app.engine('.html', require('ejs').__express);
+app.set('view engine', 'html');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -22,9 +25,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/', index);
-app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

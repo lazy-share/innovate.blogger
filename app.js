@@ -7,7 +7,8 @@ var bodyParser = require('body-parser');
 var dbConfig = require('./mongodb/config').DB;
 require('mongoose').connect('mongodb://' + dbConfig.username + ':' + dbConfig.password + '@' + dbConfig.ip + ':' + dbConfig.port + '/' + dbConfig.database);
 
-
+//首次启动时放开该注释
+//require("./mongodb/script");
 var app = express();
 
 //load route

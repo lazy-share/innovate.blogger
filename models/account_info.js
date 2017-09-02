@@ -1,36 +1,44 @@
 /**
- * Created by laizhiyuan on 2017/8/18.
+ * Created by lzy on 2017/9/2.
  *
  * <p>
- *    账号信息Schema
- *  account info schema
+ *     账号详细信息 Schema
  * </p>
- *
  */
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var addressSchema = require('./address');
 
 var accountInfoSchema = new Schema({
-    account_id: {type: ObjectId},
+    account_id: {type: String, required: true, unique: true},
     email:{type: String, required: false},
     birthday:{type: Date, required: false},
     gender:{type: Number, required: false, enum:[1, 2]},
     address: [addressSchema],
     photo_url: {type: String},
     job: {type: String},
-    create_time: {type: Date, required: true, unique: false, default: Date.now()},
-    update_time: {type: Date, required: true, unique: false, default: Date.now()}
+    encrypted: {type: String, required: true},
+    qq: {type: String},
+    mobile: {type: String},
 },{
+    autoIndex: true,
+    id: false, //id获取器
+    _id: false, //自动生成_id
+    safe: true, //更新是应用一个写入关注
+    strict: true,
     collection: 'account_info'
 });
 
-accountInfoSchema.pre(['save','update'], function (next) {
+accountInfoSchema.index({account_id: 1});
+accountInfoSchema.set('versionKey', '_account_info');
+//mongoose 中间件
+accountInfoSchema.schema.pre('save', function (next) {
     if (this.address == null){
-        return next(new Error('address not empty!'));
+        console.log('address is null');
     }
     next();
 });
 
-mongoose.model('AccountInfoModel', accountInfoSchema, false);
-module.exports = accountInfoSchema;
+var AccountInfoModel = mongoose.model('AccountInfoModel', accountInfoSchema, false);
+exports.accountInfoSchema = accountInfoSchema;
+exports.AccountInfoModel = AccountInfoModel;

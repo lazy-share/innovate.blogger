@@ -23,5 +23,16 @@ var addressSchema = new Schema({
     _id: false
 });
 
-mongoose.model('AddressModel', addressSchema);
-module.exports = addressSchema;
+//地址完整信息
+addressSchema.method.fullInfo = function () {
+    return this.province_name + ' ' +
+            this.city_name + ' ' +
+            this.county_name + ' ' +
+            this.street_name + ' ' +
+            this.details;
+}
+
+//编译模型
+var AddressModel = mongoose.model('AddressModel', addressSchema);
+exports.AddressModel = AddressModel;
+exports.addressSchema = addressSchema;

@@ -88,6 +88,7 @@ exampleSchema.methods.sayHello = function(req, res){
     }
 };
 
+//编译模型
 var ExampleModel = mongoose.model('ExampleModel', exampleSchema, false);
 exports.ExampleModel = ExampleModel;
 exports.exampleSchema = exampleSchema;

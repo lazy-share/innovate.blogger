@@ -2,7 +2,7 @@
  * Created by laizhiyuan on 2017/8/18.
  *
  * <p>
- *     例子控制器
+ *     例子服务层
  *  example controller
  * </p>
  *
@@ -145,13 +145,13 @@ exports.findAll = function(req, res){
 
 exports.example = function(req, res){
     var name = req.query.name;
-    if (name == null){
+    if (name == null && req.query.id == null){
         res.json('param name not empty!');
         return;
     }
     ExampleModel.findOne({_id: req.query.id})
     .exec(function(err, example){
-        if (!err){
+        if (err){
             console.log('查询example错误');
         }
         console.log(example);

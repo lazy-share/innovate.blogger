@@ -19,7 +19,7 @@ var accountInfoSchema = new Schema({
     job: {type: String},
     encrypted: {type: String, required: true},
     qq: {type: String},
-    mobile: {type: String},
+    mobile: {type: String}
 },{
     autoIndex: true,
     id: false, //id获取器

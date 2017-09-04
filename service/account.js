@@ -6,7 +6,6 @@
 var mongoose = require('mongoose');
 var AccountModel = mongoose.model('AccountModel');
 var crypto = require('crypto');
-var Pagin = require('page_constant');
 
 //注册
 exports.register = function (req, res) {
@@ -19,27 +18,79 @@ exports.register = function (req, res) {
         if (err){
             res.statusCode = 500;
             console.log('[ERROR]: register faild! errMsg: ' + err);
-            res.redirect(Pagin.Register);
+            res.json({code: false, msg: '注册失败!'});
         }else {
-            req.session.user = account;
-
+            req.session.account = account;
+            res.json({code: true, msg: '注册成功'});
         }
     });
 };
 
 //根据用户名删除
 exports.deleteOne = function (req, res) {
-
+    var username = req.query.username;
+    if (!username){
+        console.log('param username is null or empty');
+        res.json('不存在参数username');
+    }else {
+        AccountModel.findOne({username: username}, function (err, doc) {
+            if (doc){
+                doc.remove(function (err) {
+                    if (!err){
+                        res.json({code: true, msg: '删除成功!'});
+                    }else {
+                        console.log('delete faild! errMsg:' + err);
+                        res.jsonp({code: false, msg: '删除失败!'});
+                    }
+                });
+            }
+        })
+    }
 };
 
 //登陆验证
 exports.loginValidate = function (req, res) {
-    
+    var username = req.body.username;
+    AccountModel.findOne({username: username})
+        .exec(function (err, doc) {
+            if (doc){
+                if (doc.password === hashPwd(req.body.password.toString())){
+                    req.session.regenerate(function() {
+                        req.session.account = doc;
+                        res.json({code: true, msg: '登陆成功！'});
+                    })
+                }else {
+                    req.session.regenerate(function() {
+                        req.session.account = null;
+                        res.json({code: false, msg: '密码错误!'});
+                    })
+                }
+            }else {
+                req.session.account = null;
+                res.json({code: false, msg: '用户名错误!'})
+            }
+        });
 };
 
 //注册验证
 exports.registerValidate = function (req, res) {
-    
+    var username = req.query.username;
+    if (username){
+        AccountModel.findOne({username: username}, function (err, doc) {
+            if (err){
+                console.log('registerValidate err! msg:' + err);
+                res.jsonp({code: false, msg:'系统错误!'});
+                return;
+            }
+            if (doc){
+                res.jsonp({code: false, msg: '该用户名已经存在!'});
+            }else {
+                res.json({code: true, msg: '该用户名可以使用!'});
+            }
+        })
+    }else {
+        res.json("true");
+    }
 };
 
 //忘记密码

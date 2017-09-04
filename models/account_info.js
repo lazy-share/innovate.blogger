@@ -10,7 +10,7 @@ var Schema = mongoose.Schema;
 var addressSchema = require('./address');
 
 var accountInfoSchema = new Schema({
-    account_id: {type: String, required: true, unique: true},
+    username: {type: String, required: true, unique: true},
     email:{type: String, required: false},
     birthday:{type: Date, required: false},
     gender:{type: Number, required: false, enum:[1, 2]},

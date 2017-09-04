@@ -8,7 +8,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var articlesTypeSchema = require('./articles_type').articlesTypeSchema;
 var articlesSchema = new Schema({
-    account_id: {type: String, required: true},
+    username: {type: String, required: true},
     title: {type: String},
     type: {type: [articlesTypeSchema], required: true},
     content: {type: String},

@@ -5,7 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var expressSession = require('express-session');
-var mongoStore = require('connect-mongo')({session: expressSession});
+var MongoStore = require('connect-mongo')({session: expressSession});
 var dbConfig = require('./mongodb/config').DB;
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://' + dbConfig.username + ':' + dbConfig.password + '@' + dbConfig.ip + ':' + dbConfig.port + '/' + dbConfig.database);
@@ -30,9 +30,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressSession({
-    secret: 'SECRET',
-    cookie: {maxAge: 60*60*1000},
-    store: new mongoStore({
+    secret: 'laizhiyuan',
+    name: 'blogger-sid',
+    cookie: {maxAge: 60*60*1000}, //一个小时
+    store: new MongoStore({
         db: mongoose.connection.db,
         collection: 'sessions'
     })

@@ -7,10 +7,11 @@
  */
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var commentSchema = require('./comment').commentSchema;
 var notesSchema = new Schema({
-    account_id: {type: String, required: true},
+    username: {type: String, required: true},
     content: {type: String, required: true},
-    comment: {type: Schema.ObjectId, required: true},
+    comment: {type: commentSchema, required: true},
     praise: [String],
     visitor: {type: Number},
     create_time: {type: Date, required:true, default: Date.now()},

@@ -21,7 +21,7 @@ exports.findOne = function (req, res) {
             return;
         }
         if (doc){
-            res.json({code: true, msg: '查找用户信息成功！', obj: doc});
+            res.json({code: true, msg: '查找用户信息成功！', data: doc});
         }
     })
 };
@@ -103,6 +103,6 @@ exports.insert = function (req, res) {
             res.json({code: false, msg: '系统错误！'});
             return;
         }
-        res.json({code: true, msg: '添加成功!', obj: accountInfo});
+        res.json({code: true, msg: '添加成功!', data: accountInfo});
     })
 };

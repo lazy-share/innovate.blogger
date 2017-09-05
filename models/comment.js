@@ -8,8 +8,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var replySchema = new Schema({
-    username: {type: String, required: true},
-    parent_username: {type: String, required: true},
+    reply_name: {type: String, required: true},
+    subject_name: {type: String, required: true},
+    content: {type: String, required: true},
     replies: [replySchema],
     create_time: {type: Date, required: true, default: Date.now()},
     update_time: {type: Date, required: true, default: Date.now()}
@@ -21,7 +22,6 @@ var replySchema = new Schema({
 });
 
 var commentSchema = new Schema({
-    username: {type: String, required: true},
     replies:[replySchema]
 },{
     id: true,
@@ -34,5 +34,5 @@ var commentSchema = new Schema({
 commentSchema.set('versionKey', '_comment');
 
 mongoose.model('CommentModel', commentSchema);
-mongoose.model('Reply', replySchema);
+mongoose.model('ReplyModel', replySchema);
 exports.commentSchema = commentSchema;

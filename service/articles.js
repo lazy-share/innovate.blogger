@@ -6,10 +6,12 @@
  */
 var mongoose = require('mongoose');
 var ArticlesModel = mongoose.model('ArticlesModel');
-var comment = require('./comment');
+var CommentModel = mongoose.model('CommentModel');
 //新增文章
 exports.insert = function (req, res) {
-    var commetnId = comment.addComment(req, res);
+    var comment = new CommentModel({
+        replies: []
+    });
     var articlesModel = new ArticlesModel({
         username: req.body.username,
         title: req.body.title,
@@ -17,7 +19,7 @@ exports.insert = function (req, res) {
         type: req.body.type,
         content: req.body.content,
         praise: req.body.praise,
-        comment: commetnId,
+        comment: comment,
         visitor: 0
     });
 
@@ -96,7 +98,7 @@ exports.findByAccount = function (req, res) {
             res.json({code: false, msg: '查无数据！'});
             return;
         }
-        res.json({code: true, msg: '查询成功!', obj: docs});
+        res.json({code: true, msg: '查询成功!', data: docs});
     });
 };
 
@@ -118,6 +120,67 @@ exports.findOne = function (req, res) {
             res.json({code: false, msg: '查无数据！'});
             return;
         }
-        res.json({code: true, msg: '查询成功!', obj: doc});
+        res.json({code: true, msg: '查询成功!', data: doc});
     })
 };
+
+//访问量
+exports.visitor = function (req, res) {
+    var id = req.query.id;
+    if (!id){
+        console.log("visitor error, id param is null or empty");
+        res.json({code: false, msg: '参数id不能为空!'});
+        return;
+    }
+    ArticlesModel.findOne({_id: id},function (err, doc) {
+        if (err){
+            console.log('visitor articles error, msg: ' + err);
+            res.json({code: false, msg: '系统错误！'});
+            return;
+        }
+        if (!doc){
+            res.json({code: false, msg: '查无数据！'});
+            return;
+        }
+        doc.visitor = doc.visitor + 1;
+        doc.save(function (err) {
+            if (err){
+                console.log('visitor articles error, msg: ' + err);
+                res.json({code: false, msg: '系统错误！'});
+                return;
+            }
+            res.json({code: true, msg: '更新成功!'});
+        });
+    });
+}
+
+//赞
+exports.praise = function (req, res) {
+    var id = req.body.id;
+    var username = req.body.username;
+    if (!username || !id){
+        console.log('praise articles id and username param is null or empty');
+        res.json({code: false, msg: '参数id、username不能为空!'});
+        return;
+    }
+    ArticlesModel.findOne({_id: id}, function (err, doc) {
+        if (err){
+            console.log('praise articles error, msg: ' + err);
+            res.json({code: false, msg: '系统错误！'});
+            return;
+        }
+        if (!doc){
+            res.json({code: false, msg: '查无数据！'});
+            return;
+        }
+        doc.praise.push(username);
+        doc.save(function (err) {
+            if (err){
+                console.log('praise articles error, msg: ' + err);
+                res.json({code: false, msg: '系统错误！'});
+                return;
+            }
+            res.json({code: true, msg: '更新成功！'});
+        });
+    });
+}

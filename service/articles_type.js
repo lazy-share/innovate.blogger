@@ -31,7 +31,7 @@ exports.findByDefault = function (req,res) {
             res.json({code: false, msg: '系统错误!'});
             return;
         }
-        res.json({code: true, msg: '查询成功!!', obj: docs});
+        res.json({code: true, msg: '查询成功!!', data: docs});
     });
 };
 
@@ -44,7 +44,7 @@ exports.findByAccount = function (req, res) {
                 res.json({code: false, msg: '系统错误!'});
                 return;
             }
-            res.json({code: true, msg: '查询成功!!', obj: docs});
+            res.json({code: true, msg: '查询成功!!', data: docs});
         });
 };
 

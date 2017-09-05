@@ -12,6 +12,7 @@ var accountSchema = new Schema({
     username:{type: String, index: 1, unique: true, required: true},
     password:{type: String, required: true},
     status:{type: Number, required: true, default: 1, enum:[1,2,3]},
+    encrypted: {type: String, required: true},
     create_time:{type: Date, required: true, unique:false, default:Date.now()},
     update_time:{type: Date, required: true, unique:false, default:Date.now()}
 },{

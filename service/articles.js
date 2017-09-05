@@ -69,20 +69,56 @@ exports.deleteOne = function (req, res) {
             res.json({code: false, msg: '系统错误！'});
             return;
         }
-        doc.remove(function (err) {
-            if (err){
-                console.log('delete articles error, msg: ' + err);
-                res.json({code: false, msg: '系统错误！'});
-                return;
+        if (doc){
+            var commentId = [];
+            commentId.push(doc.comment);
+            try{
+                require('./comment').deleteInId(commentId);
+                doc.remove(function (err) {
+                    if (err){
+                        console.log('delete articles error, msg: ' + err);
+                        res.json({code: false, msg: '系统错误！'});
+                        return;
+                    }
+                    res.json({code: true, msg: '删除成功!'});
+                });
+            }catch (err){
+                res.json({code: false, msg: '删除失败'});
             }
-            res.json({code: true, msg: '删除成功!'});
-        });
+        }
     })
+};
+
+exports.deleteByAccount = function (username) {
+    if (!username){
+        return true;
+    }
+    ArticlesModel.find({username: username},function (err, docs) {
+        if (docs){
+            var commentIds = [];
+            for (var doc in docs){
+                commentIds.push(doc.comment);
+            }
+            try{
+                require('./comment').deleteInId(commentIds);
+                ArticlesModel.remove({username: username})
+                    .exec(function (err) {
+                        if (err){
+                            throw new Error(err);
+                        }else{
+                            return true;
+                        }
+                    })
+            }catch (err){
+                throw new Error(err);
+            }
+        }
+    });
 };
 
 //找出某个账号所有的文章
 exports.findByAccount = function (req, res) {
-    var username = req.body.username;
+    var username = req.query.username;
     if (!username){
         console.log("findByAccount username param is null or empty");
         res.json({code: false, msg: '参数username不能为空!'});
@@ -102,7 +138,7 @@ exports.findByAccount = function (req, res) {
     });
 };
 
-//删除某篇文章
+//查找某篇文章
 exports.findOne = function (req, res) {
     var id = req.query.id;
     if (!id){
@@ -156,8 +192,8 @@ exports.visitor = function (req, res) {
 
 //赞
 exports.praise = function (req, res) {
-    var id = req.body.id;
-    var username = req.body.username;
+    var id = req.query.id;
+    var username = req.query.username;
     if (!username || !id){
         console.log('praise articles id and username param is null or empty');
         res.json({code: false, msg: '参数id、username不能为空!'});
@@ -183,4 +219,4 @@ exports.praise = function (req, res) {
             res.json({code: true, msg: '更新成功！'});
         });
     });
-}
+};

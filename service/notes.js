@@ -50,16 +50,51 @@ exports.deleteOne = function (req, res) {
                 res.json({code: true, msg: '查无数据!'});
                 return;
             }
-            doc.remove(function (err) {
-                if (err){
-                    console.log('delete notes error, msg:' + err);
-                    res.json({code: false, msg: '系统错误!'});
-                    return;
-                }
-                res.json({code: true, msg: '删除成功!'});
-            });
+            var commentId = [];
+            commentId.push(doc.comment);
+            try{
+                require('./comment').deleteInId(commentId);
+                doc.remove(function (err) {
+                    if (err){
+                        console.log('delete notes error, msg:' + err);
+                        res.json({code: false, msg: '系统错误!'});
+                        return;
+                    }
+                    res.json({code: true, msg: '删除成功!'});
+                });
+            }catch(err){
+                console.log('delete one notes err, msg:' + err);
+                res.json({code: false, msg: '删除失败!'});
+            }
         });
 };
+
+exports.deleteByAccount = function (username) {
+    if (!username){
+        return true;
+    }
+    NotesModel.find({username: username})
+        .exec(function (err, docs) {
+            if (docs){
+                var commentIds = [];
+                for (var doc in docs){
+                    commentIds.push(doc.id);
+                }
+                try{
+                    require('./comment').deleteInId(commentIds);
+                    NotesModel.remove({username: username}, function (err) {
+                        if (err){
+                            throw new Error(err);
+                        }else {
+                            return true;
+                        }
+                    });
+                }catch(err){
+                    throw new Error(err);
+                }
+            }
+        });
+}
 
 //更新日记心情
 exports.update = function (req, res) {
@@ -156,8 +191,8 @@ exports.visitor = function (req, res) {
 
 //添加赞
 exports.praise = function (req, res) {
-    var username = req.body.username;
-    var id = req.body.id;
+    var username = req.query.username;
+    var id = req.query.id;
     if (!username || !id){
         console.log('praise notes id and username param is null or empty');
         res.json({code: false, msg: '参数id、username不能为空!'});
@@ -185,29 +220,5 @@ exports.praise = function (req, res) {
     })
 };
 
-exports.addComment = function (req, res) {
-    var subjectId = req.body.subjectId;
-    var reply = new ReplyModel({
-        reply_name: req.body.reply_name,
-        subject_name: req.body.subject_name,
-        content: req.body.content,
-        replies:[]
-    });
-    NotesModel.findOne({_id: subjectId})
-        .exec(function (err, doc) {
-            if (err){
-                console.log('notes add comment err, msg:' + err);
-                res.json({code: false, msg: '系统错误!'});
-                return;
-            }
-            if (!doc){
-                res.json({code: false, msg: '查无数据!'});
-                return;
-            }
-            var comment = doc.comment;
-
-        })
-
-};
 
 

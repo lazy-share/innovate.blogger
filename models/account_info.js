@@ -17,7 +17,6 @@ var accountInfoSchema = new Schema({
     address: [addressSchema],
     photo_url: {type: String},
     job: {type: String},
-    encrypted: {type: String, required: true},
     qq: {type: String},
     mobile: {type: String}
 },{

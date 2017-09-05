@@ -55,29 +55,32 @@ exports.update = function (req, res) {
 };
 
 //根据用户名删除
-exports.deleteOne = function (req, res) {
-    var username = req.body.username;
+exports.deleteOne = function (username) {
     if (!username) {
-        res.json({code: false, msg: '参数username不能为空'});
-        return;
+        // res.json({code: false, msg: '参数username不能为空'});
+        console.log('参数username不能为空')
+        return false;
     }
     AccountInfoModel.findOne({username: username}, function (err, doc) {
         if (err){
             console.log('delete account info error, msg: ' + err);
-            res.json({code: false, msg: '系统错误！'});
-            return;
+            // res.json({code: false, msg: '系统错误！'});
+            throw new Error(err);
         }
         if (doc){
             doc.remove(function (err) {
                 if (err){
                     console.log('delete account info error, msg: ' + err);
-                    res.json({code: false, msg: '系统错误！'});
-                    return;
+                    // res.json({code: false, msg: '系统错误！'});
+                    throw new Error(err);
                 }
-                res.json({code: true, msg: '删除成功!'});
+                return true;
+                // res.json({code: true, msg: '删除成功!'});
             });
         }else {
-            res.json({code: false, msg: '没有该用户'});
+            // res.json({code: false, msg: '没有该用户'});
+            console.log('========>  查无数据!');
+            return false;
         }
     });
 };

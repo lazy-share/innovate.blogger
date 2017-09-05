@@ -48,6 +48,17 @@ exports.findByAccount = function (req, res) {
         });
 };
 
+exports.deleteByAccount = function (username) {
+    ArticlesTypeModel.remove({username: username})
+        .exec(function (err) {
+            if (!err){
+                return true;
+            }else {
+                throw new Error(err);
+            }
+        });
+}
+
 //删除 可通过username 或 ObjectId
 exports.deleteOne = function (req, res) {
     var id = req.query.id;

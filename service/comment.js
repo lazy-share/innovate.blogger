@@ -11,7 +11,7 @@ var CommentModel = mongoose.model('CommentModel');
 var ReplyModel = mongoose.model('ReplyModel');
 
 exports.findOne = function (req, res) {
-    var id = req.body.id;
+    var id = req.query.id;
     CommentModel.findOne({_id: id}, function (err, doc) {
         if (err){
             console.log('CommentModel findOne err, msg:' + err);
@@ -25,6 +25,18 @@ exports.findOne = function (req, res) {
         res.json({code: true, msg: '查询成功!', data: doc});
     });
 };
+
+exports.deleteInId = function (ids) {
+    if (ids instanceof Array){
+         CommentModel.remove({_id: {$in: ids}}, function (err) {
+            if (err){
+                throw new Error(err);
+            }else {
+                return true;
+            }
+        });
+    }
+}
 
 exports.addComment = function (req, res) {
     var comment_root_id = req.body.comment_root_id;

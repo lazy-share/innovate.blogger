@@ -7,7 +7,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var articlesTypeSchema = require('./articles_type').articlesTypeSchema;
-var commentSchema = require('./comment').commentSchema;
 var articlesSchema = new Schema({
     username: {type: String, required: true},
     title: {type: String},
@@ -15,7 +14,7 @@ var articlesSchema = new Schema({
     content: {type: String},
     desc: {type: String},
     praise: [String],
-    comment: {type: commentSchema, required: true},
+    comment: {type: Schema.ObjectId, required: true},
     visitor: {type: Number},
     create_time: {type: Date, required: true, default: Date.now()},
     update_time: {type: Date, required: true, default: Date.now()}

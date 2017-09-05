@@ -35,14 +35,23 @@ exports.deleteOne = function (req, res) {
     }else {
         AccountModel.findOne({username: username}, function (err, doc) {
             if (doc){
-                doc.remove(function (err) {
-                    if (!err){
-                        res.json({code: true, msg: '删除成功!'});
-                    }else {
-                        console.log('delete faild! errMsg:' + err);
-                        res.jsonp({code: false, msg: '删除失败!'});
-                    }
-                });
+                try {
+                    require('./account_info').deleteOne(username);
+                    require('./articles_type').deleteByAccount(username);
+                    require('./articles').deleteByAccount(username);
+                    require('./notes').deleteByAccount(username);
+                    doc.remove(function (err) {
+                        if (!err){
+                            res.json({code: true, msg: '删除成功!'});
+                        }else {
+                            console.log('delete faild! errMsg:' + err);
+                            res.jsonp({code: false, msg: '删除失败!'});
+                        }
+                    });
+                }catch (err){
+                    console.log('deleteOne account err msg: ' + err);
+                    res.jsonp({code: false, msg: '删除失败!'});
+                }
             }
         })
     }
@@ -93,24 +102,76 @@ exports.registerValidate = function (req, res) {
     }
 };
 
-//忘记密码
-exports.forgetPwd = function (req, res) {
-    
-};
-
-//修改账户状态
-exports.updateStatus = function (req, res) {
-
+//验证密保
+exports.encryptValidate = function (req, res) {
+    var encrypted = req.query.encrypted;
+    var username = req.query.username;
+    if (!encrypted || !username){
+        res.json({code: false, msg: '参数encrypted和username不能为空'});
+        return;
+    }
+    AccountModel.findOne({encrypted: encrypted, username: username})
+        .exec(function (err, doc) {
+            if (err){
+                console.log('forgetPwd error , msg: ' + err);
+                res.json({code: false, msg: '系统错误!'});
+                return;
+            }
+            if (!doc){
+                res.json({code: false, msg: '密保问题错误！'});
+                return;
+            }
+            res.json({code: true, msg: '验证成功!'});
+        })
 };
 
 //修改密码
 exports.updatePwd = function (req, res) {
+    var username = req.body.username;
+    var pwd = hashPwd(req.body.pwd);
+    AccountModel.update({username: username}, {$set: {password: pwd}})
+        .exec(function (err) {
+            if (err){
+                console.log('updatePwd error , msg: ' + err);
+                res.json({code: false, msg: '系统错误!'});
+                return;
+            }
+            res.json({code: true, msg: '修改成功！'});
+        });
+}
 
+//修改账户状态
+exports.updateStatus = function (req, res) {
+    var username = req.query.username;
+    var status = req.query.status;
+    AccountModel.update({username: username}, {$set: {status: status}})
+        .exec(function (err) {
+            if (err){
+                console.log('updateStatus error , msg: ' + err);
+                res.json({code: false, msg: '系统错误!'});
+                return;
+            }
+            res.json({code: true, msg: '修改成功！'});
+        });
 };
 
-//根据用户名和密码查找
-exports.findOne = function (req, res) {
 
+//根据用户名查找
+exports.findOne = function (req, res) {
+    var username = req.body.username;
+    if (!username){
+        console.log('param username is null or empty');
+        res.json({code: false, msg: '参数username不能为空'});
+        return;
+    }
+    AccountModel.findOne({username: username},function (err, doc) {
+        if (err){
+            console.log('findOne account error , msg: ' + err);
+            res.json({code: false, msg: '系统错误!'});
+            return;
+        }
+        res.json({code: true, msg: '查询成功!', data: doc});
+    });
 };
 
 function hashPwd(pwd){

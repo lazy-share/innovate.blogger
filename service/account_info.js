@@ -5,6 +5,7 @@
  *     账号信息服务层
  */
 var mongoose = require('mongoose');
+require('../models/account_info');
 var AccountInfoModel = mongoose.model('AccountInfoModel');
 
 //通过用户名查找用户详细信息

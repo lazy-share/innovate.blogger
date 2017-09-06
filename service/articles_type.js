@@ -5,6 +5,7 @@
  *      文章类型
  */
 var mongoose = require('mongoose');
+require('../models/articles_type');
 var ArticlesTypeModel = mongoose.model('ArticlesTypeModel');
 //添加文章类型
 exports.insert = function (req, res) {

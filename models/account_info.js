@@ -14,7 +14,7 @@ var accountInfoSchema = new Schema({
     email:{type: String, required: false},
     birthday:{type: Date, required: false},
     gender:{type: Number, required: false, enum:[1, 2]},
-    address: [addressSchema],
+    address: {type: addressSchema},
     photo_url: {type: String},
     job: {type: String},
     qq: {type: String},
@@ -30,13 +30,7 @@ var accountInfoSchema = new Schema({
 
 accountInfoSchema.index({account_id: 1});
 accountInfoSchema.set('versionKey', '_account_info');
-//mongoose 中间件
-accountInfoSchema.schema.pre('save', function (next) {
-    if (this.address == null){
-        console.log('address is null');
-    }
-    next();
-});
+
 
 var AccountInfoModel = mongoose.model('AccountInfoModel', accountInfoSchema, false);
 exports.accountInfoSchema = accountInfoSchema;

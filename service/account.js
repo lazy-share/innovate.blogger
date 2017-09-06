@@ -4,6 +4,7 @@
  * <p>账号服务层
  */
 var mongoose = require('mongoose');
+require('../models/account');
 var AccountModel = mongoose.model('AccountModel');
 var crypto = require('crypto');
 

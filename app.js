@@ -8,17 +8,15 @@ var expressSession = require('express-session');
 var MongoStore = require('connect-mongo')({session: expressSession});
 var dbConfig = require('./mongodb/config').DB;
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://' + dbConfig.username + ':' + dbConfig.password + '@' + dbConfig.ip + ':' + dbConfig.port + '/' + dbConfig.database);
+var dbUrl = 'mongodb://' + dbConfig.username + ':' + dbConfig.password + '@' + dbConfig.ip + ':' + dbConfig.port + '/' + dbConfig.database;
+mongoose.connect(dbUrl, {useMongoClient: true});
 
 //首次启动时放开该注释
 //require("./mongodb/script");
 var app = express();
 
-//load route
-var example = require('./routes/example')(app);
-
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views',path.join(__dirname , 'views') );
 app.engine('.html', require('ejs').__express);
 app.set('view engine', 'html');
 
@@ -34,7 +32,7 @@ app.use(expressSession({
     name: 'blogger-sid',
     cookie: {maxAge: 60*60*1000}, //一个小时
     store: new MongoStore({
-        db: mongoose.connection.db,
+        url: dbUrl,
         collection: 'sessions'
     })
 }));
@@ -57,4 +55,13 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+//load route
+require('./routes/example')(app);
+require('./routes/comment')(app);
+require('./routes/articles_type')(app);
+require('./routes/articles')(app);
+require('./routes/account_info')(app);
+require('./routes/account')(app);
+require('./routes/notes')(app);
+require('./routes/index')(app);
 module.exports = app;

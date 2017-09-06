@@ -5,6 +5,7 @@
  *     日记/心情服务层
  */
 var mongoose = require('mongoose');
+require('../models/notes');
 var NotesModel = mongoose.model('NotesModel');
 var CommentModel = mongoose.model('CommentModel');
 var ReplyModel = mongoose.model('ReplyModel');

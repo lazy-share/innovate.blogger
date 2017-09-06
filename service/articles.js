@@ -5,6 +5,7 @@
  *     文章服务层
  */
 var mongoose = require('mongoose');
+require('../models/articles');
 var ArticlesModel = mongoose.model('ArticlesModel');
 var CommentModel = mongoose.model('CommentModel');
 //新增文章

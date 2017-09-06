@@ -7,6 +7,7 @@
  *
  */
 var mongoose = require('mongoose');
+require('../models/comment');
 var CommentModel = mongoose.model('CommentModel');
 var ReplyModel = mongoose.model('ReplyModel');
 

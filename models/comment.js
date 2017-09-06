@@ -5,13 +5,13 @@
  *     评论、回复 Schema
  */
 var mongoose = require('mongoose');
+require('../models/comment');
 var Schema = mongoose.Schema;
 
 var replySchema = new Schema({
     reply_name: {type: String, required: true},
     subject_name: {type: String, required: true},
     content: {type: String, required: true},
-    replies: [replySchema],
     create_time: {type: Date, required: true, default: Date.now()},
     update_time: {type: Date, required: true, default: Date.now()}
 },{
@@ -20,6 +20,8 @@ var replySchema = new Schema({
     safe: true,
     strict: true
 });
+
+replySchema.add({replies: [replySchema]});
 
 var commentSchema = new Schema({
     replies:[replySchema]

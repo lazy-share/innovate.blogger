@@ -11,7 +11,7 @@ var notesService = require('../service/notes');
 module.exports = function (app) {
     app.post('/notes/add', notesService.insert);
     app.post('/notes/update', notesService.update);
-    app.get('/notes/deleteOne', notesService.deleteOne());
+    app.get('/notes/deleteOne', notesService.deleteOne);
     app.get('/notes/findByAccount', notesService.findByAccount);
     app.get('/notes/visitor', notesService.visitor);
     app.get('/notes/praise', notesService.praise);

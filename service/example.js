@@ -13,6 +13,10 @@ var example = require('../models/example');
 var mongoose = require('mongoose');
 var ExampleModel = example.ExampleModel;
 
+exports.index = function (req, res) {
+    res.render('example');
+};
+
 exports.testAggregate = function (req, res) {
     ExampleModel.aggregate([
         {$match: {name:{$in:['zh','l','w','t']}}},

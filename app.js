@@ -37,6 +37,16 @@ app.use(expressSession({
     })
 }));
 
+//load route
+require('./routes/example')(app);
+require('./routes/comment')(app);
+require('./routes/articles_type')(app);
+require('./routes/articles')(app);
+require('./routes/account_info')(app);
+require('./routes/account')(app);
+require('./routes/notes')(app);
+require('./routes/index')(app);
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
@@ -55,13 +65,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-//load route
-require('./routes/example')(app);
-require('./routes/comment')(app);
-require('./routes/articles_type')(app);
-require('./routes/articles')(app);
-require('./routes/account_info')(app);
-require('./routes/account')(app);
-require('./routes/notes')(app);
-require('./routes/index')(app);
 module.exports = app;

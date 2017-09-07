@@ -20,4 +20,5 @@ module.exports = function(app){
     app.get('/testStaticMethod', exampleService.testStaticMethod);
     app.get('/testAggregate', exampleService.testAggregate);
     app.get('/insert', exampleService.insert);
+    app.get('/example/index', exampleService.index);
 };

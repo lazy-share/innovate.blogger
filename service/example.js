@@ -40,20 +40,20 @@ exports.testMethod = function (req, res) {
 };
 
 exports.insert = function (req, res) {
-    var name = req.query.name;
-    if (name == null){
-        res.json("param name not empty");
-    }
+
     var example = new ExampleModel({
-        name: name,
+        name: req.body.name,
+        address: req.body.address,
+        gender: req.body.gender,
         hobby:[Math.random() + '', Math.random() + '', Math.random() + '']
     });
 
     example.save(function (err, result) {
         if (err){
-            res.json("save faild, errMsg:" + err);
+            console.log("save faild, errMsg:" + err);
+            res.json({code: false, msg: '保存失败'});
         }else {
-            res.json(result);
+            res.json({code: true, msg: '保存成功'});
         }
     });
 }

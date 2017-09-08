@@ -5,14 +5,188 @@
     <title>Example</title>
 </head>
 <body>
+测试表达式<hr>
+<div>
+    <p>测试表达式： 4 * 5 = {{ 4 * 5 }}</p>
+</div>
+测试ng-init ng-bind指令<hr>
+<div ng-init="x=10;y=5">
+    <p>测试ng-init指令: x * y = {{ x * y }}</p>
+</div>
+<div ng-init="a=10;b=5">
+    <p>测试ng-bind指令: a + b = {{ a + b }}</p>
+</div>
+<div ng-init="firstName='Lai'; lastName='Zhiyuan'">
+    <p>
+        姓名: <span ng-bind="firstName + ' ' + lastName"></span>
+    </p>
+    <p>
+        姓名：{{ firstName + " " + lastName }}
+    </p>
+</div>
+<div ng-init="person={firstName:'lai', lastName: 'zhiyuan'}">
+    <p>
+        姓: {{ person.firstName }} 名: <span ng-bind="person.lastName"></span>
+    </p>
+</div>
+<div ng-init="nums=[1,2,5,7,9]">
+    <p>
+        第三个值是： {{ nums[2] }}  第四个值是： <span ng-bind="nums[3]"></span>
+    </p>
+</div>
+测试数据绑定<hr>
+<div ng-init="data=[0, 0]">
+    <p>
+        数量：<input type="text" ng-model="data[0]" />
+        单价: <input type="text" ng-model="data[1]" />
+        总价：{{ data[0] * data[1] }}
+    </p>
+</div>
+测试重复html元素<hr>
+<div ng-init="books=['java', 'php', 'oracle', 'node']">
+    <ul>
+       <li ng-repeat="item in books">
+           {{ item }}
+       </li>
+    </ul>
+</div>
+测试自定义指令<hr>
+<directive-a></directive-a>
+<div>
+    <p>
+        时间格式: <input type="text" ng-model="timeFormat"><br>
+        当前时间： <span class="directive-b" my-format="timeFormat"></span>
+    </p>
+</div>
+测试控制器<hr>
 <div ng-controller="controllerA">
-    <h3>TestMsg1: {{message}}</h3>
+    <h3>测试controllerA: {{message}}</h3>
 </div>
 
 <div ng-controller="controllerB">
-    <h3>TestMsg2: {{message}}</h3>
+    <h3>测试controllerB: {{message}}</h3>
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.5/angular.min.js" type="text/javascript"></script>
+<div ng-controller="controllerC">
+    测试controllerC:<input type="text" ng-model="name">
+    你输入了： {{name}}
+</div>
+测试验证输入<hr>
+<form ng-app="" name="myForm1">
+    Email:
+    <input type="email" name="myEmail" ng-model="email">
+    <span ng-show="myForm1.myEmail.$error.email">输入邮箱不合法!</span>
+</form>
+测试验证应用状态<hr>
+<form ng-app="" name="myForm2" ng-init="myText2 = 'test@runoob.com'">
+
+    Email:
+    <input type="email" name="myAddress" ng-model="myText2" required>
+    <p>编辑邮箱地址，查看状态的改变。</p>
+    <h3>状态</h3>
+    <p>Valid: {{myForm2.myAddress.$valid}} (如果输入的值是合法的则为 true)。</p>
+    <p>Dirty: {{myForm2.myAddress.$dirty}} (如果值改变则为 true)。</p>
+    <p>Touched: {{myForm2.myAddress.$touched}} (如果通过触屏点击则为 true)。</p>
+
+</form>
+测试CSS<hr>
+<style>
+    /*
+    ng-model 指令根据表单域的状态添加/移除以下类
+        ng-empty
+        ng-not-empty
+        ng-touched:布尔值属性，表示用户是否和控件进行过交互
+        ng-untouched
+        ng-valid:未通过验证的表单
+        ng-invalid:布尔型属性，它指示表单是否通过验证。如果表单当前通过验证，他将为true
+        ng-dirty:布尔值属性，表示用户是否修改了表单。如果为 ture，表示有修改过；false 表示修没有修改过
+        ng-pending
+        ng-pristine:布尔值属性，表示用户是否修改了表单。如果为ture，表示没有修改过；false表示修改过
+    */
+    input.ng-invalid {
+        background-color: lightblue;
+    }
+</style>
+<div>
+    <form ng-app="" name="myForm">
+        输入你的名字:
+        <input id="theInput" name="myName" ng-model="myText3" required>
+    </form>
+
+    <p>编辑文本域，不同状态背景颜色会发送变化。</p>
+    <p>文本域添加了 required 属性，该值是必须的，如果为空则是不合法的。</p>
+
+</div>
+测试Scope<hr>
+<div ng-app="" ng-controller="controllerD">
+    {{title}}<Br>
+    <input type="text" ng-model="name">
+    <p>{{message}}</p>
+    <span ng-click="sayHello()">点击这里</span>
+</div>
+<br>
+<div ng-controller="controllerE">
+    {{title}}
+    <ul>
+        <li ng-repeat="book in books">{{book}}</li>
+    </ul>
+</div>
+测试过滤器<hr>
+<div ng-app="" ng-controller="testfilter">
+    {{ firstname | lowercase }} {{ lastname | uppercase }}
+</div>
+<div ng-controller="testfilter">
+    <input type="text" ng-model="like" />
+    <ul>
+        <li ng-repeat="item in arr | filter:like | orderBy:'id'">
+            {{ item.id | myFilter }}:{{item.name}}
+        </li>
+    </ul>
+</div>
+测试服务<hr>
+<style>
+    table{border-collapse:collapse;border-spacing:0;border-left:1px solid #888;border-top:1px solid #888;background:#efefef;}
+    th,td{border-right:1px solid #888;border-bottom:1px solid #888;padding:5px 15px;}
+    th{font-weight:bold;background:#ccc;}
+</style>
+<div ng-app="myApp2" ng-controller="testservice">
+    <span ng-bind="myUrl"></span>
+    <div>
+        <table>
+            <tr ng-repeat="item in exampleData">
+                <td>{{item.name}}</td>
+                <td>{{item.status}}</td>
+                <td>{{item.create_time}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<div ng-controller="testMyService">
+    <input type="text" ng-model="data" />
+    <span>生成数据长度为: {{len}}</span>
+</div>
+测试http<hr>
+<style>
+    .font-color{
+        color: #003399;
+    }
+</style>
+<div ng-controller="testHttp">
+    <span class="font-color" ng-bind="msg"></span><br>
+    姓名: <input type="text" ng-model="example.name"><br>
+    地址： <input type="text" ng-model="example.address"><br>
+    状态:
+    <input type="radio" ng-model="example.status" value="1">激活
+    <input type="radio" ng-model="example.status" value="2">冻结
+    <input type="radio" ng-model="example.status" value="3">停用
+    <br>
+    性别：
+    <input type="radio" ng-model="example.gender" value="1">男
+    <input type="radio" ng-model="example.gender" value="2">女
+    <button ng-click="addExample()" >添加</button>
+</div>
+
+
+<script src="/javascripts/angular.min.js" type="text/javascript"></script>
 <script src="/controller/example.js" type="text/javascript"></script>
 </body>
 </html>

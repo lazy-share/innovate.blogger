@@ -9,16 +9,16 @@
 var exampleService = require('../service/example');
 
 module.exports = function(app){
-    app.get('/updateByName', exampleService.updateByName);
+    app.get('/example/updateByName', exampleService.updateByName);
     app.get('/example', exampleService.example);
-    app.get('/findAll', exampleService.findAll);
-    app.get('/likeByName', exampleService.likeByName);
-    app.get('/findByOrder', exampleService.findByOrder);
-    app.get('/deleteByName', exampleService.deleteByName);
-    app.get('/findByLimit', exampleService.findByLimit);
-    app.get('/testMethod', exampleService.testMethod);
-    app.get('/testStaticMethod', exampleService.testStaticMethod);
-    app.get('/testAggregate', exampleService.testAggregate);
-    app.get('/insert', exampleService.insert);
+    app.get('/example/findAll', exampleService.findAll);
+    app.get('/example/likeByName', exampleService.likeByName);
+    app.get('/example/findByOrder', exampleService.findByOrder);
+    app.get('/example/deleteByName', exampleService.deleteByName);
+    app.get('/example/findByLimit', exampleService.findByLimit);
+    app.get('/example/testMethod', exampleService.testMethod);
+    app.get('/example/testStaticMethod', exampleService.testStaticMethod);
+    app.get('/example/testAggregate', exampleService.testAggregate);
+    app.post('/example/insert', exampleService.insert);
     app.get('/example/index', exampleService.index);
 };

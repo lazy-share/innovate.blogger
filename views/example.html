@@ -153,6 +153,7 @@
     <div>
         <table>
             <tr ng-repeat="item in exampleData">
+                <td>{{ $index +1 }}</td>
                 <td>{{item.name}}</td>
                 <td>{{item.status}}</td>
                 <td>{{item.create_time}}</td>
@@ -183,6 +184,61 @@
     <input type="radio" ng-model="example.gender" value="1">男
     <input type="radio" ng-model="example.gender" value="2">女
     <button ng-click="addExample()" >添加</button>
+</div>
+测试select<hr>
+<div ng-controller="testSelect">
+    <select ng-init="bookName= books[0]" ng-model='bookName' ng-options="item for item in books">
+    </select>
+    <select ng-model="selectBook">
+        <option value="">--请选择--</option>
+        <option ng-repeat="item in tv" value="{{item.price}}">{{item.name}}</option>
+    </select>
+    <select ng-model="selectBook2" ng-options="item.name for item in tv">
+    </select>
+    你选择商品的价格是： <span ng-bind="selectBook"></span><span ng-bind="selectBook2.price"></span>
+</div>
+测试angular指令<hr>
+<div ng-init="isDisable=true">
+    <button ng-disabled="isDisable">测试ng-show</button>
+    <button ng-disabled="isHide">测试ng-hide</button>
+    <input type="checkbox" ng-model="isDisable">
+    <input type="checkbox" ng-model="isHide">
+    <input type="text" ng-show="isDisable" ng-model="isDisable" />
+    <input type="text" ng-hide="isHide" ng-model="isHide"/>
+    <br>
+    <button ng-click="count = count +1">访问</button>{{count}}
+    <input type="checkbox" ng-model="isShowP">
+    <p><h2 ng-show="isShowP">HHHHH</h2></p>
+</div>
+<div ng-init="testSwith='A'">
+    <input type="radio" ng-model="testSwith" value="A">A
+    <input type="radio" ng-model="testSwith" value="B">B
+    <input type="radio" ng-model="testSwith" value="C">C
+    <div ng-switch="testSwith">
+        <div ng-switch-when="A">
+            A
+        </div>
+        <div ng-switch-when="B">
+            B
+        </div>
+        <div ng-switch-when="C">
+            C
+        </div>
+    </div>
+</div>
+<div ng-controller="test2">
+    <form novalidate>
+        <input ng-model="user.firstname" />
+        <input ng-model="user.lastname" />
+        <button ng-click="reset()">Reset</button><br>
+        user = {{user}}<Br>
+        main= {{main}}
+    </form>
+</div>
+<div ng-app="myApp" ng-controller="CalcController">
+    <input type="number" ng-model="number"></div>
+    <span ng-bind="result"></span>
+    <button ng-click="square()">X<sup>2</sup></sup></button>
 </div>
 
 

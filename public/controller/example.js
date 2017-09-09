@@ -118,4 +118,39 @@ var myApp2 = angular.module('myApp2', [])
                 $scope.msg = response.data.msg;
             });
         }
+    }])
+    .controller('testSelect', function ($scope) {
+        $scope.books = ['java', 'php', 'go'];
+        $scope.tv = [{name: '32寸', price: 1000}, {name: '50寸', price: 2000}, {name: '60寸', price: 5000}];
+    })
+    .controller('test2', function ($scope) {
+        $scope.main = {firstname:'lai', lastname: 'zhiyuan'};
+        $scope.reset = function () {
+            $scope.user = angular.copy($scope.main);
+        };
+        $scope.reset();
+    });
+
+
+var myApp = angular.module('myApp', [])
+    .factory('MathService', function () {
+        var factory = {};
+        factory.square = function (a) {
+            return a * a;
+        };
+        return factory;
+    })
+    .value('defaultInput', 20)
+    .service('CalcService', ['MathService',function (MathService) {
+        this.square = function (a) {
+            return MathService.square(a);
+        }
+    }])
+    .controller('CalcController', ['$scope', 'CalcService','defaultInput',function($scope, CalcService, defaultInput) {
+        $scope.number = defaultInput;
+        $scope.result = CalcService.square($scope.number);
+
+        $scope.square = function() {
+            $scope.result = CalcService.square($scope.number);
+        }
     }]);

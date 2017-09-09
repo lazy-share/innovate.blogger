@@ -12,7 +12,7 @@ var DB_ADMIN = {};
 DB.ip = '127.0.0.1';
 DB.port = '27017';
 DB.database = 'blogger';
-DB.username = 'lzy';
+DB.username = 'laizhiyuan';
 DB.password = '123456';
 
 /*用户管理员账号*/

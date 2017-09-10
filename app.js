@@ -1,5 +1,6 @@
 var express = require('express');
 var path = require('path');
+var url = require('url');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -36,6 +37,27 @@ app.use(expressSession({
         collection: 'sessions'
     })
 }));
+app.use(function (req, res, next) {
+    res.locals.hideSearch = false;
+    var hideSearchUrl = ['/login'];
+    var currentUri = req.originalUrl;
+    for (var index in hideSearchUrl){
+        if (currentUri === hideSearchUrl[index]){
+            res.locals.hideSearch = true;
+            break;
+        }
+    }
+    next();
+});
+
+app.use(function (req, res, next) {
+    if (req.session.current){
+        req.session.touch();
+    }
+    res.locals.session = req.session;
+    next();
+});
+
 /*app.all('*', function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "content-type");

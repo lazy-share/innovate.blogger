@@ -17,8 +17,8 @@ var accountSchema = new Schema({
     update_time:{type: Date, required: true, unique:false, default:Date.now()}
 },{
     autoIndex: true,
-    id: false, //id获取器
-    _id: false, //自动生成_id
+    id: true, //id获取器
+    _id: true, //自动生成_id
     safe: true, //更新是应用一个写入关注
     strict: true, //不保存没有在该模型定义的属性
     collection: 'account'

@@ -10,16 +10,14 @@ var crypto = require('crypto');
 
 //注册
 exports.register = function (req, res) {
-    var account = new AccountModel({
-        username: req.body.username,
-        password: hashPwd(req.body.password)
-    });
-
+    var account = new AccountModel(req.body.account);
+    account.set('password', hashPwd(req.body.account.password));
     account.save(function (err) {
         if (err){
             res.statusCode = 500;
             console.log('[ERROR]: register faild! errMsg: ' + err);
             res.json({code: false, msg: '注册失败!'});
+            return;
         }else {
             req.session.account = account;
             res.json({code: true, msg: '注册成功'});
@@ -59,59 +57,69 @@ exports.deleteOne = function (req, res) {
 };
 
 //登陆验证
-exports.loginValidate = function (req, res) {
+exports.login = function (req, res) {
+    res.locals.title = '欢迎登录';
     var username = req.body.username;
     AccountModel.findOne({username: username})
         .exec(function (err, doc) {
+            if (err){
+                req.session.current = null;
+                res.locals.loginMsg = '服务器错误!';
+                res.render('login');
+                return;
+            }
             if (doc){
                 if (doc.password === hashPwd(req.body.password.toString())){
                     req.session.regenerate(function() {
-                        req.session.account = doc;
-                        res.json({code: true, msg: '登陆成功！'});
+                        req.session.current = doc;
+                        res.locals.title = '爱情海博客';
+                        res.redirect('/');
                     })
                 }else {
                     req.session.regenerate(function() {
-                        req.session.account = null;
-                        res.json({code: false, msg: '密码错误!'});
+                        req.session.current = null;
+                        res.locals.loginMsg = '密码不正确!';
+                        res.render('login');
                     })
                 }
             }else {
-                req.session.account = null;
-                res.json({code: false, msg: '用户名错误!'})
+                req.session.current = null;
+                res.locals.loginMsg = '不存在该账号!';
+                res.render('login');
             }
         });
 };
 
 //注册验证
 exports.registerValidate = function (req, res) {
-    var username = req.query.username;
+    var username = req.body.username;
     if (username){
         AccountModel.findOne({username: username}, function (err, doc) {
             if (err){
                 console.log('registerValidate err! msg:' + err);
-                res.jsonp({code: false, msg:'系统错误!'});
+                res.json({code: false, msg:'系统错误!'});
                 return;
             }
             if (doc){
-                res.jsonp({code: false, msg: '该用户名已经存在!'});
+                res.jsonp({code: false, msg: '该账号已经存在!'});
             }else {
-                res.json({code: true, msg: '该用户名可以使用!'});
+                res.json({code: true, msg: '该账号可以使用!'});
             }
         })
     }else {
-        res.json("true");
+        res.json({code: false, msg: '账号不能为空!'});
     }
 };
 
 //验证密保
 exports.encryptValidate = function (req, res) {
-    var encrypted = req.query.encrypted;
-    var username = req.query.username;
+    var encrypted = req.body.forget.encrypted;
+    var username = req.body.forget.username;
     if (!encrypted || !username){
         res.json({code: false, msg: '参数encrypted和username不能为空'});
         return;
     }
-    AccountModel.findOne({encrypted: encrypted, username: username})
+    AccountModel.findOne({username: username})
         .exec(function (err, doc) {
             if (err){
                 console.log('forgetPwd error , msg: ' + err);
@@ -119,7 +127,11 @@ exports.encryptValidate = function (req, res) {
                 return;
             }
             if (!doc){
-                res.json({code: false, msg: '密保问题错误！'});
+                res.json({code: false, msg: '不存在该账号！'});
+                return;
+            }
+            if (!(doc.encrypted == encrypted)){
+                res.json({code: false, msg: '密保答案错误!'});
                 return;
             }
             res.json({code: true, msg: '验证成功!'});
@@ -128,8 +140,8 @@ exports.encryptValidate = function (req, res) {
 
 //修改密码
 exports.updatePwd = function (req, res) {
-    var username = req.body.username;
-    var pwd = hashPwd(req.body.pwd);
+    var username = req.body.forget.username;
+    var pwd = hashPwd(req.body.forget.password);
     AccountModel.update({username: username}, {$set: {password: pwd}})
         .exec(function (err) {
             if (err){

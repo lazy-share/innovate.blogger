@@ -36,7 +36,9 @@
                     <li><a href="/login"><span class="glyphicon glyphicon-user"></span> 欢迎: 游客</a></li>
                 <% } %>
                 <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+                <% if(session.current) { %>
                 <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> 登出</a></li>
+                <% } %>
             </ul>
         </div>
     </div>

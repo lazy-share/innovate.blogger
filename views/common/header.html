@@ -32,12 +32,10 @@
                 <%}%>
                 <% if(session.current) { %>
                     <li><a href="/"><span class="glyphicon glyphicon-user"></span> 欢迎: <%=session.current.username%></a></li>
+                <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> 登出</a></li>
                 <% }else { %>
                     <li><a href="/login"><span class="glyphicon glyphicon-user"></span> 欢迎: 游客 <span style="color: white">（您还未登录）</span></a></li>
-                <% } %>
-                <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
-                <% if(session.current) { %>
-                <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> 登出</a></li>
+                    <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
                 <% } %>
             </ul>
         </div>

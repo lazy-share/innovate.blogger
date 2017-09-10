@@ -131,7 +131,7 @@ exports.encryptValidate = function (req, res) {
                 return;
             }
             if (!(doc.encrypted == encrypted)){
-                res.json({code: false, msg: '密保答案错误!'});
+                res.json({code: false, msg: '密保码不正确!'});
                 return;
             }
             res.json({code: true, msg: '验证成功!'});

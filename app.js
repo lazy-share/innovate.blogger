@@ -12,8 +12,10 @@ var mongoose = require('mongoose');
 var dbUrl = 'mongodb://' + dbConfig.username + ':' + dbConfig.password + '@' + dbConfig.ip + ':' + dbConfig.port + '/' + dbConfig.database;
 mongoose.connect(dbUrl, {useMongoClient: true});
 
-//首次启动时放开该注释
+//首次启动时放开该注释可以创建db和一个example col
 //require("./mongodb/script");
+//初始化四级联动地址信息
+//require('./mongodb/address-script');
 var app = express();
 
 // view engine setup

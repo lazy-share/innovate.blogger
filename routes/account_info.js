@@ -16,6 +16,6 @@ module.exports = function (app) {
     app.get('/accountInfo/index/:username', function (req, res) {
         res.locals.title = '个人中心';
         res.locals.username = req.params.username;
-        res.render('account/my_center');
+        res.render('account/center');
     });
 };

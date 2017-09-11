@@ -11,9 +11,7 @@ function comfirmDeleteAccount(){
         function (data) {
             console.log(data.code);
             if (data.code){
-                $('#deleteAccountModalBody').empty();
-                $('#deleteAccountModalBody').append('<p style="color: red;">' + 'success' + '</p>');
-                /*window.location.href = '/';*/
+                window.location.href = '/';
             }else {
                 $('#deleteAccountModalBody').empty();
                 $('#deleteAccountModalBody').append('<p style="color: red;">' + data.msg + '</p>');

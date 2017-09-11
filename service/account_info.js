@@ -8,6 +8,24 @@ var mongoose = require('mongoose');
 require('../models/account_info');
 var AccountInfoModel = mongoose.model('AccountInfoModel');
 
+//个人信息
+exports.details = function (req, res) {
+    if (req.params.username){
+        AccountInfoModel.findOne({username: req.params.username}, function (err, doc) {
+            if (err){
+                console.log('find account info details error, msg:' + err);
+                res.json({code: false, msg: '系统错误!'});
+                return;
+            }
+            if (!doc){
+                res.json({code: false, msg: '不存在改账号!'});
+                return;
+            }
+            res.json({code: true, msg: '查询成功!', data: doc});
+        });
+    }
+};
+
 //通过用户名查找用户详细信息
 exports.findOne = function (req, res) {
     var username = req.query.username;
@@ -55,11 +73,11 @@ exports.update = function (req, res) {
 
 };
 
-//根据用户名删除
+
 exports.deleteOne = function (username) {
     if (!username) {
         // res.json({code: false, msg: '参数username不能为空'});
-        console.log('参数username不能为空')
+        console.log('参数username不能为空');
         return false;
     }
     AccountInfoModel.findOne({username: username}, function (err, doc) {

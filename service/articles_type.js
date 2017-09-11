@@ -58,7 +58,7 @@ exports.deleteByAccount = function (username) {
                 throw new Error(err);
             }
         });
-}
+};
 
 //删除 可通过username 或 ObjectId
 exports.deleteOne = function (req, res) {

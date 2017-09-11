@@ -30,7 +30,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressSession({
     secret: 'laizhiyuan',
-    name: 'blogger-sid',
+    name: 'bloggerSid',
     cookie: {maxAge: 60*60*1000}, //一个小时
     store: new MongoStore({
         url: dbUrl,
@@ -51,8 +51,27 @@ app.use(function (req, res, next) {
 });
 
 app.use(function (req, res, next) {
+    var a = req.headers['x-requested-with'];
     if (req.session.current){
         req.session.touch();
+    }else {
+        var publicUri = [
+            '/','/account/login','/account/logout','/account/register','/account/forget','/account/forget/success',
+            '/account/register/success', '/account/registerValidate','/account/encryptValidate',
+            '/account/updatePwd'
+        ];
+        var currentUri = req.originalUrl;
+        var isPublicUri = false;
+        for (var index in publicUri){
+            if (currentUri == publicUri[index]){
+                isPublicUri = true;
+                break;
+            }
+        }
+        if (!isPublicUri){
+            res.redirect('/account/login');
+            return;
+        }
     }
     res.locals.session = req.session;
     next();

@@ -6,51 +6,73 @@
 var mongoose = require('mongoose');
 require('../models/account');
 var AccountModel = mongoose.model('AccountModel');
+var AccountInfoModel = mongoose.model('AccountInfoModel');
 var crypto = require('crypto');
 
 //注册
 exports.register = function (req, res) {
     var account = new AccountModel(req.body.account);
     account.set('password', hashPwd(req.body.account.password));
-    account.save(function (err) {
+    var accoutInfo = new AccountInfoModel();
+    accoutInfo.set('username', account.username);
+    accoutInfo.save(function (err) {
         if (err){
             res.statusCode = 500;
             console.log('[ERROR]: register faild! errMsg: ' + err);
             res.json({code: false, msg: '注册失败!'});
             return;
         }else {
-            req.session.account = account;
-            res.json({code: true, msg: '注册成功'});
+            account.save(function (err) {
+                if (err){
+                    res.statusCode = 500;
+                    console.log('[ERROR]: register faild! errMsg: ' + err);
+                    res.json({code: false, msg: '注册失败!'});
+                    return;
+                }else {
+                    req.session.account = account;
+                    res.json({code: true, msg: '注册成功'});
+                }
+            });
         }
     });
 };
 
-//根据用户名删除
+//注销账号
 exports.deleteOne = function (req, res) {
-    var username = req.query.username;
+    var current = req.session.current;
+    if (!current){
+        res.redirect('/account/login');
+        return;
+    }
+    var username = current.username;
     if (!username){
         console.log('param username is null or empty');
-        res.json('不存在参数username');
+        res.json({code: false, msg: 'Session失效'});
+        return;
     }else {
         AccountModel.findOne({username: username}, function (err, doc) {
-            if (doc){
-                try {
-                    require('./account_info').deleteOne(username);
-                    require('./articles_type').deleteByAccount(username);
-                    require('./articles').deleteByAccount(username);
-                    require('./notes').deleteByAccount(username);
-                    doc.remove(function (err) {
-                        if (!err){
-                            res.json({code: true, msg: '删除成功!'});
-                        }else {
-                            console.log('delete faild! errMsg:' + err);
-                            res.jsonp({code: false, msg: '删除失败!'});
-                        }
-                    });
-                }catch (err){
-                    console.log('deleteOne account err msg: ' + err);
-                    res.jsonp({code: false, msg: '删除失败!'});
-                }
+            if (!doc){
+                res.json({code: false, msg: '不存在该账号'});
+                return;
+            }
+            try {
+                require('./account_info').deleteOne(username);
+                require('./articles_type').deleteByAccount(username);
+                require('./articles').deleteByAccount(username);
+                require('./notes').deleteByAccount(username);
+                doc.remove(function (err) {
+                    if (!err){
+                        res.json({code: true, msg: '删除成功!'});
+                        req.session.destroy();
+                        return;
+                    }else {
+                        console.log('delete faild! errMsg:' + err);
+                        res.json({code: false, msg: '删除失败!'});
+                    }
+                });
+            }catch (err){
+                console.log('deleteOne account err msg: ' + err);
+                res.json({code: false, msg: '删除失败!'});
             }
         })
     }
@@ -72,8 +94,9 @@ exports.login = function (req, res) {
                 if (doc.password === hashPwd(req.body.password.toString())){
                     req.session.regenerate(function() {
                         req.session.current = doc;
-                        res.locals.title = '爱情海博客';
-                        res.redirect('/');
+                        req.session.accountId = doc.username;
+                        res.locals.title = 'LZY博客';
+                        res.redirect('/accountInfo/index/' + doc.username);
                     })
                 }else {
                     req.session.regenerate(function() {
@@ -101,7 +124,7 @@ exports.registerValidate = function (req, res) {
                 return;
             }
             if (doc){
-                res.jsonp({code: false, msg: '该账号已经存在!'});
+                res.json({code: false, msg: '该账号已经存在!'});
             }else {
                 res.json({code: true, msg: '该账号可以使用!'});
             }
@@ -133,8 +156,10 @@ exports.encryptValidate = function (req, res) {
             if (!(doc.encrypted == encrypted)){
                 res.json({code: false, msg: '密保码不正确!'});
                 return;
+            }else {
+                res.json({code: true, msg: '验证成功!'});
+                return;
             }
-            res.json({code: true, msg: '验证成功!'});
         })
 };
 
@@ -151,41 +176,41 @@ exports.updatePwd = function (req, res) {
             }
             res.json({code: true, msg: '修改成功！'});
         });
-}
-
-//修改账户状态
-exports.updateStatus = function (req, res) {
-    var username = req.query.username;
-    var status = req.query.status;
-    AccountModel.update({username: username}, {$set: {status: status}})
-        .exec(function (err) {
-            if (err){
-                console.log('updateStatus error , msg: ' + err);
-                res.json({code: false, msg: '系统错误!'});
-                return;
-            }
-            res.json({code: true, msg: '修改成功！'});
-        });
 };
 
-
-//根据用户名查找
-exports.findOne = function (req, res) {
-    var username = req.body.username;
-    if (!username){
-        console.log('param username is null or empty');
-        res.json({code: false, msg: '参数username不能为空'});
-        return;
-    }
-    AccountModel.findOne({username: username},function (err, doc) {
-        if (err){
-            console.log('findOne account error , msg: ' + err);
-            res.json({code: false, msg: '系统错误!'});
-            return;
-        }
-        res.json({code: true, msg: '查询成功!', data: doc});
-    });
-};
+// //修改账户状态
+// exports.updateStatus = function (req, res) {
+//     var username = req.params.username;
+//     var status = req.params.status;
+//     AccountModel.update({username: username}, {$set: {status: status}})
+//         .exec(function (err) {
+//             if (err){
+//                 console.log('updateStatus error , msg: ' + err);
+//                 res.json({code: false, msg: '系统错误!'});
+//                 return;
+//             }
+//             res.json({code: true, msg: '修改成功！'});
+//         });
+// };
+//
+//
+// //根据用户名查找
+// exports.findOne = function (req, res) {
+//     var username = req.body.username;
+//     if (!username){
+//         console.log('param username is null or empty');
+//         res.json({code: false, msg: '参数username不能为空'});
+//         return;
+//     }
+//     AccountModel.findOne({username: username},function (err, doc) {
+//         if (err){
+//             console.log('findOne account error , msg: ' + err);
+//             res.json({code: false, msg: '系统错误!'});
+//             return;
+//         }
+//         res.json({code: true, msg: '查询成功!', data: doc});
+//     });
+// };
 
 function hashPwd(pwd){
     if (pwd){

@@ -256,11 +256,7 @@ accountInfoApp.controller('accountInfoController', ['$scope', '$http', 'accountI
         $scope.doSearch();
 
         $scope.changeHeadPortrait = function () {
-            if ($scope.disable) {
-                return;
-            } else {
-                accountInfoService.openUploadHead();
-            }
+            accountInfoService.openUploadHead();
         };
 
         $scope.edit = function () {

@@ -10,7 +10,7 @@ var accountInfoService = require('../service/account_info');
 
 module.exports = function (app) {
     app.post('/accountInfo/update', accountInfoService.update);
-    app.post('/accountInfo/add', accountInfoService.insert);
     app.get('/accountInfo/details/:username', accountInfoService.findOne);
     app.get('/accountInfo/index/:username', accountInfoService.center);
+    app.post('/accountInfo/uploadHead/:username', accountInfoService.uploadHead);
 };

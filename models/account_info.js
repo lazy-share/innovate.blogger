@@ -36,9 +36,6 @@ var accountInfoSchema = new Schema({
 
 accountInfoSchema.index({username: 1});
 accountInfoSchema.set('versionKey', '_account_info');
-accountInfoSchema.virtual('birthday').get(function () {
-    return moment(this.birthday).format('YYYY-MM-DD');
-});
 
 var AccountInfoModel = mongoose.model('AccountInfoModel', accountInfoSchema, false);
 exports.accountInfoSchema = accountInfoSchema;

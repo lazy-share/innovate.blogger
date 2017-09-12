@@ -10,29 +10,32 @@
                         <a href="#panel-1" data-toggle="tab">基本信息</a>
                     </li>
                     <% if (session.current && session.current.username == username) {%>
-                    <li>
-                        <a href="#panel-2" data-toggle="tab">修改基本信息</a>
-                    </li>
-                    <li>
-                        <a href="#panel-3" data-toggle="tab">我的文章</a>
-                    </li>
-                    <li>
-                        <a href="#panel-4" data-toggle="tab">我的心情</a>
-                    </li>
-                    <li>
-                        <a href="#panel-5" data-toggle="tab">我的媒体</a>
-                    </li>
+                        <li>
+                            <a href="#panel-3" data-toggle="tab">我的文章</a>
+                        </li>
+                        <li>
+                            <a href="#panel-4" data-toggle="tab">我的心情</a>
+                        </li>
+                        <li>
+                            <a href="#panel-5" data-toggle="tab">我的媒体</a>
+                        </li>
                     <%} else {%>
-                    <li>
-                        <a href="#panel-3" data-toggle="tab">他的文章</a>
-                    </li>
-                    <li>
-                        <a href="#panel-4" data-toggle="tab">他的心情</a>
-                    </li>
-                    <li>
-                        <a href="#panel-5" data-toggle="tab">他的媒体</a>
-                    </li>
+                        <li>
+                            <a href="#panel-3" data-toggle="tab">他的文章</a>
+                        </li>
+                        <li>
+                            <a href="#panel-4" data-toggle="tab">他的心情</a>
+                        </li>
+                        <li>
+                            <a href="#panel-5" data-toggle="tab">他的媒体</a>
+                        </li>
                     <%}%>
+                    <li>
+                        <a href="#panel-6" data-toggle="tab">关注</a>
+                    </li>
+                    <li>
+                        <a href="#panel-7" data-toggle="tab">粉丝</a>
+                    </li>
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="panel-1">
@@ -41,118 +44,102 @@
                                 <h3 class="panel-title">基本信息</h3>
                             </div>
                             <div class="panel-body">
-                                <form class="form-horizontal" role="form">
+                                <form class="form-horizontal" id="accountInfoForm" role="form">
                                     <div class="form-group">
                                         <label for="head_portrait" class="col-sm-2 control-label">头像</label>
                                         <div class="col-sm-10">
                                             <% if (session.current && session.current.username == username) {%>
-                                            <a>
-                                                <img alt="" id="head_portrait" style="width:150px; height: 150px;"
-                                                     class="img-responsive" data-src="" src="/images/5.jpg"/>
-                                            </a>
+                                            <img alt="" ng-click="changeHeadPortrait()" id="head_portrait" style="width:150px; height: 150px;"
+                                                 class="img-responsive" data-src="" src="/images/5.jpg"/>
                                             <%}else{%>
                                             <img alt="" id="head_portrait" style="width:150px; height: 150px;"
                                                  class="img-responsive" data-src="" src="/images/5.jpg"/>
                                            <%}%>
                                         </div>
                                     </div>
-                            <div class="form-group">
+                                    <div class="form-group">
                                         <label class="col-sm-2 control-label" for="gender">性别</label>
                                         <div class="col-sm-2">
-                                            <select id="gender" class="form-control">
-                                                <option value="">--请选择--</option>
-                                                <option value="1">男</option>
-                                                <option value="2">女</option>
-                                            </select>
+                                            <select id="gender" ng-disabled="disable" class="form-control" ng-model="accountInfo.gender" ng-options="gender.value as gender.name for gender in genders"></select>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label" for="education">学历</label>
                                         <div class="col-sm-2">
-                                            <select id="education" class="form-control">
-                                                <option value="">--请选择--</option>
-                                                <option value="1">中专/高中</option>
-                                                <option value="2">大专</option>
-                                                <option value="3">本科</option>
-                                                <option value="4">研究生</option>
-                                                <option value="5">博士</option>
-                                                <option value="6">博士后</option>
-                                                <option value="7">其它</option>
-                                            </select>
+                                            <select id="education" ng-disabled="disable" class="form-control" ng-model="accountInfo.education" ng-options="education.value as education.name for education in educations"></select>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label" for="job">职业</label>
-                                        <div class="col-sm-10">
-                                            <input class="form-control" id="job" type="text" placeholder="请输入您的职业" />
+                                        <div class="col-sm-3">
+                                            <input class="form-control" ng-disabled="disable" ng-model="accountInfo.job" id="job" type="text" placeholder="请输入您的职业" />
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="email" class="col-sm-2 control-label">邮箱</label>
-                                        <div class="col-sm-10">
-                                            <input class="form-control" id="email" type="email" placeholder="请输入合法邮箱">
+                                        <div class="col-sm-3">
+                                            <input class="form-control" ng-disabled="disable" ng-model="accountInfo.email" id="email" name="email" type="email" placeholder="请输入合法邮箱">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="mobile" class="col-sm-2 control-label">手机号码</label>
-                                        <div class="col-sm-10">
-                                            <input class="form-control" id="mobile" type="text" placeholder="请输入合法手机号">
+                                        <div class="col-sm-3">
+                                            <input class="form-control" ng-disabled="disable" ng-model="accountInfo.mobile" id="mobile" name="mobile" type="text" placeholder="请输入合法手机号">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="birthday" class="col-sm-2 control-label">生日</label>
-                                        <div class="col-sm-10">
-                                            <input class="form-control" id="birthday" type="text" placeholder="请输入您的生日">
+                                        <div class="col-sm-3">
+                                            <input class="form-control datetimepicker" ng-disabled="disable" ng-model="accountInfo.birthday" id="birthday" type="text" placeholder="请输入您的生日">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="qq" class="col-sm-2 control-label">QQ</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" id="qq" class="form-control" placeholder="请输入您的QQ">
+                                        <div class="col-sm-3">
+                                            <input type="text" id="qq" ng-disabled="disable" ng-model="accountInfo.qq" class="form-control" placeholder="请输入您的QQ">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="wechat" class="col-sm-2 control-label">微信号</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="wechat" placeholder="请输入您的微信号">
+                                        <div class="col-sm-3">
+                                            <input type="text" ng-disabled="disable" ng-model="accountInfo.wechat" class="form-control" id="wechat" placeholder="请输入您的微信号">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="motto" class="col-sm-2 control-label">座右铭</label>
-                                        <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="motto">
+                                        <div class="col-sm-3">
+                                            <input type="text" ng-disabled="disable" ng-model="accountInfo.motto" class="form-control" id="motto" placeholder="一句话概括你自己">
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label  class="col-sm-2 control-label">地址</label>
                                         <div class="col-sm-2">
-                                            <select type="text" class="form-control col-md-2">
-                                                <option>--请选择--</option>
+                                            <select ng-change="loadCitysByProinceCode()" ng-disabled="disable" ng-model="accountInfo.address.province_code" ng-options="province.code as province.name for province in provinces" type="text" class="form-control col-md-2">
                                             </select>
                                         </div>
                                         <div class="col-sm-2">
-                                            <select type="text" class="form-control col-md-2">
-                                                <option>--请选择--</option>
+                                            <select ng-change="loadCountysByCityCode()" ng-show="showCity" ng-disabled="disable" ng-model="accountInfo.address.city_code" ng-options="city.code as city.name for city in citys" type="text" class="form-control col-md-2">
                                             </select>
                                         </div>
                                         <div class="col-sm-2">
-                                            <select type="text" class="form-control col-md-2">
-                                                <option>--请选择--</option>
+                                            <select ng-change="loadStreetsByCountyCode()" ng-show="showCounty" ng-disabled="disable" ng-model="accountInfo.address.county_code" ng-options="county.code as county.name for county in countys" type="text" class="form-control col-md-2">
                                             </select>
                                         </div>
                                         <div class="col-sm-2">
-                                            <select type="text" class="form-control col-md-2">
-                                                <option>--请选择--</option>
+                                            <select ng-show="showStreet" ng-disabled="disable" ng-model="accountInfo.address.street_code" ng-options="street.code as street.name for street in streets" type="text" class="form-control col-md-2">
                                             </select>
                                         </div>
                                     </div>
+                                    <% if (session.current && session.current.username == username) {%>
+                                    <div class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-8 col-xs-offset-3">
+                                        <button ng-show="disable" type="button" ng-click="edit()" class="btn btn-info">编辑个人信息</button>
+                                        <button ng-hide="disable" type="submit" ng-click="confirmEdit()"  class="btn btn-info">保存个人信息</button>
+                                    </div>
+                                    <div class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-8 col-xs-offset-3">
+                                        <span class="errorMsg" ng-show="showErrorMsg" ng-bind="errorMsg"></span>
+                                    </div>
+                                    <% }%>
                                 </form>
-
-                                <% if (session.current && session.current.username == username) {%>
-                                <div class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-8 col-xs-offset-3">
-                                    <button type="button" class="btn btn-info">编辑个人信息</button>
-                                </div>
-                                <% }%>
                             </div>
                         </div>
                     </div>

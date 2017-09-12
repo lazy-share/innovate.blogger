@@ -33,6 +33,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressSession({
     secret: 'laizhiyuan',
     name: 'bloggerSid',
+    resave: true,
+    rolling: true,
+    saveUninitialized: false,
     cookie: {maxAge: 60*60*1000}, //一个小时
     store: new MongoStore({
         url: dbUrl,
@@ -53,7 +56,6 @@ app.use(function (req, res, next) {
 });
 
 app.use(function (req, res, next) {
-    var a = req.headers['x-requested-with'];
     if (req.session.current){
         req.session.touch();
     }else {
@@ -101,6 +103,7 @@ require('./routes/account_info')(app);
 require('./routes/account')(app);
 require('./routes/notes')(app);
 require('./routes/index')(app);
+require('./routes/address')(app);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

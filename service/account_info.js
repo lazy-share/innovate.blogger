@@ -8,8 +8,8 @@ var mongoose = require('mongoose');
 require('../models/account_info');
 var AccountInfoModel = mongoose.model('AccountInfoModel');
 
-//个人信息
-exports.details = function (req, res) {
+//根据账号查账号信息
+exports.findOne = function (req, res) {
     if (req.params.username){
         AccountInfoModel.findOne({username: req.params.username}, function (err, doc) {
             if (err){
@@ -26,43 +26,39 @@ exports.details = function (req, res) {
     }
 };
 
-//通过用户名查找用户详细信息
-exports.findOne = function (req, res) {
-    var username = req.query.username;
-    if (!username) {
-        res.json({code: false, msg: '参数username不能为空'});
+//个人中心基本信息
+exports.center = function (req, res) {
+    var username = req.params.username;
+    if (!username){
+        res.redirect('/account/login');
         return;
     }
-    AccountInfoModel.findOne({username: username}, function (err, doc) {
+    res.locals.title = '个人中心';
+    res.locals.username = username;
+    res.render("account/center");
+   /* AccountInfoModel.findOne({username: username}, function (err, doc) {
         if (err){
             console.log('find account info error, msg: ' + err);
-            res.json({code: false, msg: '系统错误！'});
+            res.redirect("/account/login");
             return;
         }
-        if (doc){
-            res.json({code: true, msg: '查找用户信息成功！', data: doc});
+        if (!doc){
+            res.redirect("/account/login");
+            return;
         }
-    })
+        res.locals.accountInfo = doc;
+        res.render("account/center");
+    })*/
 };
 
 //根据用户名修改用户信息
 exports.update = function (req, res) {
-    var username = req.body.username;
+    var username = req.body.accountInfo.username;
     if (!username) {
-        res.json({code: false, msg: '参数username不能为空'});
+        res.json({code: false, msg: '参数账号不能为空'});
         return;
     }
-    AccountInfoModel.update({username: username}, {$set: {
-        email: req.body.email,
-        birthday: req.body.birthday,
-        gender: req.body.gender,
-        address: req.body.address,
-        photo_url: req.body.photo_url,
-        job: req.body.job,
-        encrypted: req.body.encrypted,
-        qq: req.body.qq,
-        mobile: req.body.mobile
-    }}).exec(function (err) {
+    AccountInfoModel.update({username: username}, {$set: req.body.accountInfo}).exec(function (err) {
         if (err){
             console.log('update account info error, msg: ' + err);
             res.json({code: false, msg: '系统错误！'});

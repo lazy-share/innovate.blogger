@@ -7,3 +7,6 @@ nav.navbar {
 .validateError {
   color: red;
 }
+.errorMsg {
+  color: red;
+}

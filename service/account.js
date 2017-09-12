@@ -15,6 +15,8 @@ exports.register = function (req, res) {
     account.set('password', hashPwd(req.body.account.password));
     var accoutInfo = new AccountInfoModel();
     accoutInfo.set('username', account.username);
+    var AddressModel = mongoose.model('AddressModel');
+    accoutInfo.set('address', new AddressModel({details: ''}));
     accoutInfo.save(function (err) {
         if (err){
             res.statusCode = 500;

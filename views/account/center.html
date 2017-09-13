@@ -1,7 +1,8 @@
 <% include ../common/header.html %>
 <div class="well well-sm">个人中心</div>
-<div class="container" ng-app="accountInfoApp" ng-controller="accountInfoController" ng-init="uid=<%=username%>">
+<div class="container" ng-app="accountInfoApp">
     <input type="hidden" id="uid" value="<%=username%>"/>
+    <input type="hidden" id="currentUid" value="<%=session.current.username%>" />
     <div class="row clearfix">
         <div class="col-md-12 column">
             <div class="tabbable" id="tabs-323861">
@@ -19,6 +20,12 @@
                     <li>
                         <a href="#panel-5" data-toggle="tab">我的媒体</a>
                     </li>
+                    <li>
+                        <a href="#panel-6" data-toggle="tab">我的关注</a>
+                    </li>
+                    <li>
+                        <a href="#panel-7" data-toggle="tab">关注我的</a>
+                    </li>
                     <%} else {%>
                     <li>
                         <a href="#panel-3" data-toggle="tab">他的文章</a>
@@ -29,16 +36,16 @@
                     <li>
                         <a href="#panel-5" data-toggle="tab">他的媒体</a>
                     </li>
+                    <li>
+                        <a href="#panel-6" data-toggle="tab">他的关注</a>
+                    </li>
+                    <li>
+                        <a href="#panel-7" data-toggle="tab">关注他的</a>
+                    </li>
                     <%}%>
-                    <li>
-                        <a href="#panel-6" data-toggle="tab">关注</a>
-                    </li>
-                    <li>
-                        <a href="#panel-7" data-toggle="tab">粉丝</a>
-                    </li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane active" id="panel-1">
+                    <div class="tab-pane active" id="panel-1" ng-controller="accountInfoController">
                         <div class="panel panel-info">
                             <div class="panel-heading">
                                 <h3 class="panel-title">基本信息</h3>
@@ -48,11 +55,11 @@
                                     <div class="form-group">
                                         <label for="head_portrait" class="col-sm-2 control-label">头像</label>
                                         <div class="col-sm-10">
-                                            <img alt="" id="head_portrait" style="width:150px; height: 150px;" class="img-responsive"  src="{{accountInfo.head_portrait}}"/>
+                                            <img alt="" id="head_portrait" style="width:150px; height: 150px;" class="img-responsive"  ng-src="{{accountInfo.head_portrait}}"/>
                                         </div>
                                         <% if (session.current && session.current.username == username) {%>
-                                        <div style="margin-top: 10px;" class="col-lg-2 col-md-2 col-sm-3 col-xs-6 col-lg-offset-2 col-md-offset-2">
-                                            <a href="#" ng-click="changeHeadPortrait()">修改头像</a>
+                                        <div style="margin-top: 10px;" class="col-lg-2 col-md-2 col-lg-offset-2 col-md-offset-2">
+                                            <a href="javascript:void(0)" ng-click="changeHeadPortrait()">修改头像</a>
                                         </div>
                                         <%}%>
                                     </div>
@@ -164,41 +171,37 @@
                                                 class="btn btn-info">保存个人信息
                                         </button>
                                     </div>
-                                    <div class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-8 col-xs-offset-3">
-                                        <span class="errorMsg" ng-show="showErrorMsg" ng-bind="errorMsg"></span>
-                                    </div>
                                     <% }%>
                                 </form>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- 修改头像模态框start -->
-                    <div class="modal fade" id="upateHeadModal" tabindex="-1" role="dialog"
-                         aria-labelledby="upateHeadModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <form id="updateHeadForm" action="/accountInfo/uploadHead/<%=session.current.username%>" enctype=multipart/form-data method="post" role="form">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal"
-                                                aria-hidden="true">&times;</button>
-                                        <h4 class="modal-title" id="upateHeadModalLabel">上传头像</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="form-group">
-                                            <input type="file" name="upload" multiple="multiple" id="headFile">
-                                            <p class="help-block">选择头像</p>
+                        <!-- 修改头像模态框start -->
+                        <div class="modal fade" id="upateHeadModal" tabindex="-1" role="dialog"
+                             aria-labelledby="upateHeadModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form id="updateHeadForm" action="/accountInfo/uploadHead/<%=session.current.username%>" enctype=multipart/form-data method="post" role="form">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"
+                                                    aria-hidden="true">&times;</button>
+                                            <h4 class="modal-title" id="upateHeadModalLabel">上传头像</h4>
                                         </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                                        <input type="submit" class="btn btn-info" value="上传" />
-                                    </div>
-                                </form>
-                            </div><!-- /.modal-content -->
-                        </div><!-- /.modal -->
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <input type="file" name="upload" multiple="multiple" id="headFile">
+                                                <p class="help-block">选择头像</p>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                            <input type="submit" class="btn btn-info" value="上传" />
+                                        </div>
+                                    </form>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal -->
+                        </div>
+                        <!-- 修改头像模态框end -->
                     </div>
-                    <!-- 修改头像模态框end -->
 
                     <div class="tab-pane" id="panel-3">
                         <div class="panel panel-success">
@@ -262,6 +265,69 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <!--我的关注 start-->
+                    <div class="tab-pane" id="panel-6" ng-controller="accountInfoController">
+                        <div class="panel panel-danger">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">关注</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div ng-if="accountInfo.attention.length > 0" class="col-md-offset-4 col-lg-offset-4 col-lg-4 col-md-6">
+                                    <p class="text-danger">您已经关注了：</p>
+                                </div>
+                                <hr class="hr">
+                                <div ng-if="(accountInfo.fans.length <= 0)" class="col-md-offset-4 col-lg-offset-4 col-lg-4 col-md-4">
+                                    <h4 class="text-danger">您还未关注任何大神!</h4>
+                                </div>
+                                <div>
+                                    <div style="margin-right: 5px;text-align:center; " class="well well-sm col-lg-2 col-md-2 col-sm-4 col-xs-5" ng-repeat="fans in accountInfo.fans track by $index">
+                                        <a href="/accountInfo/index/{{fans}}">{{fans}}</a>
+                                    </div>
+                                </div>
+                                <hr class="hr">
+                                <% if (session.current && session.current.username != username) {%>
+                                <div class="col-md-offset-4 col-lg-offset-4 col-lg-2 col-md-2">
+                                    <button ng-click="concern()" ng-show="showConcern" type="button" class="btn btn-info"><span class="glyphicon glyphicon-plus"></span> 关注他</button>
+                                    <button ng-click="cancleConcern()" ng-hide="showConcern" type="button" class="btn btn-info"><span class="glyphicon glyphicon-minus"></span> 取消关注</button>
+                                </div>
+                                <%}%>
+                            </div>
+                        </div>
+                    </div>
+                    <!--我的关注 end-->
+                    <!--关注我的 start-->
+                    <div class="tab-pane" id="panel-7" ng-controller="accountInfoController">
+                        <div class="panel panel-danger">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">粉丝</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div ng-if="accountInfo.fans.length > 0" class="col-md-offset-4 col-lg-offset-4 col-lg-4 col-md-6">
+                                    <p class="text-danger">这位大神的生活开始丰富起来，比如关注他的粉丝就有：</p>
+                                </div>
+                                <hr class="hr">
+                                <div ng-if="(accountInfo.fans.length <= 0)" class="col-md-offset-4 col-lg-offset-4 col-lg-4 col-md-4">
+                                    <h4 class="text-danger">暂没有人发现这位大神!</h4>
+                                </div>
+                                <div>
+                                    <div style="margin-right: 5px;text-align:center; " class="well well-sm col-lg-2 col-md-2 col-sm-4 col-xs-5" ng-repeat="fans in accountInfo.fans track by $index">
+                                        <a href="/accountInfo/index/{{fans}}">{{fans}}</a>
+                                    </div>
+                                </div>
+                                <hr class="hr">
+                                <% if (session.current && session.current.username != username) {%>
+                                <div class="col-md-offset-4 col-lg-offset-4 col-lg-2 col-md-2">
+                                    <button ng-click="concern()" ng-show="showConcern" type="button" class="btn btn-info"><span class="glyphicon glyphicon-plus"></span> 关注他</button>
+                                    <button ng-click="cancleConcern()" ng-hide="showConcern" type="button" class="btn btn-info"><span class="glyphicon glyphicon-minus"></span> 取消关注</button>
+                                </div>
+                                <%}%>
+                            </div>
+                        </div>
+                    </div>
+                    <!--关注我的 end-->
+                    <div class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-8 col-xs-offset-3">
+                        <span class="errorMsg" ng-show="showErrorMsg" ng-bind="errorMsg"></span>
                     </div>
                 </div>
             </div>

@@ -43,4 +43,9 @@ module.exports = function (app) {
         res.locals.title = '找回密码';
         res.render('account/forget');
     });
+    app.get('/account/notAccount', function (req, res) {
+        res.locals.title = '提示';
+        res.locals.content = '不存在该账号!';
+        res.render('account/info');
+    });
 }

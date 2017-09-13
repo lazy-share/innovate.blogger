@@ -76,14 +76,18 @@ accountInfoApp.service('accountInfoService', ['$http', function () {
     this.openUploadHead = function () {
         $('#upateHeadModal').modal('show', true);
     }
+
+    this.currentUid = $('#currentUid').val();
 }]);
 
 accountInfoApp.controller('accountInfoController', ['$scope', '$http', 'accountInfoService',
     '$window', '$filter', function ($scope, $http, accountInfoService, $window, $filter) {
         $scope.uid = accountInfoService.uid;
+        $scope.currentUid = accountInfoService.currentUid;
         accountInfoService.validateAccountInfoForm();
         accountInfoService.initDatePlus();
         accountInfoService.validateUpdateHeadForm();
+        $scope.showConcern = true;
         $scope.disable = true;
         $scope.showCity = false;
         $scope.showCounty = false;
@@ -104,6 +108,7 @@ accountInfoApp.controller('accountInfoController', ['$scope', '$http', 'accountI
                     if (res.data.code) {
                         $scope.showErrorMsg = false;
                         $scope.accountInfo = res.data.data;
+                        //判断和初始化默认生日、性别、学历、头像、关注、粉丝等个人信息
                         if ($scope.accountInfo.birthday) {
                             $scope.accountInfo.birthday = $filter('date')($scope.accountInfo.birthday, 'yyyy-MM-dd')
                         }
@@ -116,8 +121,19 @@ accountInfoApp.controller('accountInfoController', ['$scope', '$http', 'accountI
                         if (!($scope.accountInfo.head_portrait)) {
                             $scope.accountInfo.head_portrait = '/images/notHead.jpg';
                         }
+                        for (var index in $scope.accountInfo.fans){
+                            if ($scope.accountInfo.fans[index] == $scope.currentUid){
+                                $scope.showConcern = false;
+                                break;
+                            }
+                        }
                         $scope.loadAllProvinces();
                     } else {
+                        if (res.data.data === -1){
+                            $window.location.href = '/account/notAccount';
+                            return;
+                        }
+                        alert(res.data.msg);
                         $scope.showErrorMsg = true;
                         $scope.errorMsg = res.data.msg;
                     }
@@ -128,7 +144,6 @@ accountInfoApp.controller('accountInfoController', ['$scope', '$http', 'accountI
                 });
             }
         };
-
         $scope.loadAllProvinces = function () {
             $http({
                 url: '/address/findAllProvinces',
@@ -258,14 +273,17 @@ accountInfoApp.controller('accountInfoController', ['$scope', '$http', 'accountI
 
         $scope.doSearch();
 
+        //修改头像
         $scope.changeHeadPortrait = function () {
             accountInfoService.openUploadHead();
         };
 
+        //编辑个人信息
         $scope.edit = function () {
             $scope.disable = false;
         };
 
+        //保存个人信息
         $scope.confirmEdit = function () {
             $http({
                 url: '/accountInfo/update',
@@ -277,6 +295,52 @@ accountInfoApp.controller('accountInfoController', ['$scope', '$http', 'accountI
                 } else {
                     $scope.showErrorMsg = true;
                     $scope.errorMsg = '服务器错误!';
+                }
+            }, function error(res) {
+                $scope.showErrorMsg = true;
+                $scope.errorMsg = '服务器错误!';
+            });
+        };
+
+        //关注他
+        $scope.concern = function () {
+            $http({
+                url: '/accountInfo/concern/' + $scope.accountInfo.username,
+                method: 'get'
+            }).then(function success(res) {
+                if (res.data.code){
+                    $scope.accountInfo.fans = res.data.data;
+                    $scope.showConcern = false;
+                }else {
+                    if (res.data.data == -1){
+                        $window.location.href = '/account/login';
+                    }else {
+                        $scope.showErrorMsg = true;
+                        $scope.errorMsg = res.data.msg;
+                    }
+                }
+            }, function error(res) {
+                $scope.showErrorMsg = true;
+                $scope.errorMsg = '服务器错误!';
+            });
+        };
+
+        //取消关注
+        $scope.cancleConcern = function () {
+            $http({
+                url: '/accountInfo/cancleConcern/' + $scope.accountInfo.username,
+                method: 'get'
+            }).then(function success(res) {
+                if (res.data.code){
+                    $scope.accountInfo.fans = res.data.data;
+                    $scope.showConcern = true;
+                }else {
+                    if (res.data.data == -1){
+                        $window.location.href = '/account/login';
+                    }else {
+                        $scope.showErrorMsg = true;
+                        $scope.errorMsg = res.data.msg;
+                    }
                 }
             }, function error(res) {
                 $scope.showErrorMsg = true;

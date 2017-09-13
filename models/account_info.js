@@ -8,6 +8,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var addressSchema = require('./address');
+var relationshipSchema = require('./relationship').relationshipSchema;
 
 var accountInfoSchema = new Schema({
     username: {type: String, required: true, unique: true}, //关联账号
@@ -19,12 +20,12 @@ var accountInfoSchema = new Schema({
     job: {type: String}, //职业
     qq: {type: String}, //QQ
     mobile: {type: String}, //手机
-    visitor: {type: Number, required: true, default: 0}, //访问量
     education: {type: Number, required: false, enum:[1, 2, 3, 4, 5, 6,7]}, //学历[中专/高中,大专，本科，研究生，博士，博士后，其它]
     motto: {type: String}, //座右铭
     wechat: {type: String}, //微信
-    attention: {type: Number, required: true, default: 0}, //关注
-    fans: {type: Number, required: true, default: 0} //粉丝
+    visitor: {type: [relationshipSchema], required: false}, //访问量
+    attention: {type: [relationshipSchema], required: false}, //关注
+    fans: {type: [relationshipSchema], required: false} //粉丝
 },{
     autoIndex: true,
     id: true, //id获取器

@@ -7,6 +7,122 @@
 var mongoose = require('mongoose');
 require('../models/account_info');
 var AccountInfoModel = mongoose.model('AccountInfoModel');
+var RelationshipModel = require('../models/relationship').RelationshipModel;
+var RelationshipService = require('../service/relationship');
+
+//取消关注
+exports.cancleConcern = function (req, res) {
+    var subject = req.params.username;
+    if (!subject){
+        res.json({code: false, msg: '参数错误!'});
+        return;
+    }
+    var current = req.session.current;
+    if (!current){
+        res.json({code: false, msg: '会话超时!', data: -1});
+        return;
+    }
+    var from = current.from;
+    RelationshipService.findOneType1(subject, from).then(function (result) {
+        if (result){
+            result.remove(function (err) {
+                if (err) {
+                    console.log('cancleConcern err, errMsg:' + err);
+                    res.json({code: false, msg: '系统错误!', data: result});
+                    return;
+                }
+                RelationshipService.findFansByUsername(subject).then(
+                    function (result) {
+                        res.json({code: true, msg: '取消成功!'});
+                    },
+                    function (err) {
+                        if (err) {
+                            console.log('cancleConcern err, errMsg:' + err);
+                            res.json({code: false, msg: '系统错误!'});
+                            return;
+                        }
+                    }
+                );
+            });
+        }
+    }, function (err) {
+        console.log('cancleConcern err, errMsg:' + err);
+        res.json({code: false, msg: '系统错误!'});
+        return;
+    });
+};
+
+//关注他
+exports.concern = function (req, res) {
+    var subject = req.params.username;
+    if (!subject){
+        res.json({code: false, msg: '参数错误!'});
+        return;
+    }
+    var current = req.session.current;
+    if (!current){
+        res.json({code: false, msg: '会话超时!', data: -1});
+        return;
+    }
+    var from = current.username;
+    RelationshipService.findOneType1(subject, from).then(
+        function (result) {
+            if (result){
+                result.set('update_time', Date.now());
+                result.save(function (err) {
+                    if (err){
+                        console.log('concern err, errMsg:' + err);
+                        res.json({code: false, msg: '系统错误!'});
+                        return;
+                    }else {
+                        RelationshipService.findFansByUsername(subject).then(
+                            function (result) {
+                                res.json({code: true, msg: '关注成功!', data: result});
+                                return;
+                            },
+                            function (err) {
+                                console.log('concern err, errMsg:' + err);
+                                res.json({code: false, msg: '系统错误!'});
+                                return;
+                            }
+                        );
+                    }
+                });
+            }else {
+                var relationshipModel = new RelationshipModel({
+                    subject: subject,
+                    from: from,
+                    type: 1
+                });
+
+                relationshipModel.save(function (err) {
+                    if (err){
+                        console.log('concern err, errMsg:' + err);
+                        res.json({code: false, msg: '系统错误!'});
+                        return;
+                    }else {
+                        RelationshipService.findFansByUsername(subject).then(
+                            function (result) {
+                                res.json({code: true, msg: '关注成功!', data: result});
+                                return;
+                            },
+                            function (err) {
+                                console.log('concern err, errMsg:' + err);
+                                res.json({code: false, msg: '系统错误!'});
+                                return;
+                            }
+                        );
+                    }
+                });
+            }
+        },
+        function (err) {
+            console.log('concern err, errMsg:' + err);
+            res.json({code: false, msg: '系统错误!'});
+            return;
+        }
+    );
+};
 
 //上传头像
 exports.uploadHead = function (req, res) {
@@ -41,8 +157,9 @@ exports.uploadHead = function (req, res) {
 };
 
 //根据账号查账号信息
-exports.findOne = function (req, res) {
-    if (req.params.username) {
+exports.details = function (req, res) {
+    var username = req.params.username;
+    if (username) {
         AccountInfoModel.findOne({username: req.params.username}, function (err, doc) {
             if (err) {
                 console.log('find account info details error, msg:' + err);
@@ -50,24 +167,96 @@ exports.findOne = function (req, res) {
                 return;
             }
             if (!doc) {
-                res.json({code: false, msg: '不存在改账号!'});
+                res.json({code: false, msg: '不存在该账号!', data: -1});
                 return;
             }
+            //关注我的
+            RelationshipModel.find({subject: username, type:2}, function (err, fans) {
+                if (err) {
+                    console.log('find account info details error, msg:' + err);
+                    res.json({code: false, msg: '系统错误!'});
+                    return;
+                }
+                doc.set('fans', fans);
+            });
+
+            //我的关注
+            RelationshipModel.find({from: username, type:2}, function (err, attention) {
+                if (err) {
+                    console.log('find account info details error, msg:' + err);
+                    res.json({code: false, msg: '系统错误!'});
+                    return;
+                }
+                doc.set('attention', attention);
+            });
             res.json({code: true, msg: '查询成功!', data: doc});
         });
+    }else {
+        res.json({code: false, msg: '参数错误!!', data: -1});
     }
 };
 
+function getClientIp(req) {
+    return req.headers['x-forwarded-for'] ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress;
+};
+
 //个人中心基本信息
-exports.center = function (req, res) {
+exports.index = function (req, res) {
     var username = req.params.username;
     if (!username) {
         res.redirect('/account/login');
         return;
     }
-    res.locals.title = '个人中心';
-    res.locals.username = username;
-    res.render("account/center");
+    var current = req.session.current;
+    if (!current){
+        res.redirect('/account/login');
+    }
+    //如果当前session的账号名和访问的username不一致，则尝试给对方添加一条访问数据
+    if (current.username != username){
+        var ip = getClientIp(req);
+        var subject = username;
+        var from = current.username;
+
+        //添加访问量条件：不同IP， 不同账号名，不同session
+        RelationshipModel.findOne({type:2, subject: subject, ip: ip}, function (err, doc) {
+            if (err){
+                throw new Error(err);
+            }
+            if (doc){
+                doc.set('update_time', Date.now());//更新最后访问时间
+                doc.save(function (err) {
+                    if (err){
+                        throw new Error(err);
+                    }
+                    res.locals.title = '个人中心';
+                    res.locals.username = username;
+                    res.render("account/center");
+                });
+            }else {
+                var relationshipModel = new RelationshipModel({
+                    subject: subject,
+                    from: from,
+                    type: 2,
+                    ip: ip
+                });
+                relationshipModel.save(function (err) {
+                    if (err){
+                        throw new Error(err);
+                    }
+                    res.locals.title = '个人中心';
+                    res.locals.username = username;
+                    res.render("account/center");
+                });
+            }
+        })
+    }else {
+        res.locals.title = '个人中心';
+        res.locals.username = username;
+        res.render("account/center");
+    }
 };
 
 //根据用户名修改用户信息

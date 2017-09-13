@@ -113,6 +113,9 @@ accountInfoApp.controller('accountInfoController', ['$scope', '$http', 'accountI
                         if (!($scope.accountInfo.education)) {
                             $scope.accountInfo.education = $scope.educations[0].value;
                         }
+                        if (!($scope.accountInfo.head_portrait)) {
+                            $scope.accountInfo.head_portrait = '/images/notHead.jpg';
+                        }
                         $scope.loadAllProvinces();
                     } else {
                         $scope.showErrorMsg = true;
@@ -256,11 +259,7 @@ accountInfoApp.controller('accountInfoController', ['$scope', '$http', 'accountI
         $scope.doSearch();
 
         $scope.changeHeadPortrait = function () {
-            if ($scope.disable) {
-                return;
-            } else {
-                accountInfoService.openUploadHead();
-            }
+            accountInfoService.openUploadHead();
         };
 
         $scope.edit = function () {

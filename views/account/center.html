@@ -1,6 +1,6 @@
 <% include ../common/header.html %>
 <div class="well well-sm">个人中心</div>
-<div class="container" ng-app="accountInfoApp" ng-controller="accountInfoController" ng-init="uid=<%=username%>">
+<div class="container" ng-app="accountInfoApp">
     <input type="hidden" id="uid" value="<%=username%>"/>
     <div class="row clearfix">
         <div class="col-md-12 column">
@@ -38,7 +38,7 @@
                     </li>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane active" id="panel-1">
+                    <div class="tab-pane active" id="panel-1" ng-controller="accountInfoController">
                         <div class="panel panel-info">
                             <div class="panel-heading">
                                 <h3 class="panel-title">基本信息</h3>
@@ -48,15 +48,13 @@
                                     <div class="form-group">
                                         <label for="head_portrait" class="col-sm-2 control-label">头像</label>
                                         <div class="col-sm-10">
-                                            <% if (session.current && session.current.username == username) {%>
-                                            <img alt="" ng-click="changeHeadPortrait()" id="head_portrait"
-                                                 style="width:150px; height: 150px;"
-                                                 class="img-responsive" src="{{accountInfo.head_portrait}}"/>
-                                            <%}else{%>
-                                            <img alt="" id="head_portrait" style="width:150px; height: 150px;"
-                                                 class="img-responsive"  src="{{accountInfo.head_portrait}}"/>
-                                            <%}%>
+                                            <img alt="" id="head_portrait" style="width:150px; height: 150px;" class="img-responsive"  src="{{accountInfo.head_portrait}}"/>
                                         </div>
+                                        <% if (session.current && session.current.username == username) {%>
+                                        <div style="margin-top: 10px;" class="col-lg-2 col-md-2 col-lg-offset-2 col-md-offset-2">
+                                            <a href="javascript:void(0)" ng-click="changeHeadPortrait()">修改头像</a>
+                                        </div>
+                                        <%}%>
                                     </div>
                                     <div class="form-group">
                                         <label class="col-sm-2 control-label" for="gender">性别</label>
@@ -248,6 +246,48 @@
                         <div class="panel panel-warning">
                             <div class="panel-heading">
                                 <h3 class="panel-title">媒体</h3>
+                            </div>
+                            <div class="panel-body">
+                                这是一个修改基本信息的面板
+                                <div class="col-lg-offset-4 col-md-offset-4 col-sm-offset-4">
+                                    <ul class="pagination pagination-lg">
+                                        <li><a href="#">&laquo;</a></li>
+                                        <li><a href="#">1</a></li>
+                                        <li><a href="#">2</a></li>
+                                        <li><a href="#">3</a></li>
+                                        <li><a href="#">4</a></li>
+                                        <li><a href="#">5</a></li>
+                                        <li><a href="#">&raquo;</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="panel-6">
+                        <div class="panel panel-danger">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">关注</h3>
+                            </div>
+                            <div class="panel-body">
+                                这是一个修改基本信息的面板
+                                <div class="col-lg-offset-4 col-md-offset-4 col-sm-offset-4">
+                                    <ul class="pagination pagination-lg">
+                                        <li><a href="#">&laquo;</a></li>
+                                        <li><a href="#">1</a></li>
+                                        <li><a href="#">2</a></li>
+                                        <li><a href="#">3</a></li>
+                                        <li><a href="#">4</a></li>
+                                        <li><a href="#">5</a></li>
+                                        <li><a href="#">&raquo;</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="panel-7">
+                        <div class="panel panel-danger">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">粉丝</h3>
                             </div>
                             <div class="panel-body">
                                 这是一个修改基本信息的面板

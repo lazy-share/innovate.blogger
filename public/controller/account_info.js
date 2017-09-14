@@ -6,7 +6,7 @@
  * </p>
  *
  */
-var accountInfoApp = angular.module('accountInfoApp', []);
+var infoApp = angular.module('infoApp', []);
 
 accountInfoApp.service('accountInfoService', ['$http', function () {
     this.uid = $('#uid').val();

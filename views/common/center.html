@@ -1,0 +1,66 @@
+<% include ./header.html %>
+<div class="well well-sm">个人中心</div>
+<div class="container" ng-app="centerApp">
+    <!--当前访问账号-->
+    <input type="hidden" id="currentUsername" value="<%=username%>"/>
+    <!--当前应用会话账号-->
+    <input type="hidden" id="sessionUsername" value="<%=session.current.username%>" />
+    <div class="row clearfix">
+        <div class="col-md-12 column">
+            <div class="tabbable" id="tabs-323861">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#panel-1" data-toggle="tab">基本信息</a>
+                    </li>
+                    <% if (session.current && session.current.username == username) {%>
+                    <li>
+                        <a href="#panel-3" data-toggle="tab">我的文章</a>
+                    </li>
+                    <li>
+                        <a href="#panel-4" data-toggle="tab">我的心情</a>
+                    </li>
+                    <li>
+                        <a href="#panel-5" data-toggle="tab">我的媒体</a>
+                    </li>
+                    <li>
+                        <a href="#panel-6" data-toggle="tab">我的关注</a>
+                    </li>
+                    <li>
+                        <a href="#panel-7" data-toggle="tab">关注我的</a>
+                    </li>
+                    <%} else {%>
+                    <li>
+                        <a href="#panel-3" data-toggle="tab">他的文章</a>
+                    </li>
+                    <li>
+                        <a href="#panel-4" data-toggle="tab">他的心情</a>
+                    </li>
+                    <li>
+                        <a href="#panel-5" data-toggle="tab">他的媒体</a>
+                    </li>
+                    <li>
+                        <a href="#panel-6" data-toggle="tab">他的关注</a>
+                    </li>
+                    <li>
+                        <a href="#panel-7" data-toggle="tab">关注他的</a>
+                    </li>
+                    <%}%>
+                </ul>
+                <div class="tab-content">
+                    <%= include ../articles/index.html%>
+                    <%= include ../notes/index.html%>
+                    <%= include ../media/index.html%>
+                    <%= include ../account/attention.html%>
+                    <%= include ../account/fans.html%>
+
+                    <!--错误消息-->
+                    <div class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-8 col-xs-offset-3">
+                        <span class="errorMsg" ng-show="showErrorMsg" ng-bind="errorMsg"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<% include ./footer.html %>
+<script src="/controller/center.js" type="text/javascript"></script>

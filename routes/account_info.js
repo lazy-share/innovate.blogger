@@ -9,12 +9,10 @@
 var accountInfoService = require('../service/account_info');
 
 module.exports = function (app) {
-    //修改账号信息
+    //修改基本信息
     app.post('/accountInfo/update', accountInfoService.update);
-    //账号详情
+    //基本信息
     app.get('/accountInfo/details/:username', accountInfoService.details);
-    //个人信息页面
-    app.get('/accountInfo/index/:username', accountInfoService.index);
     //修改头像
     app.post('/accountInfo/uploadHead/:username', accountInfoService.uploadHead);
     //关注他

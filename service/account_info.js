@@ -8,7 +8,6 @@ var mongoose = require('mongoose');
 require('../models/account_info');
 var AccountInfoModel = mongoose.model('AccountInfoModel');
 var RelationshipModel = require('../models/relationship').RelationshipModel;
-var RelationshipService = require('../service/relationship');
 
 //取消关注
 exports.cancleConcern = function (req, res) {
@@ -196,68 +195,7 @@ exports.details = function (req, res) {
     }
 };
 
-function getClientIp(req) {
-    return req.headers['x-forwarded-for'] ||
-        req.connection.remoteAddress ||
-        req.socket.remoteAddress ||
-        req.connection.socket.remoteAddress;
-};
 
-//个人中心基本信息
-exports.index = function (req, res) {
-    var username = req.params.username;
-    if (!username) {
-        res.redirect('/account/login');
-        return;
-    }
-    var current = req.session.current;
-    if (!current){
-        res.redirect('/account/login');
-    }
-    //如果当前session的账号名和访问的username不一致，则尝试给对方添加一条访问数据
-    if (current.username != username){
-        var ip = getClientIp(req);
-        var subject = username;
-        var from = current.username;
-
-        //添加访问量条件：不同IP， 不同账号名，不同session
-        RelationshipModel.findOne({type:2, subject: subject, ip: ip}, function (err, doc) {
-            if (err){
-                throw new Error(err);
-            }
-            if (doc){
-                doc.set('update_time', Date.now());//更新最后访问时间
-                doc.save(function (err) {
-                    if (err){
-                        throw new Error(err);
-                    }
-                    res.locals.title = '个人中心';
-                    res.locals.username = username;
-                    res.render("account/center");
-                });
-            }else {
-                var relationshipModel = new RelationshipModel({
-                    subject: subject,
-                    from: from,
-                    type: 2,
-                    ip: ip
-                });
-                relationshipModel.save(function (err) {
-                    if (err){
-                        throw new Error(err);
-                    }
-                    res.locals.title = '个人中心';
-                    res.locals.username = username;
-                    res.render("account/center");
-                });
-            }
-        })
-    }else {
-        res.locals.title = '个人中心';
-        res.locals.username = username;
-        res.render("account/center");
-    }
-};
 
 //根据用户名修改用户信息
 exports.update = function (req, res) {

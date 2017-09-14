@@ -97,8 +97,7 @@ exports.login = function (req, res) {
                     req.session.regenerate(function() {
                         req.session.current = doc;
                         req.session.accountId = doc.username;
-                        res.locals.title = 'LZY博客';
-                        res.redirect('/accountInfo/index/' + doc.username);
+                        res.redirect('/center/' + doc.username);
                     })
                 }else {
                     req.session.regenerate(function() {

@@ -9,23 +9,31 @@
 var accountService = require('../service/account');
 
 module.exports = function (app) {
+    //注册
     app.post('/account/register', accountService.register);
+    //登录
     app.post('/account/login', accountService.login);
+    //注册验证
     app.post('/account/registerValidate', accountService.registerValidate);
+    //注销
     app.get('/account/deleteOne', accountService.deleteOne);
+    //密保码验证
     app.post('/account/encryptValidate', accountService.encryptValidate);
+    //修改密码
     app.post('/account/updatePwd', accountService.updatePwd);
-    //app.post('/account/updateStatus', accountService.updateStatus);
+    //去登录
     app.get('/account/login', function (req, res) {
         res.locals.title = '欢迎登录';
         res.locals.loginMsg = false;
         res.render('login');
     });
+    //去登出
     app.get('/account/logout', function (req, res) {
         res.locals.title = 'LZY博客';
         req.session.destroy();
         res.redirect('/');
     });
+    //去注册
     app.get('/account/register', function (req, res) {
         res.locals.title = '欢迎注册';
         res.locals.registerMsg = false;
@@ -39,6 +47,7 @@ module.exports = function (app) {
         res.locals.title = '修改密码成功';
         res.render('account/success');
     });
+    //去找回密码
     app.get('/account/forget', function (req, res) {
         res.locals.title = '找回密码';
         res.render('account/forget');

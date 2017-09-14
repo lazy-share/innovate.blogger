@@ -6,6 +6,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var expressSession = require('express-session');
+var fs = require('fs');
 var MongoStore = require('connect-mongo')({session: expressSession});
 var dbConfig = require('./mongodb/config').DB;
 var mongoose = require('mongoose');
@@ -96,15 +97,12 @@ app.use(function (req, res, next) {
 });*/
 
 //load route
-require('./routes/example')(app);
-require('./routes/comment')(app);
-require('./routes/articles_type')(app);
-require('./routes/articles')(app);
-require('./routes/account_info')(app);
-require('./routes/account')(app);
-require('./routes/notes')(app);
-require('./routes/index')(app);
-require('./routes/address')(app);
+const routesPath = path.join(__dirname, 'routes');
+fs.readdirSync(routesPath).forEach(function (file) {
+    if (/(.*)\.(js$)/.test(file)) {
+        require(modelsPath + '/' + file);
+    }
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

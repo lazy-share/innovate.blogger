@@ -1,10 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<div class="tab-pane" id="panel-7" ng-controller="accountInfoController">
+    <div class="panel panel-danger">
+        <div class="panel-heading">
+            <h3 class="panel-title">粉丝</h3>
+        </div>
+        <div class="panel-body">
+            <div ng-if="accountInfo.fans.length > 0" class="col-md-offset-4 col-lg-offset-4 col-lg-4 col-md-6">
+                <p class="text-danger">这位大神的生活开始丰富起来，比如关注他的粉丝就有：</p>
+            </div>
+            <hr class="hr">
+            <div ng-if="(accountInfo.fans.length <= 0)" class="col-md-offset-4 col-lg-offset-4 col-lg-4 col-md-4">
+                <h4 class="text-danger">暂没有人发现这位大神!</h4>
+            </div>
+            <div>
+                <div style="margin-right: 5px;text-align:center; " class="well well-sm col-lg-2 col-md-2 col-sm-4 col-xs-5" ng-repeat="fans in accountInfo.fans track by $index">
+                    <a href="/accountInfo/index/{{fans}}">{{fans}}</a>
+                </div>
+            </div>
+            <hr class="hr">
+            <% if (session.current && session.current.username != username) {%>
+            <div class="col-md-offset-4 col-lg-offset-4 col-lg-2 col-md-2">
+                <button ng-click="concern()" ng-show="showConcern" type="button" class="btn btn-info"><span class="glyphicon glyphicon-plus"></span> 关注他</button>
+                <button ng-click="cancleConcern()" ng-hide="showConcern" type="button" class="btn btn-info"><span class="glyphicon glyphicon-minus"></span> 取消关注</button>
+            </div>
+            <%}%>
+        </div>
+    </div>
+</div>

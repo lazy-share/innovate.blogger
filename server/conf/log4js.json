@@ -1,0 +1,11 @@
+{
+appenders: {
+    out: { type: 'stdout' },
+    app: { type: 'dateFile', filename: 'logs/app.log' },
+    error: {type: 'file', filename: 'logs/error.log'}
+    errors: { type: 'logLevelFilter', appender: 'error', level: 'error' }
+  },
+  categories: {
+    default: { appenders: [ 'out', 'app' ,'errors'], level: 'debug' }
+  }
+}

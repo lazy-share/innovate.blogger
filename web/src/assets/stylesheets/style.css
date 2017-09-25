@@ -1,0 +1,16 @@
+nav.nav {
+  background-color: darkmagenta;
+}
+nav.navbar {
+  background-color: darkmagenta;
+}
+.validateError {
+  color: red;
+}
+.errorMsg {
+  color: red;
+}
+.hr{
+  width: 100%;
+
+}

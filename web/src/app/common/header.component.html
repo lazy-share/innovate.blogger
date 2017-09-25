@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"/>
+    <title>{{title}}</title>
+    <link rel='stylesheet' href='/bootstrap-3.3.7-dist/css/bootstrap.min.css' type="text/css"/>
+    <link rel='stylesheet' href='/stylesheets/style.css' type="text/css"/>
+    <link rel='stylesheet' href='/stylesheets/bootstrap-datetimepicker.min.css' type="text/css"/>
+</head>
+<body>
+<!--一级导航 start-->
+<nav class="nav navbar-inverse" role="navgation">
+    <div class="container-fluid">
+        <!-- 注销账号模态框 start -->
+        <div class="modal fade" id="deleteAccountModal" tabindex="-1" role="dialog" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="deleteAccountModalLabel">注销账号</h4>
+                    </div>
+                    <div id="deleteAccountModalBody" class="modal-body">
+                        <p style="color: red;">
+                            请注意：您正在操作一个危险的动作 ! <br>
+                            您确定要删除本账号以及所有与本账户相关的文章、心情、媒体等数据吗 ! <br>
+                            说明: 一旦操作成功，本账号以及所有相关的数据将不可找回 !
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onClick="comfirmDeleteAccount()" class="btn btn-default">确定注销</button>
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">取消</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal -->
+        </div>
+        <!-- 注销账号模态框 end -->
+
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">LZY博客</a>
+            <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
+
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <% if (!hideSearch){%>
+                <form class="navbar-form navbar-left visible-lg visible-md visible-sm" role="search">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search">
+                    </div>
+                    <button type="submit" class="btn btn-default">搜索</button>
+                </form>
+                <%}%>
+                <% if(session.current) { %>
+                    <li><a href="/accountInfo/index/<%=session.current.username%>"><span class="glyphicon glyphicon-home"></span> 个人中心</a></li>
+                    <li><a href="#" onClick="openDeleteAccountModal()"><span class="glyphicon glyphicon-remove-circle"></span> 注销账号</a></li>
+                 <!--   <li><a href="/accountInfo/index/<%=session.current.username%>"><span class="glyphicon glyphicon-user"></span> 欢迎: <%=session.current.username%></a></li>-->
+                    <li><a href="/account/logout"><span class="glyphicon glyphicon-log-out"></span> 登出</a></li>
+                <% }else { %>
+                    <li><a href="/account/login"><span class="glyphicon glyphicon-user"></span> 欢迎: 游客 <span style="color: white">（您还未登录）</span></a></li>
+                    <li><a href="/account/login"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--<nav class="navbar navbar-inverse navbar-default" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">LZY博客</a>
+        </div>
+        <% if (!hideSearch){%>
+        <form class="navbar-form navbar-left" role="search">
+            <div class="form-group">
+                <input type="text" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">搜索</button>
+        </form>
+        <%}%>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="#"><span class="glyphicon glyphicon-user"></span> 欢迎游客</a></li>
+            <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+            <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> 登出</a></li>
+        </ul>
+    </div>
+</nav>-->
+<!--一级导航 end-->

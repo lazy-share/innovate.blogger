@@ -5,7 +5,7 @@ import {NgModule} from "@angular/core";
  * Created by laizhiyuan on 2017/9/25.
  */
 const HOME_ROUTES: Routes = [
-  {path: '', component: HomeComponent}
+  {path: 'home', component: HomeComponent}
 ];
 @NgModule({
   imports: [
@@ -15,6 +15,6 @@ const HOME_ROUTES: Routes = [
     RouterModule
   ]
 })
-export class HomeRoutes {
+export class HomeRoutingModule {
 
 }

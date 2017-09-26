@@ -1,3 +1,4 @@
+<script src="../../pages/login/login.component.ts"></script>
 <nav class="nav navbar-inverse" role="navgation">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -16,11 +17,11 @@
           </div>
           <button type="submit" class="btn btn-default">搜索</button>
         </form>
-        <li><a href="/accountInfo/index/<%=session.current.username%>"><span class="glyphicon glyphicon-home"></span> 个人中心</a></li>
-        <li><a href="#" onClick="openDeleteAccountModal()"><span class="glyphicon glyphicon-remove-circle"></span> 注销账号</a></li>
-        <li><a href="/account/logout"><span class="glyphicon glyphicon-log-out"></span> 登出</a></li>
-        <li><a href="/account/login"><span class="glyphicon glyphicon-user"></span> 欢迎: 游客 <span style="color: white">（您还未登录）</span></a></li>
-        <li><a href="/account/login"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
+        <li *ngIf="currentUser"><a href="#"><span class="glyphicon glyphicon-home"></span> 个人中心</a></li>
+        <li *ngIf="currentUser"><a href="#"><span class="glyphicon glyphicon-remove-circle"></span> 注销账号</a></li>
+        <li *ngIf="currentUser"><a href="#"><span class="glyphicon glyphicon-log-out"></span> 登出</a></li>
+        <li><a href="#"><span class="glyphicon glyphicon-user"></span> 欢迎: 游客 <span style="color: white">（您还未登录）</span></a></li>
+        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> 登录</a></li>
       </ul>
     </div>
   </div>

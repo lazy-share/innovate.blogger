@@ -13,6 +13,7 @@ var accountSchema = new Schema({
     password:{type: String, required: true},
     status:{type: Number, required: true, default: 1, enum:[1,2,3]},
     encrypted: {type: String, required: true},
+    token: {type: String, required: false},
     create_time:{type: Date, required: true, unique:false, default:Date.now()},
     update_time:{type: Date, required: true, unique:false, default:Date.now()}
 },{

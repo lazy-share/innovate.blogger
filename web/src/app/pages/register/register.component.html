@@ -5,8 +5,8 @@
         <div class="panel-heading">
           <h3 class="panel-title">欢迎注册</h3>
         </div>
-        <div class="panel-body" ng-app="registerApp" ng-controller="validateRegister">
-          <form (ngSubmit)="register()" novalidate class="form-horizontal">
+        <div class="panel-body">
+          <form (ngSubmit)="register(registerForm)" #registerForm="ngForm" class="form-horizontal">
             <div class="form-group">
               <label class="col-sm-4 control-label"  for="username">账号:</label>
               <div class="col-sm-5">
@@ -39,12 +39,12 @@
               <label class="col-sm-4 control-label" for="confirmPassword">确认密码:</label>
               <div class="col-sm-5">
                 <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" [(ngModel)]="account.confirmPassword"
-                       placeholder="确认密码" required minlength="6" maxlength="25" compareTo.target="password" #confirmPassword="ngModel"/>
+                       placeholder="确认密码" required minlength="6" maxlength="25" compareTo="password" #confirmPassword="ngModel"/>
                 <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)">
                   <span *ngIf="confirmPassword.errors.required" class="red-font">请输入6-25个字符</span>
                   <span *ngIf="confirmPassword.errors.minlength" class="red-font">不足6个字符</span>
                   <span *ngIf="confirmPassword.errors.maxlength" class="red-font">请不要超过25个字符</span>
-                  <span *ngIf="confirmPassword.errors.compareTo" class="red-font">555</span>
+                  <span *ngIf="confirmPassword.errors.compareTo" class="red-font">两次输入密码不一致</span>
                 </div>
               </div>
             </div>
@@ -64,7 +64,7 @@
 
             <div class="form-group">
               <div class="col-sm-9 col-sm-offset-4">
-                <button (click)="register()" type="submit" class="btn btn-primary" >注册</button>
+                <button type="submit" [disabled]="!registerForm.form.valid" class="btn btn-success">注册</button>
                 <a (click)="home()" class="btn btn-default" >首页</a>
               </div>
             </div>

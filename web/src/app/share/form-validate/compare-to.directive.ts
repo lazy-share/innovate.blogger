@@ -7,27 +7,28 @@ import {AbstractControl, NG_VALIDATORS, Validator, ValidatorFn} from "@angular/f
   selector: '[compareTo]',
   providers: [
     /*Angular在验证流程中的识别出指令的作用，是因为指令把自己注册到了NG_VALIDATORS提供商中，该提供商拥有一组可扩展的验证器*/
-    { provide: NG_VALIDATORS, useExisting: forwardRef(() => CompareToDirective),
-      multi: true }
+    {
+      provide: NG_VALIDATORS, useExisting: forwardRef(() => CompareToDirective),
+      multi: true
+    }
   ]
 })
-export class CompareToDirective implements Validator{
+export class CompareToDirective implements Validator {
 
   @Input()
-  public target: string;
+  public compareTo: string;
 
   validate(c: AbstractControl): {[key: string]: any} {
-      let target: string = c.value;
-      let c2: AbstractControl = c.root.get(this.target);
-
-      return compareToValidator(c2.value, target);
+    let target: string = c.value;
+    let c2: AbstractControl = c.root.get(this.compareTo);
+    return compareToValidator(c2.value, target)(c);
   }
 
 }
 
 export function compareToValidator(compareTo:string, target:string): ValidatorFn {
-  return (): {[key: string]: any} => {
-    const isOk = compareTo && target && compareTo === target;
-    return isOk ? {'compareTo': null} : {'compareTo': {value: "两次输入不一致"}};
+  return (c: AbstractControl): {[key: string]: any} => {
+    const isOk = compareTo && target && (compareTo === target);
+    return isOk ? null : {'compareTo': {value: "两次输入不一致"}};
   };
 }

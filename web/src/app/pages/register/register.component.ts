@@ -1,6 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {Router} from "@angular/router";
 import {Account} from "../vo/account";
+import {FormGroup} from "@angular/forms";
 /**
  * Created by laizhiyuan on 2017/9/27.
  */
@@ -11,6 +12,7 @@ import {Account} from "../vo/account";
 export class RegisterComponent implements OnInit{
 
   private account: Account;
+
   constructor(
     private router: Router
   ){

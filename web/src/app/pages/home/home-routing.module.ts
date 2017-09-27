@@ -5,7 +5,7 @@ import {NgModule} from "@angular/core";
  * Created by laizhiyuan on 2017/9/25.
  */
 const HOME_ROUTES: Routes = [
-  {path: 'home', component: HomeComponent}
+  {path: '', component: HomeComponent}
 ];
 @NgModule({
   imports: [

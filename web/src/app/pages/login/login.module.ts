@@ -1,12 +1,14 @@
-import {NgModule} from "@angular/core/src/metadata/ng_module";
 import {LoginComponent} from "./login.component";
 import {LoginRoutingModule} from "./login-routing.module";
+import {NgModule} from "@angular/core";
+import {FormsModule} from "@angular/forms";
 /**
  * Created by lzy on 2017/9/26.
  */
 @NgModule({
   imports: [
-    LoginRoutingModule
+    LoginRoutingModule,
+    FormsModule
   ],
   declarations: [
     LoginComponent
@@ -16,3 +18,4 @@ import {LoginRoutingModule} from "./login-routing.module";
 export class LoginModule {
 
 }
+

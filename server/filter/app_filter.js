@@ -36,8 +36,7 @@ exports.crossDomain = function(req, res, next) {
 
     if (req.method == 'OPTIONS') {
         res.send(200);
-    }
-    else {
+    } else {
         next();
     }
 };
@@ -52,7 +51,8 @@ exports.notFound = function (req, res, next) {
 //500
 exports.sysError = function (err, req, res, next) {
     res.status(err.status || 500);
-    res.json({code: false, msg: '服务器错误', data: {}});
+   // res.json({code: false, msg: '服务器错误', data: {}});
+    return;
 };
 
 exports.backLine = function () {

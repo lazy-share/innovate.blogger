@@ -7,6 +7,7 @@ import {FooterComponent} from "./footer/footer.component";
 import {CommonModule} from "@angular/common";
 import {HintComponent} from "./hint/hint.component";
 import {RouterModule} from "@angular/router";
+import {NotFoundComponent} from "./not-found/not-found.component";
 /**
  * Created by laizhiyuan on 2017/9/25.
  */
@@ -21,7 +22,8 @@ import {RouterModule} from "@angular/router";
     CompareToDirective,
     MainNavComponent,
     FooterComponent,
-    HintComponent
+    HintComponent,
+    NotFoundComponent
   ],
   exports: [
     HttpClientModule,
@@ -31,7 +33,8 @@ import {RouterModule} from "@angular/router";
     CompareToDirective,
     MainNavComponent,
     FooterComponent,
-    HintComponent
+    HintComponent,
+    NotFoundComponent
   ]
 })
 export class ShareModule {

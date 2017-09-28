@@ -7,3 +7,4 @@ let root = 'http://' + environment.api.host + ':' + environment.api.port + '/' +
 export const REGISTER_VILIDATE = root + "/register/validate";
 export const REGISTER = root + "/register";
 export const LOGIN = root + "/login";
+export const FORGET_VALIDATE = root + "/forget/validate";

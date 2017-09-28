@@ -11,5 +11,4 @@ export class HintComponent{
   @Input() private title:string = "";
   @Input() private content:string = "";
   @Input() private uri:string = "";
-
 }

@@ -19,12 +19,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'assets')));
 app.use(bodyParser({uploadDir: path.join(__dirname, 'public/images')}));
-app.use(appFilter.security);
-appInit.initRouters(routers, routerPath);
-app.use(routers);
 app.all('*', appFilter.crossDomain);
+/*app.use(appFilter.security);
 app.use(appFilter.notFound);
 app.use(appFilter.sysError);
-appFilter.backLine();
+appFilter.backLine();*/
+appInit.initRouters(routers, routerPath);
+app.use(routers);
 
 module.exports = app;

@@ -12,7 +12,7 @@
                 <span class="input-group-addon">
                     <span class="glyphicon glyphicon-user"></span> 账号：
                 </span>
-                <input type="text" class="form-control" [(ngModel)]="username" #name="ngModel" name="name" placeholder="用户名..." required minlength="5" maxlength="25" autofocus>
+                <input type="text" class="form-control" [(ngModel)]="username" #name="ngModel" name="name" placeholder="用户名..." required minlength="5" maxlength="25" >
               </div>
               <div class="input-group col-md-offset-2 col-md-8 col-lg-8" *ngIf="name.invalid && (name.dirty || name.touched)">
                 <span *ngIf="name.errors.required" class="errorMsg">请输入5-25个字符</span>
@@ -32,15 +32,15 @@
                 <span *ngIf="pwd.errors.maxlength" class="errorMsg">请不要超过25个字符</span>
               </div>
               <span class="help-block mbn col-md-offset-2">
-                <a routerLink="forget" routerLinkActive="active"><small
-                style="color:red;">忘记密码?</small></a></span>
+                <a routerLink="/forget" routerLinkActive="active"><small style="color:red;">忘记密码?</small></a></span>
               <div class="input-group col-md-offset-2 col-lg-8">
                 <input type="checkbox" disabled checked/>&nbsp; 记住我
               </div>
             </div>
             <div class="form-actions pal col-md-offset-4 col-xs-offset-4 col-md-8 col-lg-8">
               <div class="form-group mbn">
-                <div><a routerLink="/register" routerLinkActive="active" class="btn btn-success">注册</a>&nbsp;&nbsp;
+                <div>
+                  <a routerLink="/register" routerLinkActive="active" class="btn btn-success">注册</a>&nbsp;&nbsp;
                   <button type="submit" [disabled]="!loginForm.form.valid" class="btn btn-primary">登录</button>
                 </div>
               </div>

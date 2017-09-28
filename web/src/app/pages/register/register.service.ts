@@ -24,16 +24,16 @@ export class RegisterService {
       }
     ).map(
       data => {
-        console.log("============register validate response:" + data);
+        console.log("============register validate response:" + JSON.stringify(data));
         return data;
       })
   }
 
   register(account: Account): Observable<any> {
-    console.log("============register request:" + account);
+    console.log("============register request:" + JSON.stringify(account));
     return this.http.post(
       REGISTER,
-      account
+      {account: account}
     ).map(
       data => {
         console.log("============register response:" + data);

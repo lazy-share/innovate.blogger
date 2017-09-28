@@ -12,7 +12,7 @@
               <div class="col-sm-5">
                 <input type="text" [(ngModel)]="account.username" class="form-control"
                        id="username" name="username" #name="ngModel" placeholder="请输入5-25个字符" required minlength="5" maxlength="25"/>
-                <span *ngIf="isRepeatedAccount"  style="color:red;">{{sysMsg}}</span>
+                <span *ngIf="isRepeatedAccount"  style="color:red;">{{validateMsg}}</span>
                 <!--控件的值无效、控件的值变化了、控件被访问过-->
                 <div *ngIf="name.invalid && (name.dirty || name.touched)">
                   <span *ngIf="name.errors.required" class="red-font">请输入5-25个字符</span>

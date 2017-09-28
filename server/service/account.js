@@ -21,18 +21,20 @@ exports.registerValidate = function (req, res) {
             if (err){
                 console.log('registerValidate err! msg:' + err);
                 log.error('registerValidate err! msg:' + err);
-                res.json(result.json(false, response.C500.code, response.C500.msg, null));
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                 return;
             }
             if (doc){
-                res.json(result.json(false, response.C600.code, response.C600.msg, null));
+                res.json(result.json(response.C600.status, response.C600.code, response.C600.msg, null));
+                return;
             }else {
                 log.info('==============>registerValidate response');
-                res.json(result.json(true, response.C200.code, response.C200.msg, null));
+                res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
+                return;
             }
         })
     }else {
-        res.json(result.json(false, response.C601.code, response.C601.msg, null));
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
     }
 };
 
@@ -49,23 +51,75 @@ exports.register = function (req, res) {
     accoutInfo.save(function (err) {
         if (err){
             res.statusCode = 500;
-            console.log('[ERROR]: register faild! errMsg: ' + err);
-            res.json({code: false, msg: '注册失败!'});
+            console.log('register error! errMsg: ' + err);
+            log.error('register error! errMsg: ' + err);
+            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }else {
             account.save(function (err) {
                 if (err){
-                    res.statusCode = 500;
-                    console.log('[ERROR]: register faild! errMsg: ' + err);
-                    res.json({code: false, msg: '注册失败!'});
+                    console.log('register faild! errMsg: ' + err);
+                    log.error('register error! errMsg: ' + err);
+                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                     return;
                 }else {
-                    req.session.account = account;
-                    res.json({code: true, msg: '注册成功'});
+                    log.info('注册成功，账号为:' + account.username);
+                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
                 }
             });
         }
     });
+};
+
+//验证密保
+exports.forgetValidate = function (req, res) {
+    var encrypted = req.query.encrypted;
+    var username = req.query.username;
+    if (!encrypted || !username){
+        log.error("forgetValidate error: msg: params is null or empty|" + encrypted + '|' + username);
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+        return;
+    }
+    AccountModel.findOne({username: username})
+        .exec(function (err, doc) {
+            if (err){
+                console.log('forgetValidate error , msg: ' + err);
+                log.error('forgetValidate error! errMsg: ' + err);
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                return;
+            }
+            if (!doc){
+                res.json(result.json(response.C602.status, response.C602.code, response.C602.msg, null));
+                return;
+            }
+            if (!(doc.encrypted == encrypted)){
+                res.json(result.json(response.C603.status, response.C603.code, response.C603.msg, null));
+                return;
+            }else {
+                res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
+                return;
+            }
+        })
+};
+
+//忘记密码
+exports.forget = function (req, res) {
+    var username = req.body.username;
+    var pwd = hashPwd(req.body.password);
+    AccountModel.update({username: username}, {$set: {password: pwd}})
+        .exec(function (err) {
+            if (err){
+                console.log('updatePwd error , msg: ' + err);
+                log.error('updatePwd error , msg: ' + err);
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                return;
+            }
+            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
+        });
+};
+
+exports.logout = function (req, res) {
+
 };
 
 //注销账号
@@ -143,53 +197,6 @@ exports.login = function (req, res) {
         });
 };
 
-//验证密保
-exports.encryptValidate = function (req, res) {
-    var encrypted = req.body.forget.encrypted;
-    var username = req.body.forget.username;
-    if (!encrypted || !username){
-        res.json({code: false, msg: '参数encrypted和username不能为空'});
-        return;
-    }
-    AccountModel.findOne({username: username})
-        .exec(function (err, doc) {
-            if (err){
-                console.log('forgetPwd error , msg: ' + err);
-                res.json({code: false, msg: '系统错误!'});
-                return;
-            }
-            if (!doc){
-                res.json({code: false, msg: '不存在该账号！'});
-                return;
-            }
-            if (!(doc.encrypted == encrypted)){
-                res.json({code: false, msg: '密保码不正确!'});
-                return;
-            }else {
-                res.json({code: true, msg: '验证成功!'});
-                return;
-            }
-        })
-};
-
-//修改密码
-exports.updatePwd = function (req, res) {
-    var username = req.body.forget.username;
-    var pwd = hashPwd(req.body.forget.password);
-    AccountModel.update({username: username}, {$set: {password: pwd}})
-        .exec(function (err) {
-            if (err){
-                console.log('updatePwd error , msg: ' + err);
-                res.json({code: false, msg: '系统错误!'});
-                return;
-            }
-            res.json({code: true, msg: '修改成功！'});
-        });
-};
-
-exports.logout = function (req, res) {
-
-};
 
 // //修改账户状态
 // exports.updateStatus = function (req, res) {

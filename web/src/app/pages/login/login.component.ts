@@ -1,4 +1,6 @@
 import {Component} from "@angular/core";
+import {LoginService} from "./login.service";
+import {Router} from "@angular/router";
 /**
  * Created by lzy on 2017/9/26.
  */
@@ -8,7 +10,31 @@ import {Component} from "@angular/core";
 })
 export class LoginComponent {
 
-  constructor(
+  private username:string = "";
+  private password:string = "";
+  private showMsg:boolean = false;
+  private sysMsg:string = "";
 
+  constructor(
+    private loginService: LoginService,
+    private route: Router
   ){}
+
+  login(){
+    this.loginService.login({username: this.username, password: this.password}).subscribe(
+      data => {
+        if (!data.status){
+          this.showMsg = true;
+          this.sysMsg = data.msg;
+          return;
+        }
+        this.route.navigate(['/center/info'])
+      },
+      err => {
+        console.log(err);
+        this.showMsg = true;
+        this.sysMsg = "服务器错误";
+      }
+    )
+  }
 }

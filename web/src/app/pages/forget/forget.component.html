@@ -1,0 +1,77 @@
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="col-md-offset-2 col-lg-8 col-md-8" >
+      <!--验证密保-->
+      <div *ngIf="isShow" class="panel panel-danger">
+        <div class="panel-heading">
+          <h3 class="panel-title">找回密码</h3>
+        </div>
+        <div class="panel-body">
+          <form (ngSubmit)="validateEncrypted()" novalidate #validateEncryptedForm="ngForm" class="form-horizontal">
+            <div class="form-body pal">
+              <div class="form-group">
+                <label class="col-sm-4 control-label" for="username">账号：</label>
+                <div class="col-sm-5">
+                  <input type="text" class="form-control" id="username" [(ngModel)]="username" name="username" placeholder="请输入5-25个以上字符"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-4 control-label" for="encrypted">密保码：</label>
+                <div class="col-sm-5">
+                  <input type="text" class="form-control" [(ngModel)]="encrypted" id="encrypted" name="encrypted" placeholder="输入6位以上字符串"/>
+                </div>
+              </div>
+            </div>
+            <div class="form-actions pal col-md-offset-4 col-xs-offset-4 col-md-8 col-lg-8">
+              <div class="form-group mbn">
+                <div>
+                  <a routerLink="/login" routerLinkActive="active" class="btn btn-default">登录</a>&nbsp;&nbsp;
+                  <button type="submit" [disabled]="validateEncryptedForm.form.valid" class="btn btn-primary">找回</button>
+                </div>
+              </div>
+              <div class="form-group mbn">
+                <span *ngIf="showMsg" style="color:red;">{{sysMsg}}</span>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!--重置密码-->
+      <div *ngIf="!isShow" class="panel panel-danger">
+        <div class="panel-heading">
+          <h3 class="panel-title">重置密码</h3>
+        </div>
+        <div class="panel-body">
+          <form (ngSubmit)="updatePwd" #updatePwdForm="ngForm" class="form-horizontal">
+            <div class="form-body pal">
+              <div class="form-group">
+                <label class="col-sm-4 control-label" for="password">新密码:</label>
+                <div class="col-sm-5">
+                  <input type="password" class="form-control" [(ngModel)]="password " id="password" name="password" placeholder="请输入6个以上字符"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-sm-4 control-label" for="confirmPassword">确认密码:</label>
+                <div class="col-sm-5">
+                  <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="确认密码"/>
+                </div>
+              </div>
+              <div class="form-actions pal col-md-offset-4 col-xs-offset-4 col-md-8 col-lg-8">
+                <div class="form-group mbn">
+                  <div>
+                    <a routerLink="/login" routerLinkActive="active" class="btn btn-default">登录</a>&nbsp;&nbsp;
+                    <button type="submit" [disabled]="updatePwdForm.form.valid" class="btn btn-primary">重置</button>
+                  </div>
+                </div>
+                <div class="form-group mbn">
+                  <span *ngIf="showMsg" style="color:red;">{{sysMsg}}</span>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

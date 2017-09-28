@@ -7,6 +7,7 @@ const APP_ROUTES: Routes = [
   {path: 'home', loadChildren: 'app/pages/home/home.module#HomeModule'},
   {path: 'login', loadChildren: 'app/pages/login/login.module#LoginModule'},
   {path: "register", loadChildren: 'app/pages/register/register.module#RegisterModule'},
+  {path: 'forger', loadChildren: 'app/pages/forget/forget.module#ForgetModule'},
   {path: '', redirectTo: 'home', pathMatch: 'full'}
 ];
 @NgModule({

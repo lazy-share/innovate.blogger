@@ -8,6 +8,33 @@ var log = require('log4js').getLogger('account');
 var AccountModel = mongoose.model('AccountModel');
 var AccountInfoModel = mongoose.model('AccountInfoModel');
 var crypto = require('crypto');
+var result = require('../common/result');
+var response = require('../common/response');
+var log = require('log4js').getLogger('account');
+
+//注册验证
+exports.registerValidate = function (req, res) {
+    var username = req.query.username;
+    log.info('==============>registerValidate request params:' + username);
+    if (username){
+        AccountModel.findOne({username: username}, function (err, doc) {
+            if (err){
+                console.log('registerValidate err! msg:' + err);
+                log.error('registerValidate err! msg:' + err);
+                res.json(result.json(false, response.C500.code, response.C500.msg, null));
+                return;
+            }
+            if (doc){
+                res.json(result.json(false, response.C600.code, response.C600.msg, null));
+            }else {
+                log.info('==============>registerValidate response');
+                res.json(result.json(true, response.C200.code, response.C200.msg, null));
+            }
+        })
+    }else {
+        res.json(result.json(false, response.C601.code, response.C601.msg, null));
+    }
+};
 
 //注册
 exports.register = function (req, res) {
@@ -114,27 +141,6 @@ exports.login = function (req, res) {
                 res.render('login');
             }
         });
-};
-
-//注册验证
-exports.registerValidate = function (req, res) {
-    var username = req.body.username;
-    if (username){
-        AccountModel.findOne({username: username}, function (err, doc) {
-            if (err){
-                console.log('registerValidate err! msg:' + err);
-                res.json({code: false, msg:'系统错误!'});
-                return;
-            }
-            if (doc){
-                res.json({code: false, msg: '该账号已经存在!'});
-            }else {
-                res.json({code: true, msg: '该账号可以使用!'});
-            }
-        })
-    }else {
-        res.json({code: false, msg: '账号不能为空!'});
-    }
 };
 
 //验证密保

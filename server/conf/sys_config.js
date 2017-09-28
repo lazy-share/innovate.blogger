@@ -14,7 +14,9 @@ var sysConfig = {
       dbDbAdminPwd: '123456',
       jwtSecret:'laizhiyuan666',
       redisIP:'127.0.0.1',
-      redisPort: '6379'
+      redisPort: '6379',
+      redisOpts:{},
+      webRootUri: '/v1/api/web'
   },
     test: {
         dbIp: '127.0.0.1',

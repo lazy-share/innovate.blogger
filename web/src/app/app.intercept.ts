@@ -47,13 +47,13 @@ export class APPRequestInterceptor implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let JWT = '';
     if (!!this.authorizationService.getCurrentUser()) {
-      JWT = `LZY ${this.authorizationService.getCurrentUser().token}`;
+      JWT = `${this.authorizationService.getCurrentUser().token}`;
     }
     req = req.clone({
       setHeaders: {
-        Authorization: JWT
+        LzyAuthorization: JWT
       },
-      url: environment.api.host + req.url
+      url: environment.api.host + environment.api.port + req.url
     });
     console.log(req.params, this.authorizationService.getCurrentUser(), environment);
     return next.handle(req);

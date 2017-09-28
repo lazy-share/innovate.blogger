@@ -6,13 +6,13 @@
           <h3 class="panel-title">欢迎注册</h3>
         </div>
         <div class="panel-body">
-          <form (ngSubmit)="register(registerForm)" #registerForm="ngForm" class="form-horizontal">
+          <form (ngSubmit)="register()" novalidate #registerForm="ngForm" class="form-horizontal">
             <div class="form-group">
               <label class="col-sm-4 control-label"  for="username">账号:</label>
               <div class="col-sm-5">
                 <input type="text" [(ngModel)]="account.username" class="form-control"
                        id="username" name="username" #name="ngModel" placeholder="请输入5-25个字符" required minlength="5" maxlength="25"/>
-                <span [hidden]="isRepeatedAccount"  style="color:red;">{{repeatedAccountMsg}}</span>
+                <span *ngIf="isRepeatedAccount"  style="color:red;">{{sysMsg}}</span>
                 <!--控件的值无效、控件的值变化了、控件被访问过-->
                 <div *ngIf="name.invalid && (name.dirty || name.touched)">
                   <span *ngIf="name.errors.required" class="red-font">请输入5-25个字符</span>
@@ -39,12 +39,12 @@
               <label class="col-sm-4 control-label" for="confirmPassword">确认密码:</label>
               <div class="col-sm-5">
                 <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" [(ngModel)]="account.confirmPassword"
-                       placeholder="确认密码" required minlength="6" maxlength="25" compareTo="password" #confirmPassword="ngModel"/>
-                <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)">
-                  <span *ngIf="confirmPassword.errors.required" class="red-font">请输入6-25个字符</span>
-                  <span *ngIf="confirmPassword.errors.minlength" class="red-font">不足6个字符</span>
-                  <span *ngIf="confirmPassword.errors.maxlength" class="red-font">请不要超过25个字符</span>
-                  <span *ngIf="confirmPassword.errors.compareTo" class="red-font">两次输入密码不一致</span>
+                       placeholder="确认密码" required compareTo="password" #confirmPassword="ngModel"/>
+                <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched) && confirmPassword.errors.required ">
+                  <span class="red-font">请输入6-25个字符</span>
+                </div>
+                <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched) && confirmPassword.errors.compareTo && !confirmPassword.errors.required">
+                  <span class="red-font">两次输入密码不一致</span>
                 </div>
               </div>
             </div>
@@ -70,7 +70,7 @@
             </div>
 
             <div class="col-lg-4 col-xs-8  col-sm-offset-3 col-md-offset-4 col-lg-offset-4">
-              <span style="color:red;"></span>
+              <span *ngIf="showMsg" style="color:red;">{{sysMsg}}</span>
             </div>
           </form>
         </div>

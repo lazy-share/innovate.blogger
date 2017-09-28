@@ -1,21 +1,23 @@
 import {NgModule} from "@angular/core";
 import {RegisterComponent} from "./register.component";
 import {RegisterRoutingModule} from "./register-routing.module";
-import {FormsModule} from "@angular/forms";
-import {CommonModule} from "@angular/common";
 import {ShareModule} from "../../share/share.module";
+import {RegisterSuccessComponent} from "./register-success.component";
+import {RegisterService} from "./register.service";
 /**
  * Created by laizhiyuan on 2017/9/27.
  */
 @NgModule({
   declarations: [
-    RegisterComponent
+    RegisterComponent,
+    RegisterSuccessComponent
   ],
   imports: [
-    CommonModule,
     ShareModule,
-    RegisterRoutingModule,
-    FormsModule
+    RegisterRoutingModule
+  ],
+  providers: [
+    RegisterService
   ],
   exports: [
 

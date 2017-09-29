@@ -18,10 +18,8 @@ module.exports = function (router) {
     router.get(webRootApi + '/forget/validate', accountService.forgetValidate);
     //忘记密码
     router.put(webRootApi + '/forget', accountService.forget);
-
-
     //登录
-    router.get('/account/login', accountService.login);
+    router.post(webRootApi + '/login', accountService.login);
     //注销
     router.delete('/account/delete', accountService.deleteOne);
     //登出

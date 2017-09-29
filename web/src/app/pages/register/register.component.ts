@@ -24,13 +24,7 @@ export class RegisterComponent extends BaseComponent implements OnInit{
   }
 
   ngOnInit(): void {
-      this.account = new Account();
-      this.account.username = "";
-      this.account.password = "";
-      this.account.encrypted = "";
-      this.account.status = 0;
-      this.account.confirmPassword = "";
-      this.account.token = "";
+      this.account = Account.instantiation();
   }
 
   register() {

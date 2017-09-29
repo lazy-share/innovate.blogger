@@ -28,13 +28,13 @@ export class LoginComponent {
           this.sysMsg = data.msg;
           return;
         }
-        this.route.navigate(['/center/info'])
+        this.route.navigate([`/center/${data.data._id}-${data.data.username}`]);
       },
       err => {
-        console.log(err);
         this.showMsg = true;
         this.sysMsg = "服务器错误";
       }
     )
   }
+
 }

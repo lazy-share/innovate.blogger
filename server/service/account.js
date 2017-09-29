@@ -4,13 +4,17 @@
  * <p>账号服务层
  */
 var mongoose = require('mongoose');
-var log = require('log4js').getLogger('account');
 var AccountModel = mongoose.model('AccountModel');
 var AccountInfoModel = mongoose.model('AccountInfoModel');
 var crypto = require('crypto');
 var result = require('../common/result');
 var response = require('../common/response');
 var log = require('log4js').getLogger('account');
+var env = require('../conf/environments');
+var sysConnfig = require('../conf/sys_config');
+var jwtSecret = sysConnfig[env].jwtSecret;
+var jwtValidity = sysConnfig[env].jwtValidity;
+var jwt = require('jsonwebtoken');
 
 //注册验证
 exports.registerValidate = function (req, res) {
@@ -118,6 +122,53 @@ exports.forget = function (req, res) {
         });
 };
 
+//登录
+exports.login = function (req, res) {
+    var username = req.body.username;
+    log.info('==============login request params:' + username);
+    AccountModel.findOne({username: username})
+        .exec(function (err, doc) {
+            if (err){
+                console.log('login error , msg: ' + err);
+                log.error('login error , msg: ' + err);
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                return;
+            }
+            if (doc){
+                if (doc.password === hashPwd(req.body.password.toString())){
+                    const currentTime = Date.now();
+                    doc.last_login_time = currentTime;
+                    jwt.sign({username: doc.username, password: doc.password}, jwtSecret, { expiresIn : jwtValidity}, function (err, token) {
+                        if (err){
+                            console.log(err);
+                            log.error('login error: errMsg:' + err);
+                            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                            return;
+                        }else {
+                            log.info('=============create token ' + token + ' for '+ username);
+                            doc.token = token;
+                            doc.save(function (err, doc) {
+                                if (err){
+                                    console.log('login error , msg: ' + err);
+                                    log.error('login error , msg: ' + err);
+                                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                                    return;
+                                }
+                                log.info("============= login after doc:" + doc);
+                                res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, doc));
+                            });
+                        }
+                    });
+                }else {
+                    res.json(result.json(response.C604.status, response.C604.code, response.C604.msg, null));
+                    return;
+                }
+            }else {
+                res.json(result.json(response.C602.status, response.C602.code, response.C602.msg, null));
+            }
+        });
+};
+
 exports.logout = function (req, res) {
 
 };
@@ -162,75 +213,6 @@ exports.deleteOne = function (req, res) {
         })
     }
 };
-
-//登陆验证
-exports.login = function (req, res) {
-    res.locals.title = '欢迎登录';
-    var username = req.body.username;
-    AccountModel.findOne({username: username})
-        .exec(function (err, doc) {
-            if (err){
-                req.session.current = null;
-                res.locals.loginMsg = '服务器错误!';
-                res.render('login');
-                return;
-            }
-            if (doc){
-                if (doc.password === hashPwd(req.body.password.toString())){
-                    req.session.regenerate(function() {
-                        req.session.current = doc;
-                        req.session.accountId = doc.username;
-                        res.redirect('/center/' + doc.username);
-                    })
-                }else {
-                    req.session.regenerate(function() {
-                        req.session.current = null;
-                        res.locals.loginMsg = '密码不正确!';
-                        res.render('login');
-                    })
-                }
-            }else {
-                req.session.current = null;
-                res.locals.loginMsg = '不存在该账号!';
-                res.render('login');
-            }
-        });
-};
-
-
-// //修改账户状态
-// exports.updateStatus = function (req, res) {
-//     var username = req.params.username;
-//     var status = req.params.status;
-//     AccountModel.update({username: username}, {$set: {status: status}})
-//         .exec(function (err) {
-//             if (err){
-//                 console.log('updateStatus error , msg: ' + err);
-//                 res.json({code: false, msg: '系统错误!'});
-//                 return;
-//             }
-//             res.json({code: true, msg: '修改成功！'});
-//         });
-// };
-//
-//
-// //根据用户名查找
-// exports.findOne = function (req, res) {
-//     var username = req.body.username;
-//     if (!username){
-//         console.log('param username is null or empty');
-//         res.json({code: false, msg: '参数username不能为空'});
-//         return;
-//     }
-//     AccountModel.findOne({username: username},function (err, doc) {
-//         if (err){
-//             console.log('findOne account error , msg: ' + err);
-//             res.json({code: false, msg: '系统错误!'});
-//             return;
-//         }
-//         res.json({code: true, msg: '查询成功!', data: doc});
-//     });
-// };
 
 function hashPwd(pwd){
     if (pwd){

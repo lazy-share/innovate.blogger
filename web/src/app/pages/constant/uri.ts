@@ -8,3 +8,5 @@ export const REGISTER_VILIDATE = root + "/register/validate";
 export const REGISTER = root + "/register";
 export const LOGIN = root + "/login";
 export const FORGET_VALIDATE = root + "/forget/validate";
+export const FORGET = root + "/forget";
+export const GET_ACCOUNT_INFO_BY_USERNAME = root + "/account/info";

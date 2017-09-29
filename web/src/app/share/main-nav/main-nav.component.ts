@@ -1,6 +1,7 @@
 import {Component} from "@angular/core";
 import {AuthorizationService} from "../../core/authorization/authorization.service";
 import {Account} from "../../pages/vo/account";
+import {Router} from "@angular/router";
 /**
  * Created by laizhiyuan on 2017/9/25.
  */
@@ -10,12 +11,16 @@ import {Account} from "../../pages/vo/account";
   styleUrls: ['./main-nav.component.css']
 })
 export class MainNavComponent {
-  private currentUser: Account;
 
   constructor(
-    private authorizationService: AuthorizationService
+    private authorizationService: AuthorizationService,
+    private route: Router
   ){
-    this.currentUser = authorizationService.getCurrentUser();
+  }
+
+  logout() {
+    this.authorizationService.logout();
+    this.route.navigate(['/login']);
   }
 }
 

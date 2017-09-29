@@ -18,11 +18,9 @@ export class LoginService {
   }
 
   login(userInfo: {username: string, password: string}) : Observable<any> {
-      console.log('==========login request:' + userInfo);
       const authService = this.authorizationService;
       return this.http.post<AppResponse>(LOGIN, userInfo).map(
         data => {
-          console.log("==========login response:" + data);
           if (data.status){
             authService.setCurrentUser(data.data);
           }

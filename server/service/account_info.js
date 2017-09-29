@@ -5,9 +5,57 @@
  *     账号信息服务层
  */
 var mongoose = require('mongoose');
-require('../models/account_info');
 var AccountInfoModel = mongoose.model('AccountInfoModel');
-var RelationshipModel = require('../models/relationship').RelationshipModel;
+var RelationshipModel =mongoose.model('RelationshipModel');
+var result = require('../common/result');
+var response = require('../common/response');
+var log = require('log4js').getLogger('account');
+
+//根据账号查账号信息
+exports.details = function (req, res) {
+    var username = req.query.username;
+    log.info("=====================enter account info details================");
+    log.info("username:" + username);
+    if (username) {
+        AccountInfoModel.findOne({username: req.params.username}, function (err, doc) {
+            if (err) {
+                console.log('account info details err! msg:' + err);
+                log.error('account info details err! msg:' + err);
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                return;
+            }
+            if (!doc) {
+                res.json(result.json(response.C602.status, response.C602.code, response.C602.msg, null));
+                return;
+            }
+            //关注我的
+            RelationshipModel.find({subject: username, type:2}, function (err, fans) {
+                if (err) {
+                    console.log('account info details err! msg:' + err);
+                    log.error('account info details err! msg:' + err);
+                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                    return;
+                }
+                doc.set('fans', fans);
+            });
+
+            //我的关注
+            RelationshipModel.find({from: username, type:2}, function (err, attention) {
+                if (err) {
+                    console.log('account info details err! msg:' + err);
+                    log.error('account info details err! msg:' + err);
+                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                    return;
+                }
+                doc.set('attention', attention);
+            });
+            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, doc));
+        });
+    }else {
+        log.error('account info details err! params is empty or null:' + username);
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+    }
+};
 
 //取消关注
 exports.cancleConcern = function (req, res) {
@@ -154,48 +202,6 @@ exports.uploadHead = function (req, res) {
         res.redirect("/account/login");
     }
 };
-
-//根据账号查账号信息
-exports.details = function (req, res) {
-    var username = req.params.username;
-    if (username) {
-        AccountInfoModel.findOne({username: req.params.username}, function (err, doc) {
-            if (err) {
-                console.log('find account info details error, msg:' + err);
-                res.json({code: false, msg: '系统错误!'});
-                return;
-            }
-            if (!doc) {
-                res.json({code: false, msg: '不存在该账号!', data: -1});
-                return;
-            }
-            //关注我的
-            RelationshipModel.find({subject: username, type:2}, function (err, fans) {
-                if (err) {
-                    console.log('find account info details error, msg:' + err);
-                    res.json({code: false, msg: '系统错误!'});
-                    return;
-                }
-                doc.set('fans', fans);
-            });
-
-            //我的关注
-            RelationshipModel.find({from: username, type:2}, function (err, attention) {
-                if (err) {
-                    console.log('find account info details error, msg:' + err);
-                    res.json({code: false, msg: '系统错误!'});
-                    return;
-                }
-                doc.set('attention', attention);
-            });
-            res.json({code: true, msg: '查询成功!', data: doc});
-        });
-    }else {
-        res.json({code: false, msg: '参数错误!!', data: -1});
-    }
-};
-
-
 
 //根据用户名修改用户信息
 exports.update = function (req, res) {

@@ -13,6 +13,7 @@ var sysConfig = {
       dbDbAdminUsername: 'dbadmin',
       dbDbAdminPwd: '123456',
       jwtSecret:'laizhiyuan666',
+      jwtValidity: 60 * 10, // 开发10分钟
       redisIP:'127.0.0.1',
       redisPort: '6379',
       redisOpts:{},

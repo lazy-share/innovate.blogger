@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {FORGET_VALIDATE} from "../constant/uri";
+import {FORGET, FORGET_VALIDATE} from "../constant/uri";
 import {AppResponse} from "../vo/app-response";
 /**
  * Created by laizhiyuan on 2017/9/28.
@@ -19,6 +19,18 @@ export class ForgetService {
         params: new HttpParams().set('encrypted', encrypted).set('username', username),
         responseType: 'json'
       }
+    ).map(
+      data => {
+        return data;
+      }
+    );
+  }
+
+  forgetPwd(username: string, password: string): Observable<any>{
+    return this.http.put(
+      FORGET,
+      {username: username, password: password},
+      {responseType: 'json'}
     ).map(
       data => {
         return data;

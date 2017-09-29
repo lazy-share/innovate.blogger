@@ -6,13 +6,15 @@
  * </p>
  *
  */
+const env = require('../conf/environments');
+const webRootApi = (require('../conf/sys_config')[env]).webRootUri;
 var accountInfoService = require('../service/account_info');
 
 module.exports = function (router) {
+    //基本信息
+    router.get(webRootApi + '/account/info', accountInfoService.details);
     //修改基本信息
     router.post('/accountInfo/update', accountInfoService.update);
-    //基本信息
-    router.get('/accountInfo/details/:username', accountInfoService.details);
     //修改头像
     router.post('/accountInfo/uploadHead/:username', accountInfoService.uploadHead);
     //关注他

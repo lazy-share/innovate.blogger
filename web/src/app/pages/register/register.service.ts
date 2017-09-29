@@ -15,7 +15,6 @@ export class RegisterService {
 
   validate(username: string): Observable<any> {
 
-    console.log("============register validate request:" + username);
     return this.http.get<AppResponse>(
       REGISTER_VILIDATE ,
       {
@@ -24,19 +23,16 @@ export class RegisterService {
       }
     ).map(
       data => {
-        console.log("============register validate response:" + JSON.stringify(data));
         return data;
       })
   }
 
   register(account: Account): Observable<any> {
-    console.log("============register request:" + JSON.stringify(account));
     return this.http.post(
       REGISTER,
       {account: account}
     ).map(
       data => {
-        console.log("============register response:" + data);
         return data;
       }
     )

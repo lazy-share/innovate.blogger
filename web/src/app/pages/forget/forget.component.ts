@@ -1,6 +1,7 @@
 import {Component} from "@angular/core";
 import {ForgetService} from "./forget.service";
 import {BaseComponent} from "../common/BaseComponent";
+import {Router} from "@angular/router";
 /**
  * Created by laizhiyuan on 2017/9/28.
  */
@@ -15,7 +16,8 @@ export class ForgetComponent extends BaseComponent{
   private encrypted:string;
 
   constructor(
-    private forgetService: ForgetService
+    private forgetService: ForgetService,
+    private router: Router
   ){
     super();
   }
@@ -29,6 +31,7 @@ export class ForgetComponent extends BaseComponent{
           return;
         }
         this.isShow = true;
+        this.showMsg = false;
       },
       err => {
         this.showMsg = true;
@@ -38,6 +41,19 @@ export class ForgetComponent extends BaseComponent{
   }
 
   forgetPwd(){
-
+    this.forgetService.forgetPwd(this.username, this.password).subscribe(
+      data => {
+        if (!data.status){
+          this.showMsg = true;
+          this.sysMsg = data.msg;
+          return;
+        }
+        this.router.navigate(['/forget/success']);
+      },
+      err => {
+        this.showMsg = true;
+        this.sysMsg = "服务器错误";
+      }
+    );
   }
 }

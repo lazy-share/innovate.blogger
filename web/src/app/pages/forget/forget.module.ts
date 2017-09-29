@@ -3,6 +3,7 @@ import {ForgetService} from "./forget.service";
 import {ShareModule} from "../../share/share.module";
 import {ForgetComponent} from "./forget.component";
 import {ForgetRoutingModule} from "./forget-routing.module";
+import {ForgetSuccessComponent} from "./forget-success.component";
 /**
  * Created by laizhiyuan on 2017/9/28.
  */
@@ -12,7 +13,7 @@ import {ForgetRoutingModule} from "./forget-routing.module";
     ShareModule,
     ForgetRoutingModule
   ],
-  declarations: [ForgetComponent]
+  declarations: [ForgetComponent,ForgetSuccessComponent]
 })
 export class ForgetModule {
 

@@ -7,7 +7,9 @@ import {FooterComponent} from "./footer/footer.component";
 import {CommonModule} from "@angular/common";
 import {HintComponent} from "./hint/hint.component";
 import {RouterModule} from "@angular/router";
-import {NotFoundComponent} from "./not-found/not-found.component";
+import {SubNavComponent} from "./sub-nav/sub-nav.component";
+import {IllegalRequestComponent, NotFoundComponent} from "./common/common.component";
+import {CenterComponent} from "./center/center.component";
 /**
  * Created by laizhiyuan on 2017/9/25.
  */
@@ -16,14 +18,17 @@ import {NotFoundComponent} from "./not-found/not-found.component";
     HttpClientModule,
     RouterModule,
     FormsModule,
-    CommonModule,
+    CommonModule
   ],
   declarations: [
     CompareToDirective,
     MainNavComponent,
     FooterComponent,
     HintComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    SubNavComponent,
+    IllegalRequestComponent,
+    CenterComponent
   ],
   exports: [
     HttpClientModule,
@@ -34,7 +39,10 @@ import {NotFoundComponent} from "./not-found/not-found.component";
     MainNavComponent,
     FooterComponent,
     HintComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    SubNavComponent,
+    IllegalRequestComponent,
+    CenterComponent
   ]
 })
 export class ShareModule {

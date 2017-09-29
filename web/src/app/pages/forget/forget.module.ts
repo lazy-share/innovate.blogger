@@ -1,6 +1,6 @@
 import {NgModule} from "@angular/core";
 import {ForgetService} from "./forget.service";
-import {ShareModule} from "../../share/share.module";
+import {SharedModule} from "../../shared/shared.module";
 import {ForgetComponent} from "./forget.component";
 import {ForgetRoutingModule} from "./forget-routing.module";
 import {ForgetSuccessComponent} from "./forget-success.component";
@@ -10,7 +10,7 @@ import {ForgetSuccessComponent} from "./forget-success.component";
 @NgModule({
   providers: [ForgetService],
   imports: [
-    ShareModule,
+    SharedModule,
     ForgetRoutingModule
   ],
   declarations: [ForgetComponent,ForgetSuccessComponent]

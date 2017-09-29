@@ -1,7 +1,7 @@
 import {NgModule} from "@angular/core";
 import {RegisterComponent} from "./register.component";
 import {RegisterRoutingModule} from "./register-routing.module";
-import {ShareModule} from "../../share/share.module";
+import {SharedModule} from "../../shared/shared.module";
 import {RegisterSuccessComponent} from "./register-success.component";
 import {RegisterService} from "./register.service";
 /**
@@ -13,7 +13,7 @@ import {RegisterService} from "./register.service";
     RegisterSuccessComponent
   ],
   imports: [
-    ShareModule,
+    SharedModule,
     RegisterRoutingModule
   ],
   providers: [

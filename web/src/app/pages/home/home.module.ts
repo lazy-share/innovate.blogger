@@ -1,5 +1,5 @@
 import {NgModule} from "@angular/core";
-import {ShareModule} from "../../share/share.module";
+import {SharedModule} from "../../shared/shared.module";
 import {HomeComponent} from "./home.component";
 import {HomeRoutingModule} from "./home-routing.module";
 /**
@@ -7,7 +7,7 @@ import {HomeRoutingModule} from "./home-routing.module";
  */
 @NgModule({
   imports: [
-    ShareModule,
+    SharedModule,
     HomeRoutingModule
   ],
   declarations: [

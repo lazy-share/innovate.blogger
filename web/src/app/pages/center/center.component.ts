@@ -12,29 +12,19 @@ import "rxjs/add/operator/switchMap";
 })
 export class CenterComponent implements OnInit{
 
-  private sign:string;
-  private accountId:string = "";
+  private requestUsername:string;
 
   ngOnInit(): void {
-
-    try{
-      this.accountId = this.sign.split('-')[1];
-    }catch(err){
-      this.router.navigate([`/illegal`]);
-      return;
-    }
-    if (!this.accountId) {
-      this.router.navigate([`/illegal`]);
-      return;
-    }
-    this.router.navigate([`/center/${this.sign}/info/${this.accountId}`]);
+    //this.router.navigate([{outlets: {center: ['/center/info/111111']}}]);
+  /*  this.router.navigate([`../info/${this.requestUsername}`, {outlet:}], {relativeTo: this.route});*/
+  this.router.navigateByUrl('/center/test/222222')
   }
 
   constructor(
     private route: ActivatedRoute,
     private router: Router
   ){
-    this.route.paramMap.switchMap((params: ParamMap) => this.sign = params.get('sign')).subscribe();
+    this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get('username')).subscribe();
   }
 
 }

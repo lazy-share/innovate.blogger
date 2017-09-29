@@ -9,7 +9,6 @@ import {HintComponent} from "./hint/hint.component";
 import {RouterModule} from "@angular/router";
 import {SubNavComponent} from "./sub-nav/sub-nav.component";
 import {IllegalRequestComponent, NotFoundComponent} from "./common/common.component";
-import {CenterComponent} from "./center/center.component";
 /**
  * Created by laizhiyuan on 2017/9/25.
  */
@@ -27,8 +26,7 @@ import {CenterComponent} from "./center/center.component";
     HintComponent,
     NotFoundComponent,
     SubNavComponent,
-    IllegalRequestComponent,
-    CenterComponent
+    IllegalRequestComponent
   ],
   exports: [
     HttpClientModule,
@@ -41,10 +39,9 @@ import {CenterComponent} from "./center/center.component";
     HintComponent,
     NotFoundComponent,
     SubNavComponent,
-    IllegalRequestComponent,
-    CenterComponent
+    IllegalRequestComponent
   ]
 })
-export class ShareModule {
+export class SharedModule {
 
 }

@@ -2,7 +2,7 @@
  * Created by lzy on 2017/9/26.
  */
 export class Account {
-  public _id: string;
+  public id: string;
   public username: string;
   public password: string;
   public confirmPassword: string;
@@ -18,7 +18,7 @@ export class Account {
     account.status = 0;
     account.confirmPassword = "";
     account.token = "";
-    account._id = "";
+    account.id = "";
     return account;
   }
 }

@@ -1,14 +1,14 @@
 import {NgModule} from "@angular/core";
 import {InfoRoutingModule} from "./info.routing.module";
 import {InfoComponent} from "./info.component";
-import {ShareModule} from "../../share/share.module";
+import {SharedModule} from "../../shared/shared.module";
 /**
  * Created by laizhiyuan on 2017/9/29.
  */
 @NgModule({
   imports: [
     InfoRoutingModule,
-    ShareModule
+    SharedModule
   ],
   declarations: [InfoComponent]
 })

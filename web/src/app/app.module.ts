@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import {CoreModule} from "./core/core.module";
-import {ShareModule} from "./share/share.module";
+import {SharedModule} from "./shared/shared.module";
 import {AppRoutesModule} from "./app-routes.module";
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {APPRequestInterceptor, APPResponseInterceptor} from "./app.intercept";
@@ -16,7 +16,7 @@ import {FormsModule} from "@angular/forms";
   imports: [
     BrowserModule,
     CoreModule,
-    ShareModule,
+    SharedModule,
     AppRoutesModule
   ],
   providers: [{

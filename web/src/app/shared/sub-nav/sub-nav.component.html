@@ -1,0 +1,32 @@
+<div class="well well-sm">个人中心</div>
+<div class="container">
+  <div class="row clearfix">
+    <div class="col-md-12 column">
+      <ul class="nav nav-tabs">
+        <li [class.active]="tab == 0">
+          <a href="#">基本信息</a>
+        </li>
+        <li [class.active]="tab == 1">
+          <a *ngIf="storageUsername == requestUsername" href="#">我的文章</a>
+          <a *ngIf="storageUsername != requestUsername" href="#">TA 的文章</a>
+        </li>
+        <li [class.active]="tab == 2">
+          <a *ngIf="storageUsername == requestUsername" href="#">我的心情</a>
+          <a *ngIf="storageUsername != requestUsername" href="#">TA 的心情</a>
+        </li>
+        <li [class.active]="tab == 3">
+          <a *ngIf="storageUsername == requestUsername" href="#">我的媒体</a>
+          <a *ngIf="storageUsername != requestUsername" href="#">TA 的媒体</a>
+        </li>
+        <li [class.active]="tab == 4">
+          <a *ngIf="storageUsername == requestUsername" href="#">我的关注</a>
+          <a *ngIf="storageUsername != requestUsername" href="#">TA 的关注</a>
+        </li>
+        <li [class.active]="tab == 5">
+          <a *ngIf="storageUsername == requestUsername" href="#">我的粉丝</a>
+          <a *ngIf="storageUsername != requestUsername" href="#">TA 的粉丝</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

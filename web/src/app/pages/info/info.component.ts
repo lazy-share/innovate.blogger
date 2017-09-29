@@ -1,10 +1,10 @@
 import {Component, OnInit} from "@angular/core";
 import "rxjs/add/operator/switchMap";
-import {BaseComponent} from "../common/BaseComponent";
-import {Account} from "../vo/account";
-import {AuthorizationService} from "../../core/authorization/authorization.service";
 import {InfoService} from "./info.service";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
+import {AuthorizationService} from "../../core/authorization/authorization.service";
+import {BaseComponent} from "../common/BaseComponent";
+import {Account} from "../vo/account";
 /**
  * Created by laizhiyuan on 2017/9/29.
  */
@@ -14,52 +14,37 @@ import {ActivatedRoute, ParamMap, Router} from "@angular/router";
     './info.component.css'
   ]
 })
-export class InfoComponent extends BaseComponent implements OnInit{
+export class InfoComponent extends BaseComponent implements OnInit {
 
-   private requestUsername;
-   private accountInfo: Account = Account.instantiation();
-   private sessionUsername: string = this.authorizationService.getCurrentUser().username;
+  private requestUsername: string = "";
+  private storageUsername: string = "";
+  private accountInfo: Account = Account.instantiation();
 
-   constructor(
-     private authorizationService: AuthorizationService,
-     private infoService: InfoService,
-     private route: ActivatedRoute,
-     private router: Router
-   ){
-     super();
-     console.log("99999999999999999");
-     this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get("username")).subscribe();
-   }
+  constructor(private authorizationService: AuthorizationService,
+              private route: ActivatedRoute,
+              private router: Router,
+              private infoService: InfoService) {
+    super();
+    this.storageUsername = this.authorizationService.getCurrentUser()
+      && this.authorizationService.getCurrentUser().username;
+    this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get("username")).subscribe();
+  }
 
-   ngOnInit(): void {
-    /* if (!this.requestUsername) {
-       this.router.navigate(['/center/not-found-account']);
-       return;
-     }
-     this.infoService.initAccountInfo(this.requestUsername).subscribe(
-       data => {
-         if (!data.status){
-           if (data.code == 602){
-             this.router.navigate(['/center/not-found-account']);
-             return;
-           }
-           this.accountInfo = Account.instantiation();
-           this.showMsg = true;
-           this.sysMsg = data.msg;
-           return;
-         }
-         this.showMsg = false;
-         this.accountInfo = data.data;
-       },
-       err => {
-         this.showMsg = true;
-         this.sysMsg = "服务器错误";
-       }
-     );*/
-   }
-
-   updateInfo() {
-
-   }
+  ngOnInit(): void {
+    this.infoService.initAccountInfo(this.requestUsername).subscribe(
+      data => {
+        if (!data.status) {
+          this.showMsg = true;
+          this.sysMsg = data.msg;
+          return;
+        }
+        this.accountInfo = data.data;
+      },
+      err => {
+        this.showMsg = true;
+        this.sysMsg = '服务器错误';
+      }
+    );
+  }
 
 }

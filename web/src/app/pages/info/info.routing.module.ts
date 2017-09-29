@@ -5,7 +5,7 @@ import {InfoComponent} from "./info.component";
  * Created by laizhiyuan on 2017/9/29.
  */
 const INFO_ROUTES: Routes = [
-  {path:':username', component: InfoComponent, outlet: 'center'}
+  {path:':username', component: InfoComponent}
 ];
 @NgModule({
   imports: [RouterModule.forChild(INFO_ROUTES)],

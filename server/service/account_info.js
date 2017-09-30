@@ -17,7 +17,7 @@ exports.details = function (req, res) {
     log.info("=====================enter account info details================");
     log.info("username:" + username);
     if (username) {
-        AccountInfoModel.findOne({username: req.params.username}, function (err, doc) {
+        AccountInfoModel.findOne({username: username}, function (err, doc) {
             if (err) {
                 console.log('account info details err! msg:' + err);
                 log.error('account info details err! msg:' + err);
@@ -49,6 +49,7 @@ exports.details = function (req, res) {
                 }
                 doc.set('attention', attention);
             });
+            log.debug("=============account " + username + " info is " + JSON.stringify(doc));
             res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, doc));
         });
     }else {

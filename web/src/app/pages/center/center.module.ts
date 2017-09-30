@@ -2,7 +2,7 @@ import {NgModule} from "@angular/core";
 import {CenterRoutingModule} from "./center-routing.module";
 import {CenterComponent} from "./center.component";
 import {SharedModule} from "../../shared/shared.module";
-import {InfoComponent} from "../info/info.component";
+import {SubNavComponent} from "../../shared/sub-nav/sub-nav.component";
 /**
  * Created by lzy on 2017/9/29.
  */
@@ -12,8 +12,11 @@ import {InfoComponent} from "../info/info.component";
     CenterRoutingModule
   ],
   declarations: [
+    CenterComponent
+  ],
+  exports: [
     CenterComponent,
-    InfoComponent
+    SubNavComponent
   ]
 })
 export class CenterModule {

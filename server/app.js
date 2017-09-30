@@ -17,7 +17,7 @@ appInit.initModels(modelPath);
 const appFilter = require('./filter/app_filter');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'assets')));
+app.use("/public/web", express.static(path.join(__dirname, '/public/web')));
 app.use(bodyParser({uploadDir: path.join(__dirname, 'public/images')}));
 app.all('*', appFilter.crossDomain);
 /*app.use(appFilter.security);

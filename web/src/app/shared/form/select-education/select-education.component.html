@@ -1,0 +1,10 @@
+<select [id]="componentId" name="education" (change)="change()" [disabled]="isDisabled" class="form-control" [(ngModel)]="education">
+  <ng-container *ngFor="let e of educations">
+    <ng-container *ngIf="education == e.val">
+      <option selected [ngValue]="e.val">{{e.key}}</option>
+    </ng-container>
+    <ng-container *ngIf="education != e.val">
+      <option [ngValue]="e.val">{{e.key}}</option>
+    </ng-container>
+  </ng-container>
+</select>

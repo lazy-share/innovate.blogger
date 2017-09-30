@@ -15,9 +15,7 @@ export class CenterComponent implements OnInit{
   private requestUsername:string;
 
   ngOnInit(): void {
-    //this.router.navigate([{outlets: {center: ['/center/info/111111']}}]);
-  /*  this.router.navigate([`../info/${this.requestUsername}`, {outlet:}], {relativeTo: this.route});*/
-  this.router.navigateByUrl('/center/test/222222')
+    this.router.navigate([`../info/${this.requestUsername}`], {relativeTo: this.route});
   }
 
   constructor(

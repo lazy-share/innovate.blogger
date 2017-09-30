@@ -9,6 +9,12 @@ import {HintComponent} from "./hint/hint.component";
 import {RouterModule} from "@angular/router";
 import {SubNavComponent} from "./sub-nav/sub-nav.component";
 import {IllegalRequestComponent, NotFoundComponent} from "./common/common.component";
+import {SelectGenderComponent} from "./form/select-gender/select-gender.component";
+import {SelectEducationComponent} from "./form/select-education/select-education.component";
+import {BsDatepickerModule} from "ngx-bootstrap";
+import { defineLocale } from 'ngx-bootstrap/bs-moment';
+import { de } from 'ngx-bootstrap/locale';
+defineLocale('de', de);
 /**
  * Created by laizhiyuan on 2017/9/25.
  */
@@ -17,6 +23,7 @@ import {IllegalRequestComponent, NotFoundComponent} from "./common/common.compon
     HttpClientModule,
     RouterModule,
     FormsModule,
+    BsDatepickerModule.forRoot(),
     CommonModule
   ],
   declarations: [
@@ -26,11 +33,14 @@ import {IllegalRequestComponent, NotFoundComponent} from "./common/common.compon
     HintComponent,
     NotFoundComponent,
     SubNavComponent,
-    IllegalRequestComponent
+    IllegalRequestComponent,
+    SelectGenderComponent,
+    SelectEducationComponent
   ],
   exports: [
     HttpClientModule,
     RouterModule,
+    BsDatepickerModule,
     FormsModule,
     CommonModule,
     CompareToDirective,
@@ -39,7 +49,9 @@ import {IllegalRequestComponent, NotFoundComponent} from "./common/common.compon
     HintComponent,
     NotFoundComponent,
     SubNavComponent,
-    IllegalRequestComponent
+    IllegalRequestComponent,
+    SelectGenderComponent,
+    SelectEducationComponent
   ]
 })
 export class SharedModule {

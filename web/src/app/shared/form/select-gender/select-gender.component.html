@@ -1,0 +1,10 @@
+<select (change)="change()" class="form-control" name="gender" [(ngModel)]="gender" [disabled]="isDisabled" [id]="componentId">
+  <ng-container *ngFor="let g of genders">
+    <ng-container *ngIf="gender == g.val">
+      <option selected [ngValue]="g.val">{{g.key}}</option>
+    </ng-container>
+    <ng-container *ngIf="gender != g.val">
+      <option [ngValue]="g.val">{{g.key}}</option>
+    </ng-container>
+  </ng-container>
+</select>

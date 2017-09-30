@@ -9,6 +9,13 @@ export class Account {
   public status: number;
   public encrypted: string;
   public token: string;
+  public head_portrait: string;
+  public gender: string|number;
+  public education: string|number;
+  public job:string;
+  public email:string;
+  public mobile:string;
+  public birthday:string;
 
   static instantiation () {
     let account: Account = new Account();
@@ -19,6 +26,13 @@ export class Account {
     account.confirmPassword = "";
     account.token = "";
     account.id = "";
+    account.head_portrait = "";
+    account.gender = "";
+    account.education = "";
+    account.job = "";
+    account.email = "";
+    account.mobile = "";
+    account.birthday = "";
     return account;
   }
 }

@@ -12,11 +12,11 @@ var accountInfoService = require('../service/account_info');
 
 module.exports = function (router) {
     //基本信息
-    router.get(webRootApi + '/account/info', accountInfoService.details);
+    router.get(webRootApi + '/private/account/info', accountInfoService.details);
     //修改基本信息
-    router.post('/accountInfo/update', accountInfoService.update);
+    router.put(webRootApi + '/private/account/info', accountInfoService.update);
     //修改头像
-    router.post('/accountInfo/uploadHead/:username', accountInfoService.uploadHead);
+    router.post(webRootApi + '/private/account/info/head/:username', accountInfoService.uploadHead);
     //关注他
     router.get('/accountInfo/concern/:username', accountInfoService.concern);
     //取消关注

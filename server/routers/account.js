@@ -22,6 +22,4 @@ module.exports = function (router) {
     router.post(webRootApi + '/login', accountService.login);
     //注销
     router.delete('/account/delete', accountService.deleteOne);
-    //登出
-    router.delete('/account/logout', accountService.logout);
 };

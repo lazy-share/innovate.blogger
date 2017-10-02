@@ -4,7 +4,7 @@ import {InfoService} from "./info.service";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {AuthorizationService} from "../../../core/authorization/authorization.service";
 import {BaseComponent} from "../../common/BaseComponent";
-import {Account} from "../../vo/account";
+import {Account} from "../../../vo/account";
 /**
  * Created by laizhiyuan on 2017/9/29.
  */

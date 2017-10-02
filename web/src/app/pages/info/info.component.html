@@ -5,152 +5,158 @@
       <h3 class="panel-title">基本信息</h3>
     </div>
     <div class="panel-body">
-      <form class="form-horizontal" id="accountInfoForm" role="form">
+      <form class="form-horizontal" #accountInfoForm="ngForm" novalidate role="form">
         <div class="form-group">
           <label for="head_portrait" class="col-sm-2 control-label">头像</label>
           <div class="col-sm-10">
-            <img alt="" id="head_portrait" name="head_portrait" style="width:150px; height: 150px;" class="img-responsive" [src]="accountInfo.head_portrait"/>
+            <img alt="" id="head_portrait" name="head_portrait" style="width:150px; height: 150px;"
+                 class="img-responsive" [src]="accountInfo.head_portrait"/>
           </div>
           <div style="margin-top: 10px;" class="col-lg-2 col-md-2 col-lg-offset-2 col-md-offset-2">
-            <a (click)="changeHeadPortrait()">修改头像</a>
+            <span class="fileinput-button">
+            <span>修改头像</span>
+            <input type="file" ng2FileSelect [uploader]="uploader"/>
+            </span>
+            <div class="progress" style="" *ngIf="uploader.progress > 0">
+              <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+            </div>
           </div>
         </div>
 
         <div class="form-group">
           <label class="col-sm-2 control-label">性别</label>
           <div class="col-sm-2">
-            <select-gender [gender]="accountInfo.gender" (onChange)="genderChange($event)"  [isDisabled]="!isShow"></select-gender>
+            <select-gender [gender]="accountInfo.gender" (onChange)="genderChange($event)"
+                           [isDisabled]="!isShow"></select-gender>
           </div>
         </div>
 
         <div class="form-group">
           <label class="col-sm-2 control-label">学历</label>
           <div class="col-sm-2">
-            <select-education [education]="accountInfo.education" [isDisabled]="!isShow" (onChange)="educationChange($event)"></select-education>
+            <select-education [education]="accountInfo.education" [isDisabled]="!isShow"
+                              (onChange)="educationChange($event)"></select-education>
           </div>
         </div>
 
         <div class="form-group">
           <label class="col-sm-2 control-label" for="job">职业</label>
           <div class="col-sm-3">
-            <input class="form-control" [disabled]="!isShow" name="job" [(ngModel)]="accountInfo.job" id="job" type="text" placeholder="请输入您的职业"/>
+            <input class="form-control" maxlength="20" #jbo="ngModel" [disabled]="!isShow" name="job"
+                   [(ngModel)]="accountInfo.job" id="job" type="text" placeholder="请输入您的职业"/>
+            <div *ngIf="jbo.invalid && (jbo.dirty || jbo.touched)">
+              <span *ngIf="jbo.errors.maxlength" class="errorMsg">长度不能大于20</span>
+            </div>
           </div>
         </div>
 
         <div class="form-group">
           <label for="email" class="col-sm-2 control-label">邮箱</label>
           <div class="col-sm-3">
-            <input class="form-control" [disabled]="!isShow" [(ngModel)]="accountInfo.email" id="email" name="email" type="email" placeholder="请输入合法邮箱">
+            <input class="form-control" [disabled]="!isShow" #email="ngModel" maxlength="20" validEmail
+                   [(ngModel)]="accountInfo.email" id="email" name="email" type="email" placeholder="请输入合法邮箱">
+            <div *ngIf="email.invalid && (email.dirty || email.touched)">
+              <span *ngIf="email.errors.validEmail" class="errorMsg">请输入合法邮箱</span>
+              <span *ngIf="email.errors.maxlength" class="errorMsg">长度不能大于20</span>
+            </div>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="mobile" class="col-sm-2 control-label">手机号码</label>
+          <label class="col-sm-2 control-label">手机号码</label>
           <div class="col-sm-3">
-            <input class="form-control" [disabled]="!isShow" [(ngModel)]="accountInfo.mobile" id="mobile" name="mobile" type="text" placeholder="请输入合法手机号">
+            <input class="form-control" [disabled]="!isShow" #mobile="ngModel" validMobile
+                   [(ngModel)]="accountInfo.mobile" name="mobile" type="text" placeholder="请输入合法手机号">
+            <div *ngIf="mobile.invalid && (mobile.dirty || mobile.touched)">
+              <span *ngIf="mobile.errors.validMobile" class="errorMsg">请输入正确格式的手机号码</span>
+            </div>
           </div>
         </div>
 
         <div class="form-group">
           <label class="col-sm-2 control-label">生日</label>
-          <div class="col-sm-3">{{accountInfo.birthday}}
-            <input class="form-control datetimepicker" placement="top" [minDate]="minDate" [maxDate]="maxDate"
-                   bsDatepicker #dp="bsDatepicker" [bsValue]="accountInfo.birthday" containerClass="" [bsConfig]="bsConfig" [disabled]="isShow"
-                   [(ngModel)]="accountInfo.birthday" name="birthday" id="birthday" type="text" placeholder="请输入您的生日">
+          <div class="col-sm-3">
+            <input class="form-control" [(ngModel)]="accountInfo.birthday" name="birthday" type="date"
+                   [disabled]="!isShow" placeholder="请输入您的生日">
           </div>
         </div>
-
-        <div class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-8 col-xs-offset-3">
-          <button *ngIf="!isShow" type="button" (click)="edit()" class="btn btn-info">编辑个人信息</button>
-          <button *ngIf="isShow" type="submit" (click)="confirmEdit()" class="btn btn-info">保存个人信息
-          </button>
-        </div>
-        <div class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-8 col-xs-offset-3">
-          <br>
-          <p *ngIf="showMsg" style="color:red;">{{sysMsg}}</p>
-        </div>
-        <!--
 
         <div class="form-group">
           <label for="qq" class="col-sm-2 control-label">QQ</label>
           <div class="col-sm-3">
-            <input type="text" id="qq" [!isShowd]="!isShow" [(ngModel)]="accountInfo.qq"
-                   class="form-control" placeholder="请输入您的QQ">
+            <input type="text" id="qq" maxlength="20" #qq="ngModel" name="qq" [disabled]="!isShow"
+                   [(ngModel)]="accountInfo.qq" class="form-control" placeholder="请输入您的QQ">
+            <div *ngIf="qq.invalid && (qq.dirty || qq.touched)">
+              <span *ngIf="qq.errors.maxlength" class="errorMsg">长度不能大于20</span>
+            </div>
           </div>
         </div>
+
         <div class="form-group">
           <label for="wechat" class="col-sm-2 control-label">微信号</label>
           <div class="col-sm-3">
-            <input type="text" [!isShowd]="!isShow" [(ngModel)]="accountInfo.wechat"
-                   class="form-control" id="wechat" placeholder="请输入您的微信号">
+            <input type="text" maxlength="20" [disabled]="!isShow" #wechat="ngModel" [(ngModel)]="accountInfo.wechat"
+                   class="form-control" name="wechat" id="wechat" placeholder="请输入您的微信号">
+            <div *ngIf="wechat.invalid && (wechat.dirty || wechat.touched)">
+              <span *ngIf="wechat.errors.maxlength" class="errorMsg">长度不能大于20</span>
+            </div>
           </div>
         </div>
+
         <div class="form-group">
           <label for="motto" class="col-sm-2 control-label">座右铭</label>
           <div class="col-sm-3">
-            <input type="text" [!isShowd]="!isShow" [(ngModel)]="accountInfo.motto"
-                   class="form-control" id="motto" placeholder="一句话概括你自己">
+            <input type="text" maxlength="20" [disabled]="!isShow" #motto="ngModel" [(ngModel)]="accountInfo.motto"
+                   name="motto" class="form-control" id="motto" placeholder="一句话概括你自己">
+            <div *ngIf="motto.invalid && (motto.dirty || motto.touched)">
+              <span *ngIf="motto.errors.maxlength" class="errorMsg">长度不能大于20</span>
+            </div>
           </div>
         </div>
+
         <div class="form-group">
           <label class="col-sm-2 control-label">地址</label>
-          <div class="col-sm-2">
-            <select (change)="loadCitysByProinceCode(true)" [!isShowd]="!isShow"
-                    [(ngModel)]="accountInfo.address.province_code"
-                    type="text" class="form-control col-md-2">
-            </select>
-          </div>
-          <div class="col-sm-2">
-            <select (change)="loadCountysByCityCode(true)" *ngIf="showCity"
-                    [!isShowd]="!isShow" [(ngModel)]="accountInfo.address.city_code"
-                    type="text"
-                    class="form-control col-md-2">
-            </select>
-          </div>
-          <div class="col-sm-2">
-            <select (change)="loadStreetsByCountyCode(true)" *ngIf="showCounty"
-                    [!isShowd]="!isShow" [(ngModel)]="accountInfo.address.county_code"
-                    type="text" class="form-control col-md-2">
-            </select>
-          </div>
-          <div class="col-sm-2">
-            <select *ngIf="showStreet" [!isShowd]="!isShow"
-                    [(ngModel)]="accountInfo.address.street_code"
-                    type="text" class="form-control col-md-2">
-            </select>
-          </div>
+          <select-address (onChange)="addressChange($event)" [isDisabled]="!isShow"
+                          [provinceCode]="accountInfo.address.province_code" [cityCode]="accountInfo.address.city_code"
+                          [countyCode]="accountInfo.address.county_code"
+                          [streetCode]="accountInfo.address.street_code"></select-address>
         </div>
 
-        -->
-
+        <div
+          class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-8 col-xs-offset-3">
+          <button *ngIf="!isShow" type="button" (click)="edit()" class="btn btn-info">编辑个人信息</button>
+          <button *ngIf="isShow" [disabled]="!accountInfoForm.form.valid" type="button" (click)="confirmEdit()"
+                  class="btn btn-info">保存个人信息
+          </button>
+        </div>
+        <div
+          class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-8 col-xs-offset-3">
+          <br>
+          <p *ngIf="showMsg" style="color:red;">{{sysMsg}}</p>
+        </div>
       </form>
     </div>
   </div>
 </div>
-<!--修改头像模态框start-->
-<!--<div class="modal fade" id="upateHeadModal" tabindex="-1" role="dialog" aria-labelledby="upateHeadModalLabel"
+<div class="modal fade" *ngIf="!showModal" tabindex="-1" role="dialog" aria-labelledby="upateHeadModalLabel"
      aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form id="updateHeadForm" action="/accountInfo/uploadHead/" enctype=multipart/form-data method="post" role="form">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal"
-                  aria-hidden="true">&times;
-          </button>
-          <h4 class="modal-title" id="upateHeadModalLabel">上传头像</h4>
-        </div>
-        <div class="modal-body">
-          <div class="form-group">
-            <input type="file" name="upload" multiple="multiple" id="headFile">
-            <p class="help-block">选择头像</p>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-          <button type="submit" class="btn btn-info" value="上传"/>
-        </div>
-      </form>
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="upateHeadModalLabel">上传头像</h4>
+      </div>
+      <div class="modal-body">
+        <!--<div class="form-group">
+          <input type="file" ng2FileSelect [uploader]="uploader" (change)="selectedFileOnChanged($event)" />
+          <p class="help-block">选择头像</p>
+        </div>-->
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+         <button type="button" class="btn btn-info" (click)="uploadHead()" value="上传"/>-->
+      </div>
     </div>
   </div>
-</div>-->
-<!-- 修改头像模态框end-->
+</div>
+

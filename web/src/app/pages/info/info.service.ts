@@ -1,7 +1,9 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {GET_ACCOUNT_INFO_BY_USERNAME} from "../constant/uri";
+import {ACCOUNT_INFO} from "../../constant/uri";
+import {AppResponse} from "../../vo/app-response";
+import {Account} from "../../vo/account";
 /**
  * Created by laizhiyuan on 2017/9/29.
  */
@@ -13,10 +15,23 @@ export class InfoService {
   ){}
 
   initAccountInfo(username: string): Observable<any> {
-    return this.http.get(
-      GET_ACCOUNT_INFO_BY_USERNAME,
+    return this.http.get<AppResponse>(
+      ACCOUNT_INFO,
       {
         params: new HttpParams().set("username", username)
+      }
+    ).map(
+      data => {
+        return data;
+      }
+    );
+  }
+
+  confirmEdit(accountInfo: Account): Observable<any> {
+    return this.http.put<AppResponse>(
+      ACCOUNT_INFO,
+      {
+        params: new HttpParams().set("accountInfo", JSON.stringify(accountInfo))
       }
     ).map(
       data => {

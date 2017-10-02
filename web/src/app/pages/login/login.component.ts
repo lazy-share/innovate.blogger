@@ -28,7 +28,7 @@ export class LoginComponent {
           this.sysMsg = data.msg;
           return;
         }
-        this.route.navigateByUrl(`/info/${data.data.username}`);
+        this.route.navigateByUrl(`/private/info/${data.data.username}`);
       },
       err => {
         this.showMsg = true;

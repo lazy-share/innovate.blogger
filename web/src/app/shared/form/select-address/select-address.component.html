@@ -1,0 +1,48 @@
+<div class="col-sm-2">
+  <select (change)="loadCitysByProvinceCode(true)" [disabled]="isDisabled" name="provinceCode" [(ngModel)]="provinceCode" type="text" class="form-control col-md-2">
+    <ng-container *ngFor="let province of provinces">
+      <ng-container *ngIf="provinceCode == province.code">
+        <option selected [ngValue]="province.code">{{province.name}}</option>
+      </ng-container>
+      <ng-container *ngIf="provinceCode != province.code">
+        <option [ngValue]="province.code">{{province.name}}</option>
+      </ng-container>
+    </ng-container>
+  </select>
+</div>
+<div class="col-sm-2">
+  <select (change)="loadCountysByCityCode(true)" *ngIf="showCity" name="cityCode" [disabled]="isDisabled" [(ngModel)]="cityCode" type="text" class="form-control col-md-2">
+    <ng-container *ngFor="let city of citys">
+      <ng-container *ngIf="cityCode == city.code">
+        <option selected [ngValue]="city.code">{{city.name}}</option>
+      </ng-container>
+      <ng-container *ngIf="cityCode != city.code">
+        <option [ngValue]="city.code">{{city.name}}</option>
+      </ng-container>
+    </ng-container>
+  </select>
+</div>
+<div class="col-sm-2">
+  <select (change)="loadStreetsByCountyCode(true)" *ngIf="showCounty" [disabled]="isDisabled" name="countyCode" [(ngModel)]="countyCode" type="text" class="form-control col-md-2">
+    <ng-container *ngFor="let county of countys">
+      <ng-container *ngIf="countyCode == county.code">
+        <option selected [ngValue]="county.code">{{county.name}}</option>
+      </ng-container>
+      <ng-container *ngIf="countyCode != county.code">
+        <option [ngValue]="county.code">{{county.name}}</option>
+      </ng-container>
+    </ng-container>
+  </select>
+</div>
+<div class="col-sm-2">
+  <select (change)="change()" *ngIf="showStreet" [disabled]="isDisabled" name="streetCode" [(ngModel)]="streetCode" type="text" class="form-control col-md-2">
+    <ng-container *ngFor="let street of streets">
+      <ng-container *ngIf="streetCode == street.code">
+        <option selected [ngValue]="street.code">{{street.name}}</option>
+      </ng-container>
+      <ng-container *ngIf="streetCode != street.code">
+        <option [ngValue]="street.code">{{street.name}}</option>
+      </ng-container>
+    </ng-container>
+  </select>
+</div>

@@ -7,10 +7,12 @@
  *
  */
 var addressService = require('../service/address');
+const env = require('../conf/environments');
+const webRootApi = (require('../conf/sys_config')[env]).webRootUri;
 
 module.exports = function (router) {
-    router.get('/address/findAllProvinces', addressService.findAllProvinces);
-    router.get('/address/findCitysByProinceCode/:code', addressService.findCitysByProinceCode);
-    router.get('/address/findCountysByCityCode/:code', addressService.findCountysByCityCode);
-    router.get('/address/findStreetsByCountyCode/:code', addressService.findStreetsByCountyCode);
+    router.get(webRootApi + '/private/address/provinces', addressService.findAllProvinces);
+    router.get(webRootApi + '/private/address/citys', addressService.findCitysByProinceCode);
+    router.get(webRootApi + '/private/address/countys', addressService.findCountysByCityCode);
+    router.get(webRootApi + '/private/address/streets', addressService.findStreetsByCountyCode);
 };

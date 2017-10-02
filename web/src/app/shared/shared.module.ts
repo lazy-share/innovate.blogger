@@ -8,50 +8,59 @@ import {CommonModule} from "@angular/common";
 import {HintComponent} from "./hint/hint.component";
 import {RouterModule} from "@angular/router";
 import {SubNavComponent} from "./sub-nav/sub-nav.component";
-import {IllegalRequestComponent, NotFoundComponent} from "./common/common.component";
+import {IllegalRequestComponent, NotFoundComponent, NotFoundAccountComponent} from "./common/common.component";
 import {SelectGenderComponent} from "./form/select-gender/select-gender.component";
 import {SelectEducationComponent} from "./form/select-education/select-education.component";
 import {BsDatepickerModule} from "ngx-bootstrap";
-import { defineLocale } from 'ngx-bootstrap/bs-moment';
-import { de } from 'ngx-bootstrap/locale';
-defineLocale('de', de);
+import {SelectAddressComponent} from "./form/select-address/select-address.component";
+import {EmailDirective} from "./form-validate/email.directive";
+import {MobileDirective} from "./form-validate/mobile.directive";
+import {FileUploadModule} from "ng2-file-upload";
 /**
  * Created by laizhiyuan on 2017/9/25.
  */
 @NgModule({
   imports: [
-    HttpClientModule,
     RouterModule,
     FormsModule,
     BsDatepickerModule.forRoot(),
-    CommonModule
+    CommonModule,
+    FileUploadModule
   ],
   declarations: [
     CompareToDirective,
+    EmailDirective,
+    MobileDirective,
     MainNavComponent,
     FooterComponent,
     HintComponent,
     NotFoundComponent,
+    NotFoundAccountComponent,
     SubNavComponent,
     IllegalRequestComponent,
     SelectGenderComponent,
-    SelectEducationComponent
+    SelectEducationComponent,
+    SelectAddressComponent
   ],
   exports: [
-    HttpClientModule,
     RouterModule,
     BsDatepickerModule,
     FormsModule,
     CommonModule,
     CompareToDirective,
+    EmailDirective,
+    MobileDirective,
     MainNavComponent,
     FooterComponent,
     HintComponent,
     NotFoundComponent,
+    NotFoundAccountComponent,
     SubNavComponent,
     IllegalRequestComponent,
     SelectGenderComponent,
-    SelectEducationComponent
+    SelectEducationComponent,
+    SelectAddressComponent,
+    FileUploadModule
   ]
 })
 export class SharedModule {

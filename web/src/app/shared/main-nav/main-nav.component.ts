@@ -1,6 +1,6 @@
 import {Component} from "@angular/core";
 import {AuthorizationService} from "../../core/authorization/authorization.service";
-import {Account} from "../../pages/vo/account";
+import {Account} from "../../vo/account";
 import {Router} from "@angular/router";
 /**
  * Created by laizhiyuan on 2017/9/25.

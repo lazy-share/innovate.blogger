@@ -24,6 +24,7 @@
     "angular-calendar": "^0.21.2",
     "core-js": "^2.4.1",
     "mydatepicker": "^2.0.31",
+    "ng2-file-upload": "^1.2.1",
     "ngx-bootstrap": "^1.9.3",
     "rxjs": "^5.4.2",
     "zone.js": "^0.8.14"

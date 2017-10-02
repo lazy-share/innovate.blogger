@@ -9,36 +9,48 @@
 const env = require('../conf/environments');
 const sysConf = require('../conf/sys_config')[env];
 const log4js = require('log4js');
+const jwt = require("jsonwebtoken");
+const result = require("../common/result");
+const response = require("../common/response");
+const log = log4js.getLogger("security filter");
 
 exports.security = function (req, res, next) {
     const currentUri = req.originalUrl;
-    const publicUri = [
-        sysConf.webRootUri + '/login',
-        sysConf.webRootUri + '/register',
-        sysConf.webRootUri + '/forget'
-    ];
-    for (var uri in publicUri){
-        if (currentUri === publicUri[uri]){
-            next();
-        }else {
-            const token = req.headers["LzyAuthorization"];
-            console.log('======token=======' + token);
-        }
+    const privateUriReg = /^\/v1\/api\/(web|admin)\/private\/.*$/;
+    if (privateUriReg.test(currentUri)){ //受保护的uri
+        const token = req.header("lzyauthorization");
+        jwt.verify(token, sysConf.jwtSecret, function (err, decode) {
+            if (err) {  //  时间失效的时候或伪造的token
+                res.json(result.json(response.C300.status, response.C300.code, response.C300.msg, null));
+                return;
+            } else {
+                console.log(JSON.stringify(decode));
+                log.info("===============security filter decode: "  + decode);
+                jwt.sign({username: decode.username, password: decode.password}, sysConf.jwtSecret, { expiresIn : sysConf.jwtValidity}, function (err, token) {
+                    if (err){
+                        console.log(err);
+                        log.error('security filter error: errMsg:' + err);
+                        res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                        return;
+                    }else {
+                        next();
+                    }
+                });
+            }
+        });
+    }else {
+        //其它为公开的uri
         next();
     }
 };
 
 //解决跨域
 exports.crossDomain = function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:4200');
     res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept, X-Requested-With , LzyAuthorization');
     res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS');
-
-    if (req.method == 'OPTIONS') {
-        res.send(200);
-    } else {
-        next();
-    }
+    res.header('Access-Control-Allow-Credentials', true);
+    next();
 };
 
 //404

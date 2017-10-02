@@ -52,7 +52,8 @@ exports.register = function (req, res) {
     accoutInfo.set('username', account.username);
     var AddressModel = mongoose.model('AddressModel');
     accoutInfo.set('address', new AddressModel({details: ''}));
-    accoutInfo.set('head_portrait', '/public/web/images/header/initHead.jpg');
+
+    accoutInfo.set('head_portrait',sysConnfig[env].thisDoman + '/public/web/images/header/initHead.jpg');
     accoutInfo.save(function (err) {
         if (err){
             res.statusCode = 500;

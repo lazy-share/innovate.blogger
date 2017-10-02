@@ -1,13 +1,22 @@
 /**
  * Created by laizhiyuan on 2017/8/1.
  */
-import {HttpRequest, HttpHandler, HttpEvent, HttpInterceptor, HttpResponse, HttpErrorResponse, HttpParams} from '@angular/common/http';
+import {
+  HttpRequest,
+  HttpHandler,
+  HttpEvent,
+  HttpInterceptor,
+  HttpResponse,
+  HttpErrorResponse,
+  HttpParams
+} from '@angular/common/http';
 import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/throw';
 import {AuthorizationService} from './core/authorization/authorization.service';
 import {Router} from '@angular/router';
-import { environment } from './../environments/environment';
+import {environment} from './../environments/environment';
+import {Account} from "./vo/account";
 /**
  * 是否是对象
  * @param value
@@ -38,6 +47,7 @@ export class APPRequestInterceptor implements HttpInterceptor {
   constructor(private authorizationService: AuthorizationService) {
 
   }
+
   /**
    * 请求拦截器 (Request Interceptor)
    * @param {HttpRequest<any>} req
@@ -46,16 +56,19 @@ export class APPRequestInterceptor implements HttpInterceptor {
    */
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     let JWT = '';
-    if (!!this.authorizationService.getCurrentUser()) {
-      JWT = `${this.authorizationService.getCurrentUser().token}`;
+    if (this.authorizationService.getCurrentUser()) {
+      JWT = this.authorizationService.getCurrentUser().token;
     }
     req = req.clone({
       setHeaders: {
         LzyAuthorization: JWT
       },
-      url: environment.api.host + environment.api.port + req.url
+      url: environment.api.uri +  req.url
     });
-    console.log(req.params, this.authorizationService.getCurrentUser(), environment);
+    if (!environment.production) {
+      console.log(req.url);
+      console.log(JSON.stringify(req.headers));
+    }
     return next.handle(req);
   }
 }
@@ -63,18 +76,32 @@ export class APPRequestInterceptor implements HttpInterceptor {
 @Injectable()
 export class APPResponseInterceptor implements HttpInterceptor {
 
-  constructor(private router: Router) {
+  constructor(private router: Router,private authorizationService: AuthorizationService) {
   }
+
   /**
    * 响应拦截器 (Response Interceptor)
    * @param {HttpRequest<any>} req
    * @param {HttpHandler} next
    * @returns {Observable<HttpEvent<any>>}
    */
-  intercept(req: HttpRequest<any>,
-            next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).map(event => {
       console.log('Response map', event);
+      if (event instanceof HttpResponse) {
+        if (!environment.production) {
+          console.log("global response: " + JSON.stringify(event));
+        }
+
+        if (!event.body.status && event.body.code == 300) {
+          this.authorizationService.logout();
+          this.router.navigateByUrl('/login');
+          return;
+        }else if (!event.body.status && event.body.code == 602){
+          this.router.navigateByUrl('/not-account');
+          return;
+        }
+      }
       return event;
     }).catch(err => {
       console.log('Response catch', err);

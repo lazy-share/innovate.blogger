@@ -20,10 +20,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/public/web", express.static(path.join(__dirname, '/public/web')));
 app.use(bodyParser({uploadDir: path.join(__dirname, 'public/images')}));
 app.all('*', appFilter.crossDomain);
-/*app.use(appFilter.security);
+app.use(appFilter.security);
+appFilter.backLine();
+/*
 app.use(appFilter.notFound);
-app.use(appFilter.sysError);
-appFilter.backLine();*/
+app.use(appFilter.sysError);*/
 appInit.initRouters(routers, routerPath);
 app.use(routers);
 

@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {Router} from "@angular/router";
-import {Account} from "../vo/account";
+import {Account} from "../../vo/account";
 import {RegisterService} from "./register.service";
 import {BaseComponent} from "../common/BaseComponent";
 /**

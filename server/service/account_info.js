@@ -10,8 +10,10 @@ var RelationshipModel =mongoose.model('RelationshipModel');
 var result = require('../common/result');
 var response = require('../common/response');
 var log = require('log4js').getLogger('account');
+var sysConnfig = require('../conf/sys_config');
+var env = require("../conf/environments");
 
-//根据账号查账号信息
+//基本信息
 exports.details = function (req, res) {
     var username = req.query.username;
     log.info("=====================enter account info details================");
@@ -55,6 +57,67 @@ exports.details = function (req, res) {
     }else {
         log.error('account info details err! params is empty or null:' + username);
         res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+    }
+};
+
+//编辑基本信息
+exports.update = function (req, res) {
+    var accountInfo = JSON.parse(req.body.params.updates[0].value);
+    var username = accountInfo.username;
+
+    if (!username) {
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+        return;
+    }
+    AccountInfoModel.update({username: username}, {$set: accountInfo}).exec(function (err) {
+        if (err) {
+            console.log('update account info error, msg: ' + err);
+            log.error('update account info err! msg:' + err);
+            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+            return;
+        }
+        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
+    });
+
+};
+
+//上传头像
+exports.uploadHead = function (req, res) {
+    var username = req.params.username;
+    log.info("====================enter uploadHead, params: "+ username);
+    if (username) {
+        var multiparty = require('multiparty');
+        var util = require('util');
+        //生成multiparty对象，并配置上传目标路径
+        var form = new multiparty.Form({uploadDir: process.cwd() + '/server/public/web/images/header'});
+        //上传完成后处理
+        form.parse(req, function (err, fields, files) {
+            if (err) {
+                console.log('uploadPic error: ' + err);
+                log.error("uploadPic error: " + err);
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                return;
+            } else {
+                var inputFile = files.uploadfile[0];
+                log.info(username + " 成功上传图片：" + inputFile.path);
+                var startIndex = inputFile.path.indexOf('\\public\\web\\images\\header');
+                var filePath = inputFile.path.substring(startIndex, inputFile.path.length).replace(/\\/g, '/');
+                filePath = sysConnfig[env].thisDoman + filePath;
+                    AccountInfoModel.update({username: username}, {$set: {head_portrait: filePath}})
+                    .exec(function (err) {
+                        if (err) {
+                            console.log("uploadHead error: errMsg:" + err);
+                            log.error("uploadPic error: " + err);
+                            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                            return;
+                        }
+                        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg,filePath));
+                    });
+            }
+        });
+    } else {
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+        return;
     }
 };
 
@@ -171,57 +234,6 @@ exports.concern = function (req, res) {
         }
     );
 };
-
-//上传头像
-exports.uploadHead = function (req, res) {
-    var username = req.params.username;
-    if (username) {
-        var multiparty = require('multiparty');
-        var util = require('util');
-        //生成multiparty对象，并配置上传目标路径
-        var form = new multiparty.Form({uploadDir: process.cwd() + '/public/images/'});
-        //上传完成后处理
-        form.parse(req, function (err, fields, files) {
-            if (err) {
-                console.log('uploadPic error: ' + err);
-                return {code: false, msg: '上传失败!'};
-                return;
-            } else {
-                var inputFile = files.upload[0];
-                var rootPath = process.cwd() + '/public';
-                var filePath = inputFile.path.substring(rootPath.length).replace(/\\/g, '/');
-                AccountInfoModel.update({username: username}, {$set: {head_portrait: filePath}})
-                    .exec(function (err) {
-                        if (err) {
-                            console.log("uploadHead error: errMsg:" + err);
-                        }
-                        res.redirect("/accountInfo/index/" + username);
-                    });
-            }
-        });
-    } else {
-        res.redirect("/account/login");
-    }
-};
-
-//根据用户名修改用户信息
-exports.update = function (req, res) {
-    var username = req.body.accountInfo.username;
-    if (!username) {
-        res.json({code: false, msg: '参数账号不能为空'});
-        return;
-    }
-    AccountInfoModel.update({username: username}, {$set: req.body.accountInfo}).exec(function (err) {
-        if (err) {
-            console.log('update account info error, msg: ' + err);
-            res.json({code: false, msg: '系统错误！'});
-            return;
-        }
-        res.json({code: true, msg: '更新成功!'});
-    });
-
-};
-
 
 exports.deleteOne = function (username) {
     if (!username) {

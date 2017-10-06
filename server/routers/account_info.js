@@ -17,8 +17,12 @@ module.exports = function (router) {
     router.put(webRootApi + '/private/account/info', accountInfoService.update);
     //修改头像
     router.post(webRootApi + '/private/account/info/head/:username', accountInfoService.uploadHead);
+    //我、TA的关注
+    router.get(webRootApi + '/private/account/attentions', accountInfoService.attentions);
+    //关注我、TA的
+    router.get(webRootApi + '/private/account/fans', accountInfoService.fans);
     //关注他
-    router.get('/accountInfo/concern/:username', accountInfoService.concern);
+    router.post(webRootApi + '/private/account/attention', accountInfoService.attention);
     //取消关注
-    router.get('/accountInfo/cancleConcern/:username', accountInfoService.cancleConcern);
+    router.delete(webRootApi + '/private/account/attention', accountInfoService.cancleAttention);
 };

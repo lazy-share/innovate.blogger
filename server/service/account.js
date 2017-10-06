@@ -77,6 +77,14 @@ exports.register = function (req, res) {
     });
 };
 
+function hashPwd(pwd){
+    if (pwd){
+        return crypto.createHash('sha256').update(pwd).digest('base64').toString();
+    }
+    console.log('[Warning]: pwd is null or empty...');
+    return pwd;
+}
+
 //验证密保
 exports.forgetValidate = function (req, res) {
     var encrypted = req.query.encrypted;
@@ -171,11 +179,7 @@ exports.login = function (req, res) {
         });
 };
 
-exports.logout = function (req, res) {
-
-};
-
-//注销账号
+//todo 待完善  注销账号
 exports.deleteOne = function (req, res) {
     var current = req.session.current;
     if (!current){
@@ -216,13 +220,6 @@ exports.deleteOne = function (req, res) {
     }
 };
 
-function hashPwd(pwd){
-    if (pwd){
-        return crypto.createHash('sha256').update(pwd).digest('base64').toString();
-    }
-    console.log('[Warning]: pwd is null or empty...');
-    return pwd;
-}
 
 
 

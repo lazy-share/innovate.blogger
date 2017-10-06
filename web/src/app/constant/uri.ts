@@ -20,3 +20,6 @@ export const ADDRESS_CITYS = root + "/private/address/citys";
 export const ADDRESS_COUNTYS = root + "/private/address/countys";
 export const ADDRESS_STREETS = root + "/private/address/streets";
 export const ACCOUNT_INFO_HEADER = root + "/private/account/info/head";
+export const ACCOUNT_INFO_ATTENTIONS = root + "/private/account/attentions";
+export const ACCOUNT_INFO_FANS = root + "/private/account/fans";
+export const ACCOUNT_INFO_ATTENTION = root + "/private/account/attention";

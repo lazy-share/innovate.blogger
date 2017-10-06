@@ -21,10 +21,14 @@ app.use("/public/web", express.static(path.join(__dirname, '/public/web')));
 app.use(bodyParser({uploadDir: path.join(__dirname, 'public/images')}));
 app.all('*', appFilter.crossDomain);
 app.use(appFilter.security);
+app.all('/v1/api/web/private/account/**', appFilter.isExistsAccount);
+app.use(appFilter.sysError);
 appFilter.backLine();
 /*
 app.use(appFilter.notFound);
-app.use(appFilter.sysError);*/
+app.use(appFilter.sysError);
+ appFilter.backLine();
+*/
 appInit.initRouters(routers, routerPath);
 app.use(routers);
 

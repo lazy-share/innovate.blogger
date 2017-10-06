@@ -1,6 +1,5 @@
 import {NgModule} from "@angular/core";
 import {FormsModule} from "@angular/forms";
-import {HttpClientModule} from "@angular/common/http";
 import {CompareToDirective} from "./form-validate/compare-to.directive";
 import {MainNavComponent} from "./main-nav/main-nav.component";
 import {FooterComponent} from "./footer/footer.component";
@@ -8,14 +7,21 @@ import {CommonModule} from "@angular/common";
 import {HintComponent} from "./hint/hint.component";
 import {RouterModule} from "@angular/router";
 import {SubNavComponent} from "./sub-nav/sub-nav.component";
-import {IllegalRequestComponent, NotFoundComponent, NotFoundAccountComponent} from "./common/common.component";
-import {SelectGenderComponent} from "./form/select-gender/select-gender.component";
-import {SelectEducationComponent} from "./form/select-education/select-education.component";
+import {
+  IllegalRequestComponent,
+  NotFoundComponent,
+  NotFoundAccountComponent,
+  SystemErrorComponent
+} from "./common/common.component";
+import {SelectGenderComponent} from "./form-component/select-gender/select-gender.component";
+import {SelectEducationComponent} from "./form-component/select-education/select-education.component";
 import {BsDatepickerModule} from "ngx-bootstrap";
-import {SelectAddressComponent} from "./form/select-address/select-address.component";
+import {SelectAddressComponent} from "./form-component/select-address/select-address.component";
 import {EmailDirective} from "./form-validate/email.directive";
 import {MobileDirective} from "./form-validate/mobile.directive";
 import {FileUploadModule} from "ng2-file-upload";
+import {MyDatePickerModule} from "mydatepicker";
+import {MyDatePickerPipe} from "./form-pipe/my-date-picker";
 /**
  * Created by laizhiyuan on 2017/9/25.
  */
@@ -24,6 +30,7 @@ import {FileUploadModule} from "ng2-file-upload";
     RouterModule,
     FormsModule,
     BsDatepickerModule.forRoot(),
+    MyDatePickerModule,
     CommonModule,
     FileUploadModule
   ],
@@ -36,15 +43,19 @@ import {FileUploadModule} from "ng2-file-upload";
     HintComponent,
     NotFoundComponent,
     NotFoundAccountComponent,
+    SystemErrorComponent,
     SubNavComponent,
     IllegalRequestComponent,
     SelectGenderComponent,
     SelectEducationComponent,
-    SelectAddressComponent
+    SelectAddressComponent,
+    MyDatePickerPipe
   ],
   exports: [
     RouterModule,
     BsDatepickerModule,
+    MyDatePickerModule,
+    MyDatePickerPipe,
     FormsModule,
     CommonModule,
     CompareToDirective,
@@ -57,6 +68,7 @@ import {FileUploadModule} from "ng2-file-upload";
     NotFoundAccountComponent,
     SubNavComponent,
     IllegalRequestComponent,
+    SystemErrorComponent,
     SelectGenderComponent,
     SelectEducationComponent,
     SelectAddressComponent,

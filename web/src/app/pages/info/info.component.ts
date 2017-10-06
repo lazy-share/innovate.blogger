@@ -1,14 +1,17 @@
-import {Component, OnInit} from "@angular/core";
+import {Component, OnInit, ViewChild} from "@angular/core";
 import {BaseComponent} from "../common/BaseComponent";
 import {Account} from "../../vo/account";
 import {AuthorizationService} from "../../core/authorization/authorization.service";
-import {ActivatedRoute, ParamMap, Router} from "@angular/router";
+import {ActivatedRoute, ParamMap} from "@angular/router";
 import {InfoService} from "./info.service";
 import {environment} from "../../../environments/environment";
 import {BsDatepickerConfig} from "ngx-bootstrap/datepicker";
 import {AppResponse} from "../../vo/app-response";
 import {FileUploader, FileItem, ParsedResponseHeaders} from "ng2-file-upload";
 import {ACCOUNT_INFO_HEADER} from "../../constant/uri";
+import {SelectAddressComponent} from "../../shared/form-component/select-address/select-address.component";
+import {Utils} from "../../utils/utils";
+import {IMyDpOptions} from "mydatepicker";
 /**
  * Created by laizhiyuan on 2017/9/29.
  */
@@ -23,6 +26,11 @@ export class InfoComponent extends BaseComponent implements OnInit {
   private requestUsername: string = "";
   private storageUsername: string = "";
   private accountInfo: Account = Account.instantiation();
+  @ViewChild(SelectAddressComponent)
+  private selectAddressComponentChild: SelectAddressComponent;
+  private minDate = new Date(1900, 1, 1);
+  private maxDate = new Date(2050, 1, 1);
+  private uploader: FileUploader = new FileUploader({});
   private bsConfig: Partial<BsDatepickerConfig> = Object.assign({},
     {
       locale: 'zhCn',
@@ -30,18 +38,45 @@ export class InfoComponent extends BaseComponent implements OnInit {
       showWeekNumbers: false
     }
   );
-  minDate = new Date(1900, 1, 1);
-  maxDate = new Date(2050, 1, 1);
-  uploader: FileUploader = new FileUploader({});
-
+  private birthdayDatePickerOptions: IMyDpOptions = {
+    dateFormat: 'yyyy-mm-dd',
+    showTodayBtn: false,
+    sunHighlight: true,
+    editableDateField: false,
+    minYear: 1900,
+    markCurrentYear: false,
+    firstDayOfWeek: 'mo',
+    inline: false,
+    openSelectorOnInputClick: true,
+    maxYear: new Date().getFullYear() - 1
+  };
+  private birthdayPlusInitDate = {date: {year: 1993, month: 1, day: 1}};
+  private birthdayPlusLocale = 'zh-cn';
 
   constructor(private authorizationService: AuthorizationService,
               private route: ActivatedRoute,
-              private router: Router,
               private infoService: InfoService) {
     super();
+  }
+
+  ngOnInit(): void {
+    this.initField();
+    this.initUploadFileConfig();
+    this.route.data
+      .subscribe((data: { accountInfo: Account }) => {
+        this.accountInfo = data.accountInfo;
+        this.initAccountInfo();
+        console.log('111111111111111111' + JSON.stringify(this.accountInfo));
+        this.selectAddressComponentChild.loadAllProvinces();
+      });
+  }
+
+  initField(){
     this.storageUsername = this.authorizationService.getCurrentUser() && this.authorizationService.getCurrentUser().username;
     this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get("username")).subscribe();
+  }
+
+  initUploadFileConfig(){
     this.uploader = new FileUploader({
       url: environment.api.uri + ACCOUNT_INFO_HEADER + '/' + this.requestUsername,
       itemAlias: "uploadfile",
@@ -52,24 +87,6 @@ export class InfoComponent extends BaseComponent implements OnInit {
       autoUpload: true
     });
     this.uploader.onSuccessItem = this.successItem.bind(this);
-  }
-
-  ngOnInit(): void {
-    this.infoService.initAccountInfo(this.requestUsername).subscribe(
-      data => {
-        if (!data.status) {
-          this.showMsg = true;
-          this.sysMsg = data.msg;
-          return;
-        }
-        this.accountInfo = data.data;
-        this.initAccountInfo();
-      },
-      err => {
-        this.showMsg = true;
-        this.sysMsg = '服务器错误';
-      }
-    );
   }
 
   initAccountInfo() {

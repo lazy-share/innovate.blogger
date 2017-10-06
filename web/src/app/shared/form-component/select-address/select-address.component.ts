@@ -1,7 +1,6 @@
 import {Component, EventEmitter, Input, Output, OnInit} from "@angular/core";
 import {HttpParams, HttpClient} from "@angular/common/http";
 import {ADDRESS_PROVINCES, ADDRESS_CITYS, ADDRESS_COUNTYS, ADDRESS_STREETS} from "../../../constant/uri";
-import {SimpleKeyValue} from "../../../vo/simple-key-val";
 import {AppResponse} from "../../../vo/app-response";
 /**
  * Created by lzy on 2017/9/30.
@@ -10,11 +9,7 @@ import {AppResponse} from "../../../vo/app-response";
   selector: 'select-address',
   templateUrl: './select-address.component.html'
 })
-export class SelectAddressComponent implements OnInit{
-
-  ngOnInit(): void {
-    this.loadAllProvinces();
-  }
+export class SelectAddressComponent{
 
   @Input() private provinceCode: string = "";
   @Input() private cityCode: string = "";

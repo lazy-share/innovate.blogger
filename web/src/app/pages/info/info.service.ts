@@ -1,9 +1,10 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Observable";
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpParams, HttpErrorResponse} from "@angular/common/http";
 import {ACCOUNT_INFO} from "../../constant/uri";
 import {AppResponse} from "../../vo/app-response";
 import {Account} from "../../vo/account";
+import {Router} from "@angular/router";
 /**
  * Created by laizhiyuan on 2017/9/29.
  */
@@ -11,7 +12,8 @@ import {Account} from "../../vo/account";
 export class InfoService {
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private router:Router
   ){}
 
   initAccountInfo(username: string): Observable<any> {
@@ -22,7 +24,17 @@ export class InfoService {
       }
     ).map(
       data => {
-        return data;
+        if (!data.status) {
+          this.router.navigate(['system-error',{msg: data.msg}]);
+        }
+        return data.data;
+      },
+      (err: HttpErrorResponse) => {
+        if (err.error instanceof Error) {
+          this.router.navigate(['system-error',{msg: err.error.message}]);
+        } else {
+          this.router.navigate(['system-error',{msg: err.error}],);
+        }
       }
     );
   }

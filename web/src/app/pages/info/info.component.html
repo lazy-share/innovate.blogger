@@ -12,7 +12,7 @@
             <img alt="" id="head_portrait" name="head_portrait" style="width:150px; height: 150px;"
                  class="img-responsive" [src]="accountInfo.head_portrait"/>
           </div>
-          <div style="margin-top: 10px;" class="col-lg-2 col-md-2 col-lg-offset-2 col-md-offset-2">
+          <div *ngIf="storageUsername == requestUsername" style="margin-top: 10px;" class="col-lg-2 col-md-2 col-lg-offset-2 col-md-offset-2">
             <span class="fileinput-button">
             <span>修改头像</span>
             <input type="file" ng2FileSelect [uploader]="uploader"/>
@@ -76,8 +76,10 @@
         <div class="form-group">
           <label class="col-sm-2 control-label">生日</label>
           <div class="col-sm-3">
-            <input class="form-control" [(ngModel)]="accountInfo.birthday" name="birthday" type="date"
-                   [disabled]="!isShow" placeholder="请输入您的生日">
+            <input *ngIf="!isShow" class="form-control" type="text" [disabled]="!isShow" value="{{accountInfo.birthday | mydatepicker}}" placeholder="请输入您的生日">
+            <div *ngIf="isShow">
+              <my-date-picker name="birthday" [options]="birthdayDatePickerOptions"  [selDate]="birthdayPlusInitDate" [locale]="birthdayPlusLocale" [(ngModel)]="accountInfo.birthday"></my-date-picker>
+            </div>
           </div>
         </div>
 
@@ -124,38 +126,16 @@
 
         <div
           class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-8 col-xs-offset-3">
-          <button *ngIf="!isShow" type="button" (click)="edit()" class="btn btn-info">编辑个人信息</button>
+          <button *ngIf="!isShow && storageUsername == requestUsername" type="button" (click)="edit()" class="btn btn-info">编辑个人信息</button>
           <button *ngIf="isShow" [disabled]="!accountInfoForm.form.valid" type="button" (click)="confirmEdit()"
                   class="btn btn-info">保存个人信息
           </button>
         </div>
-        <div
-          class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-8 col-xs-offset-3">
+        <div class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-8 col-xs-offset-3">
           <br>
           <p *ngIf="showMsg" style="color:red;">{{sysMsg}}</p>
         </div>
       </form>
-    </div>
-  </div>
-</div>
-<div class="modal fade" *ngIf="!showModal" tabindex="-1" role="dialog" aria-labelledby="upateHeadModalLabel"
-     aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h4 class="modal-title" id="upateHeadModalLabel">上传头像</h4>
-      </div>
-      <div class="modal-body">
-        <!--<div class="form-group">
-          <input type="file" ng2FileSelect [uploader]="uploader" (change)="selectedFileOnChanged($event)" />
-          <p class="help-block">选择头像</p>
-        </div>-->
-      </div>
-      <div class="modal-footer">
-        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-         <button type="button" class="btn btn-info" (click)="uploadHead()" value="上传"/>-->
-      </div>
     </div>
   </div>
 </div>

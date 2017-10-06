@@ -13,7 +13,41 @@ const jwt = require("jsonwebtoken");
 const result = require("../common/result");
 const response = require("../common/response");
 const log = log4js.getLogger("security filter");
+const mongoose = require('mongoose');
 
+//是否请求了不存在的账号过滤器
+exports.isExistsAccount = function (req, res, next) {
+    const method = req.method;
+    if (method == 'GET') {
+        var username = req.query.username;
+        if(!username) {
+            username = req.body.username;
+        }
+        if (!username) {
+            username = req.params['username'];
+        }
+        log.debug('===================enter isExistsAccount filter username: ' + username);
+        if (username) {
+            const AccountInfoModel = mongoose.model('AccountInfoModel');
+            AccountInfoModel.findOne({username: username}, function (err, doc) {
+                if (err) {
+                    log.error('isExistsAccount err! msg:' + err);
+                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                    return;
+                }
+                if (!doc) {
+                    res.json(result.json(response.C602.status, response.C602.code, response.C602.msg, null));
+                    return;
+                }
+                next();
+            });
+        }
+    }else {
+        next();
+    }
+};
+
+//应用安全过滤器
 exports.security = function (req, res, next) {
     const currentUri = req.originalUrl;
     const privateUriReg = /^\/v1\/api\/(web|admin)\/private\/.*$/;
@@ -24,8 +58,7 @@ exports.security = function (req, res, next) {
                 res.json(result.json(response.C300.status, response.C300.code, response.C300.msg, null));
                 return;
             } else {
-                console.log(JSON.stringify(decode));
-                log.info("===============security filter decode: "  + decode);
+                log.info("===============security filter decode: "  + JSON.stringify(decode));
                 jwt.sign({username: decode.username, password: decode.password}, sysConf.jwtSecret, { expiresIn : sysConf.jwtValidity}, function (err, token) {
                     if (err){
                         console.log(err);
@@ -63,7 +96,7 @@ exports.notFound = function (req, res, next) {
 //500
 exports.sysError = function (err, req, res, next) {
     res.status(err.status || 500);
-   // res.json({code: false, msg: '服务器错误', data: {}});
+    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
     return;
 };
 

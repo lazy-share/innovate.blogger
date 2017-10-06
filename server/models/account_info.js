@@ -9,11 +9,12 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var addressSchema = require('./address');
 var relationshipSchema = require('./relationship').relationshipSchema;
+var dateSchema = require('./date');
 
 var accountInfoSchema = new Schema({
     username: {type: String, required: true, unique: true}, //关联账号
     email:{type: String, required: false}, //邮箱
-    birthday:{type: Date, required: false}, //生日
+    birthday:{type: dateSchema, required: false}, //生日
     gender:{type: Number, required: false, enum:[1, 2]}, //性别 [男，女]
     address: {type: addressSchema}, //地址
     head_portrait: {type: String}, //头像url

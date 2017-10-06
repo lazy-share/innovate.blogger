@@ -10,6 +10,7 @@ const fs = require('fs');
 const env = require('../conf/environments');
 const sysConf = require('../conf/sys_config')[env];
 const log4js = require('log4js');
+const appFilter = require('../filter/app_filter');
 
 exports.initLog4js = function (app) {
     log4js.configure(require('../conf/log4js.js'));

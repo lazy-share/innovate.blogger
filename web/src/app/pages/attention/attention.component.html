@@ -1,0 +1,31 @@
+<sub-nav [requestUsername]="requestUsername" [tab]="4"></sub-nav>
+<div class="container">
+  <div class="tab-pane" id="panel-6">
+    <div class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title">关注</h3>
+      </div>
+      <div class="panel-body">
+        <div *ngIf="attentions.length > 0">
+          <p *ngIf="authorizationService.currentUser.username == requestUsername" class="text-danger">您关注了</p>
+          <p *ngIf="authorizationService.currentUser.username != requestUsername" class="text-danger">TA关注了</p>
+        </div>
+        <hr class="hr">
+        <div *ngIf="(attentions.length <= 0)" class="col-md-offset-4 col-lg-offset-4 col-lg-4 col-md-4">
+          <h4 *ngIf="authorizationService.currentUser.username == requestUsername" class="text-danger">您未关注任何人</h4>
+          <h4 *ngIf="authorizationService.currentUser.username != requestUsername" class="text-danger">TA未关注任何人</h4>
+        </div>
+        <div *ngIf="(attentions.length > 0)">
+          <div style="margin-right: 5px;text-align:center; " *ngFor="let attention of attentions" class="well well-sm col-lg-2 col-md-2 col-sm-4 col-xs-5">
+            <a routerLink="/private/fans/{{attention}}">{{attention}}</a>
+          </div>
+        </div>
+        <hr class="hr">
+        <div class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-8 col-xs-offset-3">
+          <br>
+          <p *ngIf="showMsg" style="color:red;">{{sysMsg}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

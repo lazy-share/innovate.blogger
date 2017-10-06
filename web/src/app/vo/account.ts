@@ -1,31 +1,9 @@
-import {environment} from "../../environments/environment";
+import {Attention} from "./attention";
+import {Address} from "./address";
+import {MyDatePicker} from "./my-date-picker";
 /**
  * Created by lzy on 2017/9/26.
  */
-export class Address {
-  province_code: string;
-  province_name: string;
-  city_code: string;
-  city_name: string;
-  county_code: string;
-  county_name: string;
-  street_code: string;
-  street_name: string;
-  details: string;
-  static instantiation () {
-    let address: Address = new Address();
-    address.province_code = "";
-    address.province_name = "";
-    address.city_code = "";
-    address.city_name = "";
-    address.county_code = "";
-    address.county_name = "";
-    address.street_code = "";
-    address.street_name = "";
-    address.details = "";
-    return address;
-  }
-}
 export class Account {
   public id: string;
   public username: string;
@@ -40,11 +18,13 @@ export class Account {
   public job:string;
   public email:string;
   public mobile:string;
-  public birthday: Date;
+  public birthday: MyDatePicker;
   public qq:string;
   public wechat:string;
   public motto:string;
   public address:Address;
+  public attention:Attention[];
+  public fans: Attention[];
 
   static instantiation () {
     let account: Account = new Account();
@@ -65,6 +45,8 @@ export class Account {
     account.wechat = "";
     account.motto = "";
     account.address = Address.instantiation();
+    account.attention = new Array<Attention>();
+    account.fans = new Array<Attention>();
     return account;
   }
 }

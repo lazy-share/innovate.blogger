@@ -1,0 +1,36 @@
+<sub-nav [requestUsername]="requestUsername" [tab]="5"></sub-nav>
+<div class="container">
+  <div class="tab-pane" id="panel-6">
+    <div class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title">关注</h3>
+      </div>
+      <div class="panel-body">
+        <div *ngIf="fans.length > 0">
+          <p *ngIf="authorizationService.currentUser.username == requestUsername" class="text-danger">关注您的</p>
+          <p *ngIf="authorizationService.currentUser.username != requestUsername" class="text-danger">关注 TA的</p>
+          <hr class="hr">
+        </div>
+        <div *ngIf="(fans.length <= 0)" class="col-md-offset-4 col-xs-offset-4 col-lg-offset-4 col-lg-4 col-md-4 col-xs-4" >
+          <h4 *ngIf="authorizationService.currentUser.username == requestUsername" class="text-danger">还没有人关注您</h4>
+          <h4 *ngIf="authorizationService.currentUser.username != requestUsername" class="text-danger">还没有人关注TA</h4>
+        </div>
+        <div *ngIf="(fans.length > 0)">
+          <div style="margin-right: 5px;text-align:center; " *ngFor="let fan of fans" class="well well-sm col-lg-2 col-md-2 col-sm-4 col-xs-5">
+            <a *ngIf="authorizationService.currentUser.username == fan" routerLink="/private/info/{{fan}}">{{fan}}(您自己)</a>
+            <a *ngIf="authorizationService.currentUser.username != fan" routerLink="/private/info/{{fan}}">{{fan}}</a>
+          </div>
+        </div>
+        <hr class="hr">
+        <div *ngIf="authorizationService.currentUser.username != requestUsername" class="col-md-offset-4 col-lg-offset-4 col-lg-2 col-md-2">
+          <button (click)="attention()" *ngIf="isShowAttention" type="button" class="btn btn-info"><span class="glyphicon glyphicon-plus"></span> 关注他</button>
+          <button (click)="cancleAttention()" *ngIf="!isShowAttention" type="button" class="btn btn-info"><span class="glyphicon glyphicon-minus"></span> 取消关注</button>
+        </div>
+        <div class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-8 col-xs-offset-3">
+          <br>
+          <p *ngIf="showMsg" style="color:red;">{{sysMsg}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

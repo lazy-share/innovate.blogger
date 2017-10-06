@@ -4,27 +4,27 @@
     <div class="col-md-12 column">
       <ul class="nav nav-tabs">
         <li [class.active]="tab == 0">
-          <a href="#">基本信息</a>
+          <a routerLink="/private/info/{{requestUsername}}">基本信息</a>
         </li>
         <li [class.active]="tab == 1">
-          <a *ngIf="storageUsername == requestUsername" href="#">我的文章</a>
-          <a *ngIf="storageUsername != requestUsername" href="#">TA 的文章</a>
+          <a *ngIf="storageUsername == requestUsername" routerLink="/private/article/{{requestUsername}}">我的文章</a>
+          <a *ngIf="storageUsername != requestUsername" routerLink="/private/article/{{requestUsername}}">TA 的文章</a>
         </li>
         <li [class.active]="tab == 2">
-          <a *ngIf="storageUsername == requestUsername" href="#">我的心情</a>
-          <a *ngIf="storageUsername != requestUsername" href="#">TA 的心情</a>
+          <a *ngIf="storageUsername == requestUsername" routerLink="/private/note/{{requestUsername}}">我的心情</a>
+          <a *ngIf="storageUsername != requestUsername" routerLink="/private/note/{{requestUsername}}">TA 的心情</a>
         </li>
         <li [class.active]="tab == 3">
-          <a *ngIf="storageUsername == requestUsername" href="#">我的媒体</a>
-          <a *ngIf="storageUsername != requestUsername" href="#">TA 的媒体</a>
+          <a *ngIf="storageUsername == requestUsername" routerLink="/private/media/{{requestUsername}}">我的媒体</a>
+          <a *ngIf="storageUsername != requestUsername" routerLink="/private/media/{{requestUsername}}">TA 的媒体</a>
         </li>
         <li [class.active]="tab == 4">
-          <a *ngIf="storageUsername == requestUsername" href="#">我的关注</a>
-          <a *ngIf="storageUsername != requestUsername" href="#">TA 的关注</a>
+          <a *ngIf="storageUsername == requestUsername" routerLink="/private/attention/{{requestUsername}}">我的关注</a>
+          <a *ngIf="storageUsername != requestUsername" routerLink="/private/attention/{{requestUsername}}">TA 的关注</a>
         </li>
         <li [class.active]="tab == 5">
-          <a *ngIf="storageUsername == requestUsername" href="#">我的粉丝</a>
-          <a *ngIf="storageUsername != requestUsername" href="#">TA 的粉丝</a>
+          <a *ngIf="storageUsername == requestUsername" routerLink="/private/fans/{{requestUsername}}">关注我的</a>
+          <a *ngIf="storageUsername != requestUsername" routerLink="/private/fans/{{requestUsername}}">关注 TA的</a>
         </li>
       </ul>
     </div>

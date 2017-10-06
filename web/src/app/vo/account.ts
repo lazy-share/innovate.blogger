@@ -25,6 +25,7 @@ export class Account {
   public address:Address;
   public attention:Attention[];
   public fans: Attention[];
+  public last_login_time: Date;
 
   static instantiation () {
     let account: Account = new Account();

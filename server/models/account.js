@@ -16,7 +16,8 @@ var accountSchema = new Schema({
     token: {type: String, required: false},
     create_time:{type: Date, required: true, unique:false, default:Date.now()},
     update_time:{type: Date, required: true, unique:false, default:Date.now()},
-    last_login_time: {type: Date, required: false, unique: false}
+    last_login_time: {type: Date, required: false, unique: false},
+    current_login_time:{type: Date, required: false, unique: false}
 },{
     autoIndex: true,
     id: true, //id获取器

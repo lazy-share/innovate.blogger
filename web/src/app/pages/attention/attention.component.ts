@@ -17,7 +17,8 @@ import {Attention} from "../../vo/attention";
 export class AttentionComponent extends BaseComponent{
 
   private requestUsername:string;
-  private attentions: string[] = new Array<string>();
+  private attentions: Attention[] = new Array<Attention>();
+  private headPortraits: Attention[] = new Array<Attention>();
 
   constructor(
     private attentionService: AttentionService,
@@ -37,7 +38,16 @@ export class AttentionComponent extends BaseComponent{
           this.sysMsg = data.msg;
           return;
         }
-        this.attentions = data.data;
+        this.attentions = data.data.attentions;
+        this.headPortraits = data.data.headPortraits;
+        for (let i in this.headPortraits){
+          for (let j in this.attentions){
+            if (this.headPortraits[i].username === this.attentions[j].subject){
+              this.attentions[j].head_portrait = this.headPortraits[i].head_portrait;
+              break;
+            }
+          }
+        }
       },
       err => {
         this.showMsg = true;

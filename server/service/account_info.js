@@ -103,35 +103,79 @@ exports.attentions = function (req, res) {
     }
 
     //我的关注
-    RelationshipModel.find({from: username, type: 1}).distinct("subject").exec(function (err, attentions) {
+    // RelationshipModel.find({from: username, type: 1}).distinct("subject").exec(function (err, attentions) {
+    RelationshipModel.find({from: username, type: 1}).exec(function (err, attentions) {
         if (err) {
             console.log('account info attentions err! msg:' + err);
             log.error('account info attentions err! msg:' + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, attentions));
+        var obj = {attentions: [], headPortraits: [] };
+        obj.attentions = attentions;
+        if (attentions && attentions.length > 0){
+            var usernameArr = [];
+            for (var i in attentions){
+                usernameArr.push(attentions[i].subject);
+            }
+            AccountInfoModel.find({username: {$in: usernameArr}}, {username: 1, head_portrait: 1}).exec(function (err, docs) {
+                if (err) {
+                    console.log('account info attentions err! msg:' + err);
+                    log.error('account info attentions err! msg:' + err);
+                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                    return;
+                }
+                obj.headPortraits = docs;
+                res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+            });
+        }else {
+            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+        }
     });
 };
 
 //关注我的
 exports.fans = function (req, res) {
+   fans(req, res);
+};
+
+function fans(req, res) {
     var username = req.query.username;
     if (!username) {
         log.error("account info fans username: " + username);
     }
 
     //关注我的
-    RelationshipModel.distinct("from", {subject: username, type: 1}).exec(function (err, fans) {
+    // RelationshipModel.distinct("from", {subject: username, type: 1}).exec(function (err, fans) {
+    RelationshipModel.find({subject: username, type: 1}).exec(function (err, fans) {
         if (err) {
             console.log('account info fans err! msg:' + err);
             log.error('account info fans err! msg:' + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, fans));
+        var obj = {fans: [], headPortraits: [] };
+        obj.fans = fans;
+        if (fans && fans.length > 0){
+            var usernameArr = [];
+            for (var i in fans){
+                usernameArr.push(fans[i].from);
+            }
+            AccountInfoModel.find({username: {$in: usernameArr}}, {username: 1, head_portrait: 1}).exec(function(err, docs){
+                if (err) {
+                    console.log('account info fans err! msg:' + err);
+                    log.error('account info fans err! msg:' + err);
+                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                    return;
+                }
+                obj.headPortraits = docs;
+                res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+            });
+        }else {
+            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+        }
     });
-};
+}
 
 //关注他
 exports.attention = function (req, res) {
@@ -157,16 +201,8 @@ exports.attention = function (req, res) {
                         res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                         return;
                     } else {
-                        RelationshipModel.distinct("from", {type: 1, subject: subject}).exec(function (err, doc) {
-                                res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, doc));
-                                return;
-                            },
-                            function (err) {
-                                log.error('account info post attention error! msg:' + err);
-                                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
-                                return;
-                            }
-                        );
+                        req.query.username = subject;
+                        fans(req, res);
                     }
                 });
             } else {  //没有关注过则添加关注
@@ -181,16 +217,8 @@ exports.attention = function (req, res) {
                         res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                         return;
                     } else {
-                        RelationshipModel.distinct("from", {type: 1, subject: subject}).exec(function (err, doc) {
-                                if (err) {
-                                    log.error('account info post attention error! msg:' + err);
-                                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
-                                    return;
-                                }
-                                res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, doc));
-                                return;
-                            }
-                        );
+                        req.query.username = subject;
+                        fans(req, res);
                     }
                 });
             }
@@ -221,16 +249,8 @@ exports.cancleAttention = function (req, res) {
                     res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                     return;
                 }
-                RelationshipModel.distinct("from",{type: 1, subject: subject}).exec(function (err, doc) {
-                        if (err) {
-                            log.error('account info delte attention error! msg:' + err);
-                            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
-                            return;
-                        }
-                        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, doc));
-                        return;
-                    }
-                );
+                req.query.username = subject;
+                fans(req, res);
             });
         }
     })

@@ -147,7 +147,8 @@ exports.login = function (req, res) {
             if (doc){
                 if (doc.password === hashPwd(req.body.password.toString())){
                     const currentTime = Date.now();
-                    doc.last_login_time = currentTime;
+                    doc.last_login_time = doc.current_login_time;
+                    doc.current_login_time = currentTime;
                     jwt.sign({username: doc.username, password: doc.password}, jwtSecret, { expiresIn : jwtValidity}, function (err, token) {
                         if (err){
                             console.log(err);

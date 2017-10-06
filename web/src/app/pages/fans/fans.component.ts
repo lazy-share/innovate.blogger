@@ -21,7 +21,8 @@ export class FansComponent extends BaseComponent implements AfterViewInit{
   }
 
   private requestUsername: string;
-  private fans: string[] = new Array<string>();
+  private fans: Attention[] = new Array<Attention>();
+  private headPortraits: Attention[] = new Array<Attention>();
   private isShowAttention: boolean = true;
 
   constructor(private attentionService: AttentionService,
@@ -39,7 +40,7 @@ export class FansComponent extends BaseComponent implements AfterViewInit{
           this.sysMsg = data.msg;
           return;
         }
-        this.fans = data.data;
+        this.handleResult(data);
         this.initComponent();
       },
       err => {
@@ -49,10 +50,23 @@ export class FansComponent extends BaseComponent implements AfterViewInit{
     );
   }
 
+  handleResult(data: any){
+    this.fans = data.data.fans;
+    this.headPortraits = data.data.headPortraits;
+    for (let i in this.headPortraits){
+      for (let j in this.fans){
+        if (this.headPortraits[i].username === this.fans[j].from){
+          this.fans[j].head_portrait = this.headPortraits[i].head_portrait;
+          break;
+        }
+      }
+    }
+  }
+
   initComponent() {
     let flag = true;
     for (let fan in this.fans) {
-      if (this.fans[fan] == this.authorizationService.getCurrentUser().username) {
+      if (this.fans[fan].from == this.authorizationService.getCurrentUser().username) {
         flag = false;
         break;
       }
@@ -69,7 +83,7 @@ export class FansComponent extends BaseComponent implements AfterViewInit{
           return;
         }
         this.showMsg = false;
-        this.fans = data.data;
+        this.handleResult(data);
         this.initComponent();
       },
       err => {
@@ -88,7 +102,7 @@ export class FansComponent extends BaseComponent implements AfterViewInit{
           return;
         }
         this.showMsg = false;
-        this.fans = data.data;
+        this.handleResult(data);
         this.initComponent();
       },
       err => {

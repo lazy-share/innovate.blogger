@@ -52,13 +52,14 @@ exports.security = function (req, res, next) {
     const currentUri = req.originalUrl;
     const privateUriReg = /^\/v1\/api\/(web|admin)\/private\/.*$/;
     if (privateUriReg.test(currentUri)){ //受保护的uri
-        const token = req.header("lzyauthorization");
+        const token = req.header("LzyAuthorization");
         jwt.verify(token, sysConf.jwtSecret, function (err, decode) {
             if (err) {  //  时间失效的时候或伪造的token
                 res.json(result.json(response.C300.status, response.C300.code, response.C300.msg, null));
                 return;
             } else {
-                log.info("===============security filter decode: "  + JSON.stringify(decode));
+                next();
+                /*log.info("===============security filter decode: "  + JSON.stringify(decode));
                 jwt.sign({username: decode.username, password: decode.password}, sysConf.jwtSecret, { expiresIn : sysConf.jwtValidity}, function (err, token) {
                     if (err){
                         console.log(err);
@@ -68,7 +69,7 @@ exports.security = function (req, res, next) {
                     }else {
                         next();
                     }
-                });
+                });*/
             }
         });
     }else {

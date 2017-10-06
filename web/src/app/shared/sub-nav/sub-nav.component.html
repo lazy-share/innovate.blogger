@@ -26,6 +26,10 @@
           <a *ngIf="storageUsername == requestUsername" routerLink="/private/fans/{{requestUsername}}">关注我的</a>
           <a *ngIf="storageUsername != requestUsername" routerLink="/private/fans/{{requestUsername}}">关注 TA的</a>
         </li>
+        <li [class.active]="tab == 6">
+          <a *ngIf="storageUsername == requestUsername" routerLink="/private/visitor/{{requestUsername}}">我的访客</a>
+          <a *ngIf="storageUsername != requestUsername" routerLink="/private/visitor/{{requestUsername}}">TA 的访客</a>
+        </li>
       </ul>
     </div>
   </div>

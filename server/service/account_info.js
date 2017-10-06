@@ -104,7 +104,7 @@ exports.attentions = function (req, res) {
 
     //我的关注
     // RelationshipModel.find({from: username, type: 1}).distinct("subject").exec(function (err, attentions) {
-    RelationshipModel.find({from: username, type: 1}).exec(function (err, attentions) {
+    RelationshipModel.find({from: username, type: 1}).sort({'update_time': -1, 'subject': 1}).exec(function (err, attentions) {
         if (err) {
             console.log('account info attentions err! msg:' + err);
             log.error('account info attentions err! msg:' + err);
@@ -147,7 +147,7 @@ function fans(req, res) {
 
     //关注我的
     // RelationshipModel.distinct("from", {subject: username, type: 1}).exec(function (err, fans) {
-    RelationshipModel.find({subject: username, type: 1}).exec(function (err, fans) {
+    RelationshipModel.find({subject: username, type: 1}).sort({'update_time': -1, 'from': 1}).exec(function (err, fans) {
         if (err) {
             console.log('account info fans err! msg:' + err);
             log.error('account info fans err! msg:' + err);
@@ -206,9 +206,12 @@ exports.attention = function (req, res) {
                     }
                 });
             } else {  //没有关注过则添加关注
+                var nowTime = new Date();
                 var relationshipModel = new RelationshipModel({
                     subject: subject,
                     from: from,
+                    create_time:nowTime,
+                    update_time:nowTime,
                     type: 1
                 });
                 relationshipModel.save(function (err) {

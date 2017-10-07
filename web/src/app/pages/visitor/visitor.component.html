@@ -1,0 +1,44 @@
+<sub-nav [requestUsername]="requestUsername" [tab]="6"></sub-nav>
+<div class="container">
+  <div class="tab-pane" id="panel-6">
+    <div class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title">访客</h3>
+      </div>
+      <div class="panel-body">
+        <div *ngIf="visitors.length > 0">
+          <p *ngIf="authorizationService.currentUser.username == requestUsername" class="text-danger">您的访客</p>
+          <p *ngIf="authorizationService.currentUser.username != requestUsername" class="text-danger">TA的访客</p>
+        </div>
+        <hr class="hr">
+        <div *ngIf="(visitors.length <= 0)" class="col-md-offset-4 col-lg-offset-4 col-lg-4 col-md-4">
+          <h4 *ngIf="authorizationService.currentUser.username == requestUsername" class="text-danger">暂时没有人访问您</h4>
+          <h4 *ngIf="authorizationService.currentUser.username != requestUsername" class="text-danger">暂时没有人访问TA</h4>
+        </div>
+        <div *ngIf="(visitors.length > 0)" class="col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-lg-12 col-md-12 col-sm-12">
+          <div style="margin-right: 2.5px;margin-left:2.5px;text-align:center;" *ngFor="let visitor of visitors" class="well well-sm col-lg-2 col-md-2 col-sm-3">
+            <div>
+              <a routerLink="/private/info/{{visitor.from}}">
+                <img alt="" style="width:50px; height: 50px;" class="img-circle" src="{{visitor.head_portrait}}"/>
+              </a>
+            </div>
+            <div *ngIf="authorizationService.currentUser.username == visitor.from">
+              {{visitor.from}}<span style="color:red;">(您自己)</span>
+            </div>
+            <div *ngIf="authorizationService.currentUser.username != visitor.from">
+              {{visitor.from}}
+            </div>
+            <div style="color: palevioletred;">
+              {{visitor.update_time | date:"yyyy-MM-dd HH:mm:ss"}}
+            </div>
+          </div>
+        </div>
+        <hr class="hr">
+        <div class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-8 col-xs-offset-3">
+          <br>
+          <p *ngIf="showMsg" style="color:red;">{{sysMsg}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

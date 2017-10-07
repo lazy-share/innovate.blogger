@@ -100,6 +100,9 @@ export class APPResponseInterceptor implements HttpInterceptor {
         }else if (!event.body.status && event.body.code == 602){
           this.router.navigateByUrl('/not-account');
           return;
+        }else if (!event.body.status && event.body.code == 404){
+          this.router.navigateByUrl('/not-found');
+          return;
         }
       }
       return event;

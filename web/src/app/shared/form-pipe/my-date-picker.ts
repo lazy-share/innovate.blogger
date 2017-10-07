@@ -8,7 +8,7 @@ import {Utils} from "../../utils/utils";
 export class MyDatePickerPipe implements PipeTransform{
 
   transform(value: MyDatePicker, format: string): string {
-    if (!value){
+    if (!value || !value.date){
       return '';
     }
     let result:string = value.date.year + '-'  + value.date.month +  '-'  + value.date.day;

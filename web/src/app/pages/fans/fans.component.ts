@@ -1,31 +1,29 @@
-import {Component, AfterViewInit} from "@angular/core";
+import {Component, AfterViewInit, OnInit} from "@angular/core";
 import {ActivatedRoute, ParamMap} from "@angular/router";
 import {BaseComponent} from "../common/BaseComponent";
-import {AttentionService} from "./fans.service";
+import {FansService} from "./fans.service";
 import {AuthorizationService} from "../../core/authorization/authorization.service";
-import {Attention} from "../../vo/attention";
+import {RelationShip} from "../../vo/attention";
 /**
  * Created by lzy on 2017/10/2.
  */
-
 @Component({
   templateUrl: './fans.component.html',
   styleUrls: [
     './fans.component.css'
   ]
 })
-export class FansComponent extends BaseComponent implements AfterViewInit{
-
-  ngAfterViewInit(): void {
+export class FansComponent extends BaseComponent implements OnInit{
+  ngOnInit(): void {
     this.initFans();
   }
 
   private requestUsername: string;
-  private fans: Attention[] = new Array<Attention>();
-  private headPortraits: Attention[] = new Array<Attention>();
+  private fans: RelationShip[] = new Array<RelationShip>();
+  private headPortraits: RelationShip[] = new Array<RelationShip>();
   private isShowAttention: boolean = true;
 
-  constructor(private attentionService: AttentionService,
+  constructor(private attentionService: FansService,
               private route: ActivatedRoute,
               private authorizationService: AuthorizationService,) {
     super();
@@ -33,21 +31,15 @@ export class FansComponent extends BaseComponent implements AfterViewInit{
   }
 
   initFans(){
-    this.attentionService.fans(this.requestUsername).subscribe(
-      data => {
-        if (!data.status) {
-          this.showMsg = true;
-          this.sysMsg = data.msg;
-          return;
-        }
-        this.handleResult(data);
-        this.initComponent();
-      },
-      err => {
+    this.route.data.subscribe((rlt: {obj: any}) => {
+      if (!rlt.obj.status) {
         this.showMsg = true;
-        this.sysMsg = '服务器错误';
+        this.sysMsg = rlt.obj.msg;
+        return;
       }
-    );
+      this.handleResult(rlt.obj);
+      this.initComponent();
+    });
   }
 
   handleResult(data: any){

@@ -66,9 +66,23 @@ export class InfoComponent extends BaseComponent implements OnInit {
       .subscribe((data: { accountInfo: Account }) => {
         this.accountInfo = data.accountInfo;
         this.initAccountInfo();
-        console.log('111111111111111111' + JSON.stringify(this.accountInfo));
         this.selectAddressComponentChild.loadAllProvinces();
       });
+    this.addVisitor();
+  }
+
+
+  addVisitor(){
+    if (this.requestUsername != this.authorizationService.getCurrentUser().username) {
+      this.infoService.addVisitor(this.requestUsername, this.authorizationService.getCurrentUser().username).subscribe(
+        data => {
+          //todo 处理添加访客成功
+        },
+        err => {
+          //todo 处理添加访客失败
+        }
+      );
+    }
   }
 
   initField(){
@@ -139,14 +153,6 @@ export class InfoComponent extends BaseComponent implements OnInit {
       this.accountInfo.address.county_code = arr[2];
       this.accountInfo.address.street_code = arr[3];
     }
-  }
-
-  changeHeadPortrait() {
-
-  }
-
-  selectedFileOnChanged() {
-
   }
 
   successItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): any {

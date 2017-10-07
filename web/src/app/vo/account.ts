@@ -1,4 +1,4 @@
-import {Attention} from "./attention";
+import {RelationShip} from "./attention";
 import {Address} from "./address";
 import {MyDatePicker} from "./my-date-picker";
 /**
@@ -23,8 +23,8 @@ export class Account {
   public wechat:string;
   public motto:string;
   public address:Address;
-  public attention:Attention[];
-  public fans: Attention[];
+  public attention:RelationShip[];
+  public fans: RelationShip[];
   public last_login_time: Date;
 
   static instantiation () {
@@ -46,8 +46,8 @@ export class Account {
     account.wechat = "";
     account.motto = "";
     account.address = Address.instantiation();
-    account.attention = new Array<Attention>();
-    account.fans = new Array<Attention>();
+    account.attention = new Array<RelationShip>();
+    account.fans = new Array<RelationShip>();
     return account;
   }
 }

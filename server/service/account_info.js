@@ -36,6 +36,8 @@ exports.details = function (req, res) {
 //编辑基本信息
 exports.update = function (req, res) {
     var accountInfo = JSON.parse(req.body.params.updates[0].value);
+    accountInfo.update_time = new Date();
+    log.info("============enter account info update accountInfo:" + JSON.stringify(accountInfo));
     var username = accountInfo.username;
 
     if (!username) {
@@ -77,7 +79,7 @@ exports.uploadHead = function (req, res) {
                 var startIndex = inputFile.path.indexOf('\\public\\web\\images\\header');
                 var filePath = inputFile.path.substring(startIndex, inputFile.path.length).replace(/\\/g, '/');
                 filePath = sysConnfig[env].thisDoman + filePath;
-                AccountInfoModel.update({username: username}, {$set: {head_portrait: filePath}})
+                AccountInfoModel.update({username: username}, {$set: {head_portrait: filePath, update_time: new Date()}})
                     .exec(function (err) {
                         if (err) {
                             console.log("uploadHead error: errMsg:" + err);
@@ -98,6 +100,7 @@ exports.uploadHead = function (req, res) {
 //我的关注
 exports.attentions = function (req, res) {
     var username = req.query.username;
+    log.info("============enter attentions username:" + username);
     if (!username) {
         log.error("account info attentions username: " + username);
     }
@@ -141,6 +144,7 @@ exports.fans = function (req, res) {
 
 function fans(req, res) {
     var username = req.query.username;
+    log.info("============enter fans username:" + username);
     if (!username) {
         log.error("account info fans username: " + username);
     }
@@ -181,6 +185,7 @@ function fans(req, res) {
 exports.attention = function (req, res) {
     var subject = req.body.subject; //关注主题
     var from = req.body.from; //关注者
+    log.info("============enter attention subject:" + subject + "from:" + from);
     if (!subject || !from) {
         log.info("account info post attention subject: " + subject + 'from ' + from);
         res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
@@ -233,6 +238,7 @@ exports.attention = function (req, res) {
 exports.cancleAttention = function (req, res) {
     var subject = req.query.subject; //取消关注主题
     var from = req.query.from; //取消者
+    log.info("============enter cancleAttention subject:" + subject + "from:" + from);
     if (!subject || !from) {
         log.info("account info delete attention subject: " + subject + 'from ' + from);
         res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
@@ -259,6 +265,101 @@ exports.cancleAttention = function (req, res) {
     })
 };
 
+//我 TA 的访客
+exports.visitors = function (req, res) {
+    var subject = req.query.username;
+    log.info("===========enter visitors subject:" + subject);
+    if (!subject) {
+        log.error('account info visitors error: params subject is empty or null');
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+        return;
+    }
+    RelationshipModel.find({type: 2, subject: subject}).sort({update_time: -1}).exec(function (err, visitors) {
+       if (err){
+           log.error('account info visitors error! msg:' + err);
+           res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+           return;
+       }
+        var obj = {visitors: [], headPortraits: [] };
+        obj.visitors = visitors;
+        if (visitors && visitors.length > 0){
+            var usernameArr = [];
+            for (var i in visitors){
+                usernameArr.push(visitors[i].from);
+            }
+            var query = AccountInfoModel.find({username: {$in: usernameArr}}, {username: 1, head_portrait:1});
+            query.exec(function (err, docs) {
+                if (err) {
+                    log.error('account info visitors error! msg:' + err);
+                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                    return;
+                }
+                obj.headPortraits = docs;
+                res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+            });
+        }else {
+            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+        }
+    });
+};
+
+//添加访客
+exports.addVisitor = function (req, res) {
+    var subject = req.body.subject;
+    var from = req.body.from;
+    log.info("============enter addVisitor subject:" + subject + "from:" + from);
+    if (!subject || !from) {
+        log.error("addVisitor error: params subject or from is empty or null");
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+        return;
+    }
+    RelationshipModel.find({subject: subject, from: from, type: 2}).exec(function (err, docs) {
+        if (err) {
+            log.error('addVisitor error! msg:' + err);
+            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+            return;
+        }
+        if (docs && docs.length > 0){ //访问过
+            docs[0].update_time = new Date();
+            docs[0].ip = getClientIp(req);
+            docs[0].save(function (err) {
+                if (err){
+                    log.error('addVisitor error! msg:' + err);
+                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                    return;
+                }
+                res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
+            });
+        }else {
+            var nowTime = new Date();
+            var ip = getClientIp(req);
+            var relationshipModel = new RelationshipModel({
+                subject: subject,
+                from: from,
+                create_time:nowTime,
+                update_time:nowTime,
+                ip:ip,
+                type: 2
+            });
+            relationshipModel.save(function (err) {
+                if (err) {
+                    log.error('addVisitor error! msg:' + err);
+                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                    return;
+                } else {
+                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
+                }
+            });
+        }
+    });
+};
+
+function getClientIp(req) {
+    return req.headers['x-forwarded-for'] ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress;
+};
 
 //todo 待完善
 exports.deleteOne = function (username) {

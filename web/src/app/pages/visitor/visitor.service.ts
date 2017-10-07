@@ -1,21 +1,25 @@
 import {Injectable} from "@angular/core";
-import {Observable} from "rxjs";
 import {HttpClient, HttpParams, HttpErrorResponse} from "@angular/common/http";
+import {Observable} from "rxjs";
 import {AppResponse} from "../../vo/app-response";
-import {ACCOUNT_INFO_ATTENTIONS} from "../../constant/uri";
+import {ACCOUNT_INFO_VISITORS} from "../../constant/uri";
 import {Router} from "@angular/router";
 /**
- * Created by lzy on 2017/10/2.
+ * Created by lzy on 2017/10/6.
  */
 @Injectable()
-export class AttentionService {
+export class VisitorService {
 
-  constructor(private http: HttpClient, private router:Router) {
+  constructor(
+    private http:HttpClient,
+    private router:Router
+  ){
+
   }
 
-  attentions(username: string): Observable<any> {
+  visitors(username:string):Observable<any> {
     return this.http.get<AppResponse>(
-      ACCOUNT_INFO_ATTENTIONS,
+      ACCOUNT_INFO_VISITORS,
       {
         params: new HttpParams().set("username", username)
       }

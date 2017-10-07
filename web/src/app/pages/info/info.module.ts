@@ -1,6 +1,6 @@
 
 import {NgModule} from "@angular/core";
-import {InfoRoutingModule} from "./info.routing.module";
+import {InfoRoutingModule} from "./info-routing.module";
 import {SharedModule} from "../../shared/shared.module";
 import {InfoService} from "./info.service";
 import {InfoComponent} from "./info.component";

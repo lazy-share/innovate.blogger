@@ -41,6 +41,8 @@ exports.isExistsAccount = function (req, res, next) {
                 }
                 next();
             });
+        }else {
+            res.json(result.json(response.C404.status, response.C404.code, response.C404.msg, null));
         }
     }else {
         next();

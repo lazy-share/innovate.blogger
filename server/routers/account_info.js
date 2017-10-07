@@ -25,4 +25,8 @@ module.exports = function (router) {
     router.post(webRootApi + '/private/account/attention', accountInfoService.attention);
     //取消关注
     router.delete(webRootApi + '/private/account/attention', accountInfoService.cancleAttention);
+    //我、TA的访客
+    router.get(webRootApi + '/private/account/visitors', accountInfoService.visitors);
+    //添加访客
+    router.post(webRootApi + '/private/account/visitors', accountInfoService.addVisitor);
 };

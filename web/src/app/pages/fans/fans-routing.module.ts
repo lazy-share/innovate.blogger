@@ -1,11 +1,13 @@
 import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
 import {FansComponent} from "./fans.component";
+import {FansResolveService} from "./fans-resolve.service";
 /**
  * Created by lzy on 2017/10/2.
  */
 const FANS_ROUTERS: Routes = [
-  {path: ':username', component: FansComponent}
+  {path: '', redirectTo: '/not-found', pathMatch: 'full'},
+  {path: ':username', component: FansComponent, resolve: {obj: FansResolveService}}
 ];
 @NgModule({
   imports: [RouterModule.forChild(FANS_ROUTERS)],

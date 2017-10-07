@@ -6,6 +6,7 @@ import {InfoResolverService} from "./info-resolver.service";
  * Created by laizhiyuan on 2017/9/29.
  */
 const INFO_ROUTES: Routes = [
+  {path: '', redirectTo: '/not-found', pathMatch: 'full'},
   {path:':username', component: InfoComponent, resolve: {accountInfo: InfoResolverService}}
 ];
 @NgModule({

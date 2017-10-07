@@ -26,7 +26,9 @@ var accountInfoSchema = new Schema({
     wechat: {type: String}, //微信
     visitor: {type: [relationshipSchema], required: false}, //访问量
     attention: {type: [relationshipSchema], required: false}, //关注
-    fans: {type: [relationshipSchema], required: false} //粉丝
+    fans: {type: [relationshipSchema], required: false}, //粉丝
+    update_time: {type: Date, required: true, default: Date.now()},
+    create_time: {type: Date, required: true, default: Date.now()}
 },{
     autoIndex: true,
     id: true, //id获取器

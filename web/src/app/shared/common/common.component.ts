@@ -4,7 +4,7 @@ import {ActivatedRoute, ParamMap} from "@angular/router";
  * Created by laizhiyuan on 2017/9/29.
  */
 @Component({
-  template: `<hint title="Not Found" content="系统不存在该账号，去注册一个" uri="/register"></hint>`
+  template: `<hint title="Not Found Account" content="系统不存在该账号，去注册一个" uri="/register"></hint>`
 })
 export class NotFoundAccountComponent {
 
@@ -18,7 +18,7 @@ export class IllegalRequestComponent {
 }
 
 @Component({
-  template: `<hint title="404" content="找不到指定的页面，去首页看看" uri="/home"></hint>`
+  template: `<hint title="404" content="找不到指定的资源，去首页看看" uri="/home"></hint>`
 })
 export class NotFoundComponent {
 

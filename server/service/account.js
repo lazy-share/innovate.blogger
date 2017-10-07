@@ -44,12 +44,17 @@ exports.registerValidate = function (req, res) {
 
 //注册
 exports.register = function (req, res) {
-    log.info('==============enter register==================');
-    log.info('注册请求参数：' + req.body.account);
+    var nowTime = new Date();
+    log.info('==============enter register nowTime '+ nowTime +'==================');
+    log.info('注册请求参数：' + JSON.stringify(req.body.account));
     var account = new AccountModel(req.body.account);
     account.set('password', hashPwd(req.body.account.password));
+    account.set('update_time', nowTime);
+    account.set('create_time', nowTime);
     var accoutInfo = new AccountInfoModel();
     accoutInfo.set('username', account.username);
+    accoutInfo.set('create_time', nowTime);
+    accoutInfo.set('update_time', nowTime);
     var AddressModel = mongoose.model('AddressModel');
     accoutInfo.set('address', new AddressModel({details: ''}));
 
@@ -57,15 +62,15 @@ exports.register = function (req, res) {
     accoutInfo.save(function (err) {
         if (err){
             res.statusCode = 500;
-            console.log('register error! errMsg: ' + err);
-            log.error('register error! errMsg: ' + err);
+            console.log('save accountInfo error! errMsg: ' + err);
+            log.error('save accountInfo! errMsg: ' + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }else {
             account.save(function (err) {
                 if (err){
-                    console.log('register faild! errMsg: ' + err);
-                    log.error('register error! errMsg: ' + err);
+                    console.log('save account! errMsg: ' + err);
+                    log.error('save account! errMsg: ' + err);
                     res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                     return;
                 }else {

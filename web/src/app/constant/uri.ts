@@ -1,4 +1,3 @@
-import {environment} from "../../environments/environment";
 /**
  * Created by laizhiyuan on 2017/9/28.
  */
@@ -23,3 +22,4 @@ export const ACCOUNT_INFO_HEADER = root + "/private/account/info/head";
 export const ACCOUNT_INFO_ATTENTIONS = root + "/private/account/attentions";
 export const ACCOUNT_INFO_FANS = root + "/private/account/fans";
 export const ACCOUNT_INFO_ATTENTION = root + "/private/account/attention";
+export const ACCOUNT_INFO_VISITORS = root + "/private/account/visitors";

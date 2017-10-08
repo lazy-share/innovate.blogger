@@ -9,217 +9,240 @@ require('../models/notes');
 var NotesModel = mongoose.model('NotesModel');
 var CommentModel = mongoose.model('CommentModel');
 var ReplyModel = mongoose.model('ReplyModel');
+var AccountInfoModel = mongoose.model('AccountInfoModel');
+var result = require('../common/result');
+var response = require('../common/response');
+var log = require('log4js').getLogger('note');
+
+
+//我的、TA的日记
+exports.notes = function (req, res) {
+    var username = req.query.username;
+    var currentUsername = req.query.currentUsername;
+    var paging = req.query.paging;
+    if (!username || !paging || !currentUsername) {
+        log.error("notes params error; params:" + username + '|' + paging + '|' + currentUsername);
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+        return;
+    }
+    paging = JSON.parse(paging);
+    var query = NotesModel.find({username: username});
+    if (paging.keyword) {
+        query.where('content',paging.keyword);
+    }
+    query.sort({update_time: -1}).limit(paging.limit).skip(paging.skip);
+    query.exec(function (err, docs) {
+        if (err) {
+            console.log('notes err! msg:' + err);
+            log.error('notes err! msg:' + err);
+            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+            return;
+        }
+        NotesModel.find({username: username}).count(function (err, count) {
+            if (err) {
+                console.log('notes err! msg:' + err);
+                log.error('notes err! msg:' + err);
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                return;
+            }
+            AccountInfoModel.findOne({username: username}, {head_portrait: 1}).exec(function (err, doc) {
+                if (err) {
+                    log.error('新增日记后查询出错，error:' + err);
+                    res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                    return;
+                }
+                if (currentUsername != username) { //异步添加浏览次数
+                    for (var i in docs){
+                        docs[i].visitor = docs[i].visitor + 1;
+                        NotesModel.update({username: username, _id: docs[i]._id}, {$inc: {visitor: 1}}).exec(function (err) {
+                            if (err) {
+                                console.log('notes err! msg:' + err);
+                                log.error('add ' + docs[i]._id + ' notes visitor err! msg:' + err);
+                            }
+                        });
+                    }
+                }
+                var obj = {notes: docs, count: count, head_portrait: doc.head_portrait};
+                res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+            });
+        });
+
+    });
+};
+
 //新增日记/心情
-exports.insert = function (req, res) {
+exports.addNote = function (req, res) {
+    var note = req.body.note;
+    var paging = req.body.paging;
+    if (!note){
+        log.error("add note params error; note:" + note);
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+        return;
+    }
+    var nowTime = new Date();
     var comment = new CommentModel({
         replies: []
     });
-    var notes = new NotesModel({
-        username: req.body.username,
-        content: req.body.content,
-        praise: [],
-        visitor: 0,
-        comment: comment
-    });
-
-    notes.save(function (err) {
-        if (err){
-            console.log('save notes error, msg:' + err);
-            res.json({code: false, msg: '系统错误!'});
+    note.visitor = 0;
+    note.praise = [];
+    note.comment = comment;
+    note.update_time = nowTime;
+    note.create_time = nowTime;
+    var newNote = new NotesModel(note);
+    newNote.save(function (err) {
+        if (err) {
+            log.error('add note err! msg:' + err);
+            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-        res.json({code: true, msg: '添加成功!'});
-    });
+        if (paging) {
+            NotesModel.find({username: note.username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
+                if (err) {
+                    log.error('新增日记后查询出错，error:' + err);
+                    res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                    return;
+                }
+                NotesModel.find({username: note.username}).count().exec(function (err, count) {
+                    if (err) {
+                        log.error('新增日记后查询出错，error:' + err);
+                        res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                        return;
+                    }
+                    AccountInfoModel.findOne({username: note.username}, {head_portrait: 1}).exec(function (err, doc) {
+                        if (err) {
+                            log.error('新增日记后查询出错，error:' + err);
+                            res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                            return;
+                        }
+                        var obj = {notes: docs, count: count, head_portrait: doc.head_portrait};
+                        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+                    });
+                });
+            });
+        } else { //不存在paging参数则不查
+            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
+        }
+    })
 };
 
 //删除日记心情
-exports.deleteOne = function (req, res) {
-    var id = req.query.id;
-    if (!id){
-        console.log('delete notes id param is null or empty');
-        res.json({code: false, msg: '参数id不能为空!'});
+exports.delNote = function (req, res) {
+    var note = req.query.note;
+    var paging = req.query.paging;
+    if (!note){
+        log.error("del note params error; note:" + note);
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
         return;
     }
-    NotesModel.findOne({_id: id})
-        .exec(function (err, doc) {
-            if (err){
-                console.log('delete notes error, msg:' + err);
-                res.json({code: false, msg: '系统错误!'});
-                return;
-            }
-            if (!doc){
-                res.json({code: true, msg: '查无数据!'});
-                return;
-            }
-            var commentId = [];
-            commentId.push(doc.comment);
-            try{
-                require('./comment').deleteInId(commentId);
-                doc.remove(function (err) {
-                    if (err){
-                        console.log('delete notes error, msg:' + err);
-                        res.json({code: false, msg: '系统错误!'});
+    paging = JSON.parse(paging);
+    note = JSON.parse(note);
+    NotesModel.remove({username: note.username, _id: note.id}, function (err) {
+        if (err) {
+            log.error('del note err! msg:' + err);
+            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+            return;
+        }
+        if (paging) {
+            NotesModel.find({username: note.username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
+                if (err) {
+                    log.error('删除日记后查询出错，error:' + err);
+                    res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                    return;
+                }
+                NotesModel.find({username: note.username}).count().exec(function (err, count) {
+                    if (err) {
+                        log.error('删除日记后查询出错，error:' + err);
+                        res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
                         return;
                     }
-                    res.json({code: true, msg: '删除成功!'});
-                });
-            }catch(err){
-                console.log('delete one notes err, msg:' + err);
-                res.json({code: false, msg: '删除失败!'});
-            }
-        });
-};
-
-exports.deleteByAccount = function (username) {
-    if (!username){
-        return true;
-    }
-    NotesModel.find({username: username})
-        .exec(function (err, docs) {
-            if (docs){
-                var commentIds = [];
-                for (var doc in docs){
-                    commentIds.push(doc.id);
-                }
-                try{
-                    require('./comment').deleteInId(commentIds);
-                    NotesModel.remove({username: username}, function (err) {
-                        if (err){
-                            throw new Error(err);
-                        }else {
-                            return true;
+                    AccountInfoModel.findOne({username: note.username}, {head_portrait: 1}).exec(function (err, doc) {
+                        if (err) {
+                            log.error('删除日记后查询出错，error:' + err);
+                            res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                            return;
                         }
+                        var obj = {notes: docs, count: count, head_portrait: doc.head_portrait};
+                        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
                     });
-                }catch(err){
-                    throw new Error(err);
-                }
-            }
-        });
-}
-
-//更新日记心情
-exports.update = function (req, res) {
-    var id = req.body.id;
-    if (!id){
-        console.log('update notes id param is null or empty');
-        res.json({code: false, msg: '参数id不能为空!'});
-        return;
-    }
-    NotesModel.update({_id: id}, {$set: {content: req.body.content}})
-        .exec(function (err) {
-            if (err){
-                console.log('update notes error, msg:' + err);
-                res.json({code: false, msg: '系统错误!'});
-                return;
-            }
-            res.json({code: true, msg: '编辑成功!'});
-        });
-};
-
-//查找某个账号的所有的日记
-exports.findByAccount = function (req, res) {
-    var username = req.query.username;
-    if (!username){
-        console.log('findByAccount notes username param is null or empty');
-        res.json({code: false, msg: '参数username不能为空!'});
-        return;
-    }
-    NotesModel.find({username: username})
-        .exec(function (err, docs) {
-            if (err){
-                console.log('findByAccount notes error, msg:' + err);
-                res.json({code: false, msg: '系统错误!'});
-                return;
-            }
-            if (!docs){
-                res.json({code: false, msg: '查无数据!'});
-            }
-            res.json({code: true, msg: '查询成功!', data: docs});
-        });
-};
-
-//查找某个日记
-exports.findOne = function (req, res) {
-    var id = req.query.id;
-    if (!id){
-        console.log('findOne notes id param is null or empty');
-        res.json({code: false, msg: '参数id不能为空!'});
-        return;
-    }
-    NotesModel.findOne({_id: id}).exec(function (err, doc) {
-        if (err){
-            console.log('findOne notes error, msg:' + err);
-            res.json({code: false, msg: '系统错误!'});
-            return;
+                });
+            });
+        } else { //不存在paging参数则不查
+            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
         }
-        if (!doc){
-            res.json({code: false, msg: '查无数据!'});
-            return;
-        }
-        res.json({code: true, msg: '查询成功!', data: doc});
     })
 };
 
-//新增访问量
-exports.visitor = function (req, res) {
-    var id = req.query.id;
-    if (!id){
-        console.log('findOne notes id param is null or empty');
-        res.json({code: false, msg: '参数id不能为空!'});
-        return;
-    }
-    NotesModel.findOne({_id: id}, function (err, doc) {
-        if (err){
-            console.log('visitor notes error, msg:' + err);
-            res.json({code: false, msg: '系统错误!'});
-            return;
-        }
-        if (!doc){
-            res.json({code: false, msg: '查无数据!'});
-            return;
-        }
-        doc.set('visitor', doc.visitor + 1);
-        doc.save(function (err) {
-            if (err){
-                console.log('visitor notes error, msg:' + err);
-                res.json({code: false, msg: '系统错误!'});
-                return;
-            }
-            res.json({code: true, msg: '更新成功!'});
-        })
-    })
-};
-
-//添加赞
+//赞
 exports.praise = function (req, res) {
-    var username = req.query.username;
-    var id = req.query.id;
-    if (!username || !id){
-        console.log('praise notes id and username param is null or empty');
-        res.json({code: false, msg: '参数id、username不能为空!'});
+    var username = req.body.username;
+    var from = req.body.from;
+    var id = req.body.id;
+    var paging = req.body.paging;
+    if (!username || !from ||!id){
+        log.error('note praise error: params error :' + username + '|' + from + '|' + id);
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
         return;
     }
-    NotesModel.findOne({_id: id}, function (err, doc) {
-        if (err){
-            console.log('praise notes error, msg:' + err);
-            res.json({code: false, msg: '系统错误!'});
+    NotesModel.findOne({username: username, _id: id}).exec(function (err, doc) {
+        if (err) {
+            log.error('note praise error:' + err);
+            res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
             return;
         }
-        if (!doc){
-            res.json({code: false, msg: '查无数据!'});
-            return;
-        }
-        doc.praise.push(username);
-        doc.save(function (err) {
-            if (err){
-                console.log('praise notes error, msg:' + err);
-                res.json({code: false, msg: '系统错误!'});
-                return;
+        var praise = doc.praise;
+        var isExists = false;
+        for (var i in praise){
+            if (praise[i] == from){
+                isExists = true;
+                break;
             }
-            res.json({code: true, msg: '更新成功!'});
-        });
-    })
+        }
+        if (isExists) {
+            NotesModel.update({username: username, _id: id}, {$pull: {praise: from}}).exec(function (err) {
+                if (err) {
+                    log.error('note praise error:' + err);
+                    res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                    return;
+                }
+                if (paging) {
+                    NotesModel.find({username: username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
+                        if (err) {
+                            log.error('删除赞后查询出错，error:' + err);
+                            res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                            return;
+                        }
+                        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, docs));
+                    });
+                }else {
+                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
+                }
+            });
+        }else {
+            NotesModel.update({username: username, _id: id}, {$push: {praise: from}}).exec(function (err) {
+                if (err) {
+                    log.error('note praise error:' + err);
+                    res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                    return;
+                }
+                if (paging) {
+                    NotesModel.find({username: username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
+                        if (err) {
+                            log.error('删除赞后查询出错，error:' + err);
+                            res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                            return;
+                        }
+                        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, docs));
+                    });
+                }else {
+                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
+                }
+            });
+        }
+    });
 };
+
+
+
 
 
 

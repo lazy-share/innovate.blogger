@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {HttpClient, HttpParams, HttpErrorResponse} from "@angular/common/http";
 import {AppResponse} from "../../vo/app-response";
-import {ACCOUNT_INFO_ATTENTIONS} from "../../constant/uri";
+import {MY_ATTENTIONS} from "../../constant/uri";
 import {Router} from "@angular/router";
 /**
  * Created by lzy on 2017/10/2.
@@ -15,7 +15,7 @@ export class AttentionService {
 
   attentions(username: string): Observable<any> {
     return this.http.get<AppResponse>(
-      ACCOUNT_INFO_ATTENTIONS,
+      MY_ATTENTIONS,
       {
         params: new HttpParams().set("username", username)
       }

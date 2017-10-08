@@ -6,11 +6,12 @@
  *     心情/日记 Schema
  */
 var mongoose = require('mongoose');
+var commentSchema = require('./comment').commentSchema;
 var Schema = mongoose.Schema;
 var notesSchema = new Schema({
     username: {type: String, required: true},
     content: {type: String, required: true},
-    comment: {type: Schema.ObjectId, required: true},
+    comment: [commentSchema],
     praise: [String],
     visitor: {type: Number},
     create_time: {type: Date, required:true, default: Date.now()},

@@ -1,4 +1,4 @@
-import {Component, AfterViewInit, OnInit} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {ActivatedRoute, ParamMap} from "@angular/router";
 import {BaseComponent} from "../common/BaseComponent";
 import {FansService} from "./fans.service";

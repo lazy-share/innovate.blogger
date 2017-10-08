@@ -18,15 +18,15 @@ module.exports = function (router) {
     //修改头像
     router.post(webRootApi + '/private/account/info/head/:username', accountInfoService.uploadHead);
     //我、TA的关注
-    router.get(webRootApi + '/private/account/attentions', accountInfoService.attentions);
+    router.get(webRootApi + '/private/my/attentions', accountInfoService.attentions);
     //关注我、TA的
-    router.get(webRootApi + '/private/account/fans', accountInfoService.fans);
+    router.get(webRootApi + '/private/my/fans', accountInfoService.fans);
     //关注他
-    router.post(webRootApi + '/private/account/attention', accountInfoService.attention);
+    router.post(webRootApi + '/private/my/attention', accountInfoService.attention);
     //取消关注
-    router.delete(webRootApi + '/private/account/attention', accountInfoService.cancleAttention);
+    router.delete(webRootApi + '/private/my/attention', accountInfoService.cancleAttention);
     //我、TA的访客
-    router.get(webRootApi + '/private/account/visitors', accountInfoService.visitors);
+    router.get(webRootApi + '/private/my/visitors', accountInfoService.visitors);
     //添加访客
-    router.post(webRootApi + '/private/account/visitors', accountInfoService.addVisitor);
+    router.post(webRootApi + '/private/my/visitors', accountInfoService.addVisitor);
 };

@@ -7,13 +7,12 @@
  *
  */
 var notesService = require('../service/notes');
+const env = require('../conf/environments');
+const webRootApi = (require('../conf/sys_config')[env]).webRootUri;
 
 module.exports = function (router) {
-    router.post('/notes/add', notesService.insert);
-    router.post('/notes/update', notesService.update);
-    router.get('/notes/deleteOne', notesService.deleteOne);
-    router.get('/notes/findByAccount', notesService.findByAccount);
-    router.get('/notes/visitor', notesService.visitor);
-    router.get('/notes/praise', notesService.praise);
-    router.get('/notes/findOne', notesService.findOne);
+    router.get(webRootApi +'/private/my/notes', notesService.notes);
+    router.post(webRootApi +'/private/my/note', notesService.addNote);
+    router.delete(webRootApi +'/private/my/note', notesService.delNote);
+    router.post(webRootApi +'/private/my/note/praise', notesService.praise);
 };

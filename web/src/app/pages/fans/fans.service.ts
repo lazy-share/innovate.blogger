@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
 import {HttpClient, HttpParams, HttpErrorResponse} from "@angular/common/http";
 import {AppResponse} from "../../vo/app-response";
-import {ACCOUNT_INFO_FANS, ACCOUNT_INFO_ATTENTION} from "../../constant/uri";
+import {MY_FANS, MY_ATTENTION} from "../../constant/uri";
 import {Router} from "@angular/router";
 /**
  * Created by lzy on 2017/10/2.
@@ -15,7 +15,7 @@ export class FansService {
 
   fans(username: string): Observable<any> {
     return this.http.get<AppResponse>(
-      ACCOUNT_INFO_FANS,
+      MY_FANS,
       {
         params: new HttpParams().set("username", username)
       }
@@ -35,7 +35,7 @@ export class FansService {
 
   attention(subject: string, from: string): Observable<any> {
     return this.http.post<AppResponse>(
-      ACCOUNT_INFO_ATTENTION,
+      MY_ATTENTION,
       {subject: subject, from: from}
     ).map(
       data => {
@@ -46,7 +46,7 @@ export class FansService {
 
   cancleAttention(subject: string, from: string): Observable<any> {
     return this.http.delete<AppResponse>(
-      ACCOUNT_INFO_ATTENTION,
+      MY_ATTENTION,
       {
         params: new HttpParams().set("subject", subject).set("from", from)
       }

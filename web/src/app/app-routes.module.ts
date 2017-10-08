@@ -20,7 +20,8 @@ const APP_ROUTES: Routes = [
       {path: 'info', loadChildren: 'app/pages/info/info.module#InfoModule'},
       {path: 'attention', loadChildren: 'app/pages/attention/attention.module#AttentionModule'},
       {path: 'fans', loadChildren: 'app/pages/fans/fans.module#FansModule'},
-      {path: 'visitor', loadChildren: 'app/pages/visitor/visitor.module#VisitorModule'}
+      {path: 'visitor', loadChildren: 'app/pages/visitor/visitor.module#VisitorModule'},
+      {path: 'note', loadChildren: 'app/pages/note/note.module#NoteModule'}
     ],
     canActivate: [AuthorizationGuardService],
   },

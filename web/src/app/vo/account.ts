@@ -28,26 +28,26 @@ export class Account {
   public last_login_time: Date;
 
   static instantiation () {
-    let account: Account = new Account();
-    account.username = "";
-    account.password = "";
-    account.encrypted = "";
-    account.status = 0;
-    account.confirmPassword = "";
-    account.token = "";
-    account.id = "";
-    account.head_portrait = "";
-    account.gender = "";
-    account.education = "";
-    account.job = "";
-    account.email = "";
-    account.mobile = "";
-    account.qq = "";
-    account.wechat = "";
-    account.motto = "";
-    account.address = Address.instantiation();
-    account.attention = new Array<RelationShip>();
-    account.fans = new Array<RelationShip>();
-    return account;
+    let vo: Account = new Account();
+    vo.username = "";
+    vo.password = "";
+    vo.encrypted = "";
+    vo.status = 0;
+    vo.confirmPassword = "";
+    vo.token = "";
+    vo.id = "";
+    vo.head_portrait = "";
+    vo.gender = "";
+    vo.education = "";
+    vo.job = "";
+    vo.email = "";
+    vo.mobile = "";
+    vo.qq = "";
+    vo.wechat = "";
+    vo.motto = "";
+    vo.address = Address.instantiation();
+    vo.attention = new Array<RelationShip>();
+    vo.fans = new Array<RelationShip>();
+    return vo;
   }
 }

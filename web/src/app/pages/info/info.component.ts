@@ -10,7 +10,6 @@ import {AppResponse} from "../../vo/app-response";
 import {FileUploader, FileItem, ParsedResponseHeaders} from "ng2-file-upload";
 import {ACCOUNT_INFO_HEADER} from "../../constant/uri";
 import {SelectAddressComponent} from "../../shared/form-component/select-address/select-address.component";
-import {Utils} from "../../utils/utils";
 import {IMyDpOptions} from "mydatepicker";
 /**
  * Created by laizhiyuan on 2017/9/29.
@@ -31,13 +30,6 @@ export class InfoComponent extends BaseComponent implements OnInit {
   private minDate = new Date(1900, 1, 1);
   private maxDate = new Date(2050, 1, 1);
   private uploader: FileUploader = new FileUploader({});
-  private bsConfig: Partial<BsDatepickerConfig> = Object.assign({},
-    {
-      locale: 'zhCn',
-      containerClass: 'theme-blue',
-      showWeekNumbers: false
-    }
-  );
   private birthdayDatePickerOptions: IMyDpOptions = {
     dateFormat: 'yyyy-mm-dd',
     showTodayBtn: false,

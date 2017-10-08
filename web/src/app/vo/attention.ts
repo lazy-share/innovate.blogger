@@ -10,8 +10,8 @@ export class RelationShip{
 
 
   static instantiation(){
-    let attention: RelationShip = new RelationShip();
-    attention.from = "";
-    attention.subject = "";
+    let vo: RelationShip = new RelationShip();
+    vo.from = "";
+    vo.subject = "";
   }
 }

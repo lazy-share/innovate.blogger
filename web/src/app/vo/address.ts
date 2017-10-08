@@ -12,16 +12,16 @@ export class Address {
   street_name: string;
   details: string;
   static instantiation () {
-    let address: Address = new Address();
-    address.province_code = "";
-    address.province_name = "";
-    address.city_code = "";
-    address.city_name = "";
-    address.county_code = "";
-    address.county_name = "";
-    address.street_code = "";
-    address.street_name = "";
-    address.details = "";
-    return address;
+    let vo: Address = new Address();
+    vo.province_code = "";
+    vo.province_name = "";
+    vo.city_code = "";
+    vo.city_name = "";
+    vo.county_code = "";
+    vo.county_name = "";
+    vo.street_code = "";
+    vo.street_name = "";
+    vo.details = "";
+    return vo;
   }
 }

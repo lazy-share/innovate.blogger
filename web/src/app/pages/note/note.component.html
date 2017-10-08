@@ -1,0 +1,81 @@
+<sub-nav [requestUsername]="requestUsername" [tab]="2"></sub-nav>
+<div class="container">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <div *ngIf="authorizationService.currentUser.username != requestUsername">
+        <h3 class="panel-title">日记</h3>
+      </div>
+      <div *ngIf="authorizationService.currentUser.username == requestUsername">
+        <button [class.hidden]="isShow" class="btn btn-default" (click)="changeBtn()" type="button">写日记</button>
+        <button [class.hidden]="!isShow" class="btn btn-default" (click)="changeBtn()" type="button">取消</button>
+      </div>
+    </div>
+    <div *ngIf="isShow" class="panel-body">
+      <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
+      <form novalidate #noteForm="ngForm" (ngSubmit)="submitNote()" role="form">
+        <div class="form-group">
+          <textarea class="form-control" [(ngModel)]="content" (keyup)="keyup()" name="content"
+                    maxlength="{{initContentNumber}}" rows="3" placeholder="说点什么..." required></textarea>
+          <span>还可以输入{{contentNumber}}个字</span>
+        </div>
+        <div class="form-group col-lg-offset-6 col-md-offset-6 col-sm-offset-6 col-xs-offset-5">
+          <button [disabled]="!noteForm.form.valid" class="btn btn-success" type="submit">发表</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="panel-body" *ngIf="!isShow">
+      <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
+      <div [class.hidden]="paging.bigTotalItems > 0">
+        <p>
+          暂无日记........
+        </p>
+      </div>
+      <div [class.hidden]="paging.bigTotalItems < 0">
+        <div class="well well-sm" *ngFor="let note of notes">
+          <div>
+            <div style="float: left; margin-right: 10px;"><img style="width:50px; height: 50px;" class="img-circle" [src]="head_portrait"/></div>
+            <div style="padding-top: 8px;"><span>{{note.username}}</span></div>
+            <div><span>{{note.update_time | date: "yyyy-MM-dd HH:mm:ss"}}</span></div>
+          </div>
+          <div class="div-to-hide-hr"></div>
+          <p>{{note.content}}</p>
+          <div class="div-to-hide-hr"></div>
+          <p>
+            <a style="margin-right: 50px;cursor:default;text-decoration:none;">浏览{{note.visitor}}次</a>
+            <a style="margin-right: 16px;" tooltip='说出你的看法' *ngIf="authorizationService.currentUser.username != requestUsername"><span class="glyphicon glyphicon-comment"></span></a>
+            <a (click)="praise(note._id, note)" style="margin-right: 16px; color: black;" tooltip='交朋友就从赞开始吧' *ngIf="authorizationService.currentUser.username != requestUsername && (note.praise | isExistsArr: authorizationService.currentUser.username)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
+            <a (click)="praise(note._id, note)" style="margin-right: 16px;" tooltip='交朋友就从赞开始吧' *ngIf="authorizationService.currentUser.username != requestUsername && !(note.praise | isExistsArr: authorizationService.currentUser.username)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
+            <a (click)="toDeleteNote(note._id, appModalTemplate)" tooltip='永久删除该记录？' *ngIf="authorizationService.currentUser.username == requestUsername"><span class="glyphicon glyphicon-trash"></span></a>
+          </p>
+          <div class="div-to-hr-1"></div>
+          <p *ngIf="note.praise.length > 0">
+            <span class="glyphicon glyphicon-thumbs-up"></span> <span> {{note.praise | joinArr: '、'}}觉得很赞</span>
+          </p>
+          <p>
+            <span style="color: #3498db;">赵三：</span>玩的咋样？
+          </p>
+          <p>
+            <span style="color: #3498db;">李四回复赵三：</span>不好玩
+          </p>
+        </div>
+      </div>
+      <div [class.hidden]="paging.bigTotalItems <= 0" class="col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-lg-6 col-md-6 col-sm-8 col-xs-12">
+        <pagination [firstText]="paging.firstText" [previousText]="paging.previousText" [lastText]="paging.lastText"
+                    [nextText]="paging.nextText" [totalItems]="paging.bigTotalItems" [(ngModel)]="paging.bigCurrentPage"
+                    [maxSize]="paging.maxSize" class="pagination-sm" [boundaryLinks]="true" [rotate]="false"
+                    (numPages)="paging.numPages = $event" (pageChanged)="pageChanged($event)"></pagination>
+      </div>
+
+      <template #appModalTemplate>
+        <div class="modal-body">
+          {{appModal.content}}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" (click)="cancleModal()">取消</button>
+          <button type="button" class="btn btn-default" (click)="deleteNote()">确定</button>
+        </div>
+      </template>
+    </div>
+  </div>
+</div>

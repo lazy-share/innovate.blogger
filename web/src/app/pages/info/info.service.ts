@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Observable";
 import {HttpClient, HttpParams, HttpErrorResponse} from "@angular/common/http";
-import {ACCOUNT_INFO, ACCOUNT_INFO_VISITORS} from "../../constant/uri";
+import {ACCOUNT_INFO, MY_VISITORS} from "../../constant/uri";
 import {AppResponse} from "../../vo/app-response";
 import {Account} from "../../vo/account";
 import {Router} from "@angular/router";
@@ -18,7 +18,7 @@ export class InfoService {
 
   addVisitor(subject: string, from:string):Observable<AppResponse> {
     return this.http.post<AppResponse> (
-      ACCOUNT_INFO_VISITORS,
+      MY_VISITORS,
       {from: from, subject: subject}
     ).map(
       data => {

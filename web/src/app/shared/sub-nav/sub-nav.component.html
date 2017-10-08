@@ -1,4 +1,21 @@
-<div class="well well-sm" style="color:gray; font-style:italic;font-weight:bold;">【{{requestUsername}}】DE 个人中心</div>
+<!--<div class="well well-sm" >({{requestUsername}}) 个人中心</div>-->
+<div class="container-fluid">
+  <div class="row clearfix">
+    <div class="col-md-12 column">
+      <ul class="breadcrumb">
+        <li>
+          <a routerLink="/home">首页</a>
+        </li>
+        <li>
+          <a routerLink="/info/{{requestUsername}}">个人中心</a>
+        </li>
+        <li class="active">
+          {{requestUsername}}
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
 <div class="container">
   <div class="row clearfix">
     <div class="col-md-12 column">
@@ -11,8 +28,8 @@
           <a *ngIf="storageUsername != requestUsername" routerLink="/private/article/{{requestUsername}}">TA 的文章</a>
         </li>
         <li [class.active]="tab == 2">
-          <a *ngIf="storageUsername == requestUsername" routerLink="/private/note/{{requestUsername}}">我的心情</a>
-          <a *ngIf="storageUsername != requestUsername" routerLink="/private/note/{{requestUsername}}">TA 的心情</a>
+          <a *ngIf="storageUsername == requestUsername" routerLink="/private/note/{{requestUsername}}">我的日记</a>
+          <a *ngIf="storageUsername != requestUsername" routerLink="/private/note/{{requestUsername}}">TA 的日记</a>
         </li>
         <li [class.active]="tab == 3">
           <a *ngIf="storageUsername == requestUsername" routerLink="/private/media/{{requestUsername}}">我的媒体</a>

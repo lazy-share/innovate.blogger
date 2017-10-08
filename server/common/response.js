@@ -11,5 +11,6 @@ module.exports = {
     C602: {code: 602, msg: '不存在该账号', status: false},
     C603: {code: 603, msg: '密保码不正确', status: false},
     C604: {code: 604, msg: '登录密码不正确', status: false},
-    C605: {code: 605, msg: '查无数据', status: false}
+    C605: {code: 605, msg: '查无数据', status: false},
+    C606: {code: 606, msg: '新增后查询出错', status: false}
 };

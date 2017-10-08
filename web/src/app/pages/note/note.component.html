@@ -50,13 +50,13 @@
           </p>
           <div class="div-to-hr-1"></div>
           <p *ngIf="note.praise.length > 0">
-            <span class="glyphicon glyphicon-thumbs-up"></span> <span> {{note.praise | joinArr: '、'}}觉得很赞</span>
+            <span class="glyphicon glyphicon-thumbs-up"></span> <span class="comment-font-color"> {{note.praise | joinArr: '、'}}</span><span>觉得很赞</span>
           </p>
           <p>
-            <span style="color: #3498db;">赵三：</span>玩的咋样？
+            <span class="comment-font-color">赵三：</span>玩的咋样？
           </p>
           <p>
-            <span style="color: #3498db;">李四回复赵三：</span>不好玩
+            <span class="comment-font-color">李四回复赵三：</span>不好玩
           </p>
         </div>
       </div>

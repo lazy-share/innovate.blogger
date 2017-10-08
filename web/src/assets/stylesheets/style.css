@@ -45,3 +45,6 @@ a {
   border-top:1px solid lightgrey;
   clear:both;
 }
+.comment-font-color {
+  color: #3498db;
+}

@@ -241,8 +241,68 @@ exports.praise = function (req, res) {
     });
 };
 
+exports.comment = function (req, res) {
+    var obj = req.body.obj;
+    if (!obj){
+        log.error('note post comment error: params error :' + obj + '|' + JSON.stringify(obj));
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+        return;
+    }
+    NotesModel.findOne({username: obj.username, _id: obj.docId}).exec(function (err, doc) {
+        if (err) {
+            log.error('note post comment error:' + err);
+            res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+            return;
+        }
+        var nowTime = new Date();
+        var reply = new ReplyModel({
+            create_time: nowTime,
+            update_time: nowTime,
+            content: obj.content,
+            from_name: obj.from,
+            subject_name: obj.subject
+        });
+        if (!obj.subject) { //顶级评论
+            addComment(req, res, reply, doc, obj.username);
+            return;
+        }else {
+            appendComment(req, res, reply, doc, obj.username);
+        }
+    });
+};
 
+function appendComment(req, res, reply, doc, username) {
+    var rootReplies = doc.comment.replies;
+    for (var i in rootReplies){
+        if (rootReplies[i].from_name == reply.subject_name){
 
+        }
+    }
+}
+
+function addComment(req, res, reply, doc, username) {
+    doc.comment.replies.push(reply);
+    doc.save(function (err) {
+        if (err){
+            log.error('note addComment error:' + err);
+            res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+            return;
+        }
+        var paging = req.body.paging;
+        if (paging) {
+            NotesModel.find({username: username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
+                if (err) {
+                    log.error('addComment后查询出错，error:' + err);
+                    res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                    return;
+                }
+                res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, docs));
+            });
+        }else {
+            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
+        }
+    });
+}
 
 
 

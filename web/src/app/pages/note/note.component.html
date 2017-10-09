@@ -43,7 +43,7 @@
           <div class="div-to-hide-hr"></div>
           <p>
             <a style="margin-right: 50px;cursor:default;text-decoration:none;">浏览{{note.visitor}}次</a>
-            <a style="margin-right: 16px;" tooltip='说出你的看法' *ngIf="authorizationService.currentUser.username != requestUsername"><span class="glyphicon glyphicon-comment"></span></a>
+            <a (click)="comment(note._id, aaa)" style="margin-right: 16px;" tooltip='说出你的看法' *ngIf="authorizationService.currentUser.username != requestUsername"><span class="glyphicon glyphicon-comment"></span></a>
             <a (click)="praise(note._id, note)" style="margin-right: 16px; color: black;" tooltip='交朋友就从赞开始吧' *ngIf="authorizationService.currentUser.username != requestUsername && (note.praise | isExistsArr: authorizationService.currentUser.username)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
             <a (click)="praise(note._id, note)" style="margin-right: 16px;" tooltip='交朋友就从赞开始吧' *ngIf="authorizationService.currentUser.username != requestUsername && !(note.praise | isExistsArr: authorizationService.currentUser.username)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
             <a (click)="toDeleteNote(note._id, appModalTemplate)" tooltip='永久删除该记录？' *ngIf="authorizationService.currentUser.username == requestUsername"><span class="glyphicon glyphicon-trash"></span></a>
@@ -58,6 +58,14 @@
           <p>
             <span class="comment-font-color">李四回复赵三：</span>不好玩
           </p>
+          <div hidden="true" id="T{{note._id}}">
+            <div style="margin-bottom: 5px;">
+              <input (keyup)="keyupComment()" maxlength="{{initCommentMaxLength}}" name="commentContent" [(ngModel)]="commentContent" type="text" class="form-control T{{note._id}}" placeholder="">
+              <span>你还可以输入{{commentMaxLength}}个字</span>
+            </div>
+            <a (click)="cancleCommen(note._id)" class="comment-a-cancle" style="text-decoration: none;">取消评论</a>
+            <a (click)="submitComment(note._id)" [class.hidden]="hideSubmitComment" style="text-decoration: none;">提交评论</a>
+          </div>
         </div>
       </div>
       <div [class.hidden]="paging.bigTotalItems <= 0" class="col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-lg-6 col-md-6 col-sm-8 col-xs-12">

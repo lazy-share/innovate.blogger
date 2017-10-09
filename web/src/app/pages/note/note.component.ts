@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef} from "@angular/core";
+import {Component, OnInit, TemplateRef, ElementRef, Renderer2, OnDestroy} from "@angular/core";
 import {BaseComponent} from "../common/BaseComponent";
 import {ActivatedRoute, ParamMap} from "@angular/router";
 import {AuthorizationService} from "../../core/authorization/authorization.service";
@@ -11,6 +11,7 @@ import "tinymce/plugins/link";
 import {NoteService} from "./note.service";
 import {AppModal} from "../../vo/app-modal";
 import {BsModalService, BsModalRef} from "ngx-bootstrap";
+import {SubmitCommentParams} from "../../vo/submit-comment-params";
 /**
  * Created by lzy on 2017/10/6.
  */
@@ -18,7 +19,11 @@ import {BsModalService, BsModalRef} from "ngx-bootstrap";
   templateUrl: './note.component.html',
   styleUrls: ['./note.component.css']
 })
-export class NoteComponent extends BaseComponent implements OnInit {
+export class NoteComponent extends BaseComponent implements OnInit , OnDestroy{
+
+  ngOnDestroy(): void {
+    this.renderer2.destroy();
+  }
 
   private requestUsername: string;
   private paging: Paging = Paging.instantiation();
@@ -33,7 +38,10 @@ export class NoteComponent extends BaseComponent implements OnInit {
   constructor(private route: ActivatedRoute,
               private authorizationService: AuthorizationService,
               private noteService: NoteService,
-              private modalService: BsModalService) {
+              private modalService: BsModalService,
+              private elementRef:ElementRef,
+              private renderer2:Renderer2
+  ) {
     super();
     this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get("username")).subscribe();
   }
@@ -150,33 +158,77 @@ export class NoteComponent extends BaseComponent implements OnInit {
           this.sysMsg = data.msg;
           return;
         }
+        this.showMsg = false;
         this.notes = data.data;
-        /*let praiseArr: string[] = new Array<string>();
-        let index: number = 0;
-        let flag: boolean = true;
-        for (let i = 0; i < this.notes.length; i++) {
-          if (this.notes[i]._id == id) { //找到数组中的日记
-            praiseArr = this.notes[i].praise; //拿出这个日记的赞
-            index = i; //记住这个数组的索引
-            break;
-          }
-        }
-        for (let k = 0; k < praiseArr.length; k++) {
-          if (praiseArr[k] == currentUsername) { //已经赞过
-            praiseArr.splice(k, 1);
-            this.notes[index].praise = praiseArr;
-            flag = false;
-            break;
-          }
-        }
-        if (flag) {
-          this.notes[index].praise.push(currentUsername);
-        }*/
       },
       err => {
         this.showMsg = true;
         this.sysMsg = '系统错误';
       }
     );
+  }
+
+  private openCommentDiv:string[] = new Array<string>();
+  private commentContent:string;
+  comment(id:string){
+    let isExists = false;
+    for (let i = 0; i < this.openCommentDiv.length; i++){
+      if (this.openCommentDiv[i] == id){
+        isExists = true;
+      }else {
+        this.cancleCommen(this.openCommentDiv[i]);
+      }
+    }
+    if (!isExists) {
+      this.openCommentDiv.push(id);
+    }
+    let commentDiv = this.elementRef.nativeElement.querySelector('#T' + id);
+    this.renderer2.setProperty(commentDiv, 'hidden', false);
+    let commentInput = this.elementRef.nativeElement.querySelector('.T' + id);
+    this.renderer2.setProperty(commentInput, 'placeholder', '评论' + this.requestUsername);
+    commentInput.focus();
+  }
+
+  cancleCommen(id:string){
+    let commentDiv = this.elementRef.nativeElement.querySelector('#T' + id);
+    this.renderer2.setProperty(commentDiv, 'hidden', true);
+    this.commentContent = '';
+    this.commentMaxLength = this.initCommentMaxLength;
+  }
+
+  submitComment(id:string){
+    let submitParams = new SubmitCommentParams();
+    submitParams.content = this.content;
+    submitParams.docId = id;
+    submitParams.subject = this.requestUsername;
+    submitParams.from = this.authorizationService.getCurrentUser().username;
+    submitParams.username = this.requestUsername;
+    this.noteService.submitConment(submitParams).subscribe(
+      data => {
+        if (!data.status) {
+          this.showMsg = true;
+          this.sysMsg = data.msg;
+          return;
+        }
+        this.showMsg = false;
+        this.notes = data.data;
+      },
+      err => {
+        this.showMsg = true;
+        this.sysMsg = '系统错误';
+      }
+    );
+  }
+
+  private hideSubmitComment = true;
+  private commentMaxLength = 50;
+  private initCommentMaxLength = 50;
+  keyupComment(){
+    if (this.commentContent){
+      this.hideSubmitComment = false;
+    }else {
+      this.hideSubmitComment = true;
+    }
+    this.commentMaxLength = this.initCommentMaxLength - this.commentContent.length;
   }
 }

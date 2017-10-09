@@ -1,11 +1,12 @@
 import {Injectable} from "@angular/core";
 import {HttpClient, HttpParams, HttpErrorResponse} from "@angular/common/http";
 import {AppResponse} from "../../vo/app-response";
-import {MY_NOTES, MY_NOTE, MY_NOTE_PRAISE} from "../../constant/uri";
+import {MY_NOTES, MY_NOTE, MY_NOTE_PRAISE, MY_NOTE_COMMENT} from "../../constant/uri";
 import {Router} from "@angular/router";
 import {Observable} from "rxjs";
 import {PagingParams} from "../../vo/paging";
 import {Note} from "../../vo/note";
+import {SubmitCommentParams} from "../../vo/submit-comment-params";
 /**
  * Created by lzy on 2017/10/7.
  */
@@ -65,6 +66,17 @@ export class NoteService {
     return this.http.post<AppResponse>(
       MY_NOTE_PRAISE,
       {username: requestUsername, from: currentUsername, id: id, paging: PagingParams.instantiation()}
+    ).map(
+      data => {
+        return data;
+      }
+    );
+  }
+
+  submitConment(submitCommentObj:SubmitCommentParams): Observable<AppResponse> {
+    return this.http.post<AppResponse>(
+      MY_NOTE_COMMENT,
+      {obj: submitCommentObj, paging: PagingParams.instantiation()}
     ).map(
       data => {
         return data;

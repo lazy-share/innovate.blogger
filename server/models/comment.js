@@ -9,7 +9,7 @@ require('../models/comment');
 var Schema = mongoose.Schema;
 
 var replySchema = new Schema({
-    reply_name: {type: String, required: true},
+    from_name: {type: String, required: true},
     subject_name: {type: String, required: true},
     content: {type: String, required: true},
     create_time: {type: Date, required: true, default: Date.now()},

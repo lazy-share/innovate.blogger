@@ -262,20 +262,49 @@ exports.comment = function (req, res) {
             from_name: obj.from,
             subject_name: obj.subject
         });
-        if (!obj.subject) { //顶级评论
+        if (!obj.subject) { //顶级评论发起者
             addComment(req, res, reply, doc, obj.username);
             return;
         }else {
-            appendComment(req, res, reply, doc, obj.username);
+            var allComment = doc.comment.replies;
+            for(var i in allComment){
+                if (allComment[i].from_name == reply.subject_name) {
+                    allComment[i].replies.push(reply);
+                    break;
+                }
+            }
+            doc.comment.replies = allComment;
+            doc.save(function (err) {
+                if (err){
+                    log.error('note post comment error:' + err);
+                    res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                    return;
+                }
+                var paging = req.body.paging;
+                if (paging) {
+                    NotesModel.find({username: obj.username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
+                        if (err) {
+                            log.error('note post comment后查询出错，error:' + err);
+                            res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                            return;
+                        }
+                        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, docs));
+                    });
+                }else {
+                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
+                }
+            });
         }
     });
 };
 
-function appendComment(req, res, reply, doc, username) {
-    var rootReplies = doc.comment.replies;
-    for (var i in rootReplies){
-        if (rootReplies[i].from_name == reply.subject_name){
-
+function appendComment(reply, rootReplies, currentReplies) {
+    for (var i in currentReplies){
+        if (currentReplies[i].from_name == reply.subject_name){
+            currentReplies[i].push(reply);
+            return rootReplies;
+        }else {
+            appendComment(reply, rootReplies, currentReplies[i].replies);
         }
     }
 }

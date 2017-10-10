@@ -7,5 +7,4 @@ export class SubmitCommentParams {
   public docId:string;
   public content:string;
   public username:string;
-  public parentSubject:string;
 }

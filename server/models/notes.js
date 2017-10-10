@@ -11,7 +11,7 @@ var Schema = mongoose.Schema;
 var notesSchema = new Schema({
     username: {type: String, required: true},
     content: {type: String, required: true},
-    comment: [commentSchema],
+    comment: commentSchema,
     praise: [String],
     visitor: {type: Number},
     create_time: {type: Date, required:true, default: Date.now()},

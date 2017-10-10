@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef, ElementRef, Renderer2, OnDestroy} from "@angular/core";
+import {Component, OnInit, TemplateRef, ElementRef, Renderer2, OnDestroy, AfterViewInit} from "@angular/core";
 import {BaseComponent} from "../common/BaseComponent";
 import {ActivatedRoute, ParamMap} from "@angular/router";
 import {AuthorizationService} from "../../core/authorization/authorization.service";
@@ -19,7 +19,11 @@ import {SubmitCommentParams} from "../../vo/submit-comment-params";
   templateUrl: './note.component.html',
   styleUrls: ['./note.component.css']
 })
-export class NoteComponent extends BaseComponent implements OnInit , OnDestroy{
+export class NoteComponent extends BaseComponent implements OnInit , AfterViewInit, OnDestroy{
+
+  ngAfterViewInit(): void {
+    /*this.initPraise();*/
+  }
 
   ngOnDestroy(): void {
     this.renderer2.destroy();
@@ -34,6 +38,7 @@ export class NoteComponent extends BaseComponent implements OnInit , OnDestroy{
   private head_portrait: string;
   private appModal:AppModal = new AppModal('确定删除', '确定删除吗？', 'confirmDelNoteModal', false);
   public modalRef: BsModalRef;
+  public nativeElement = this.elementRef.nativeElement;
 
   constructor(private route: ActivatedRoute,
               private authorizationService: AuthorizationService,
@@ -170,7 +175,9 @@ export class NoteComponent extends BaseComponent implements OnInit , OnDestroy{
 
   private openCommentDiv:string[] = new Array<string>();
   private commentContent:string;
-  comment(id:string){
+  private globalCommentSubject:string;
+  comment(id:string, subject:string){
+    this.globalCommentSubject = subject;
     let isExists = false;
     for (let i = 0; i < this.openCommentDiv.length; i++){
       if (this.openCommentDiv[i] == id){
@@ -182,25 +189,31 @@ export class NoteComponent extends BaseComponent implements OnInit , OnDestroy{
     if (!isExists) {
       this.openCommentDiv.push(id);
     }
-    let commentDiv = this.elementRef.nativeElement.querySelector('#T' + id);
+    let commentDiv = this.nativeElement.querySelector('#T' + id);
     this.renderer2.setProperty(commentDiv, 'hidden', false);
-    let commentInput = this.elementRef.nativeElement.querySelector('.T' + id);
-    this.renderer2.setProperty(commentInput, 'placeholder', '评论' + this.requestUsername);
+    let commentInput = this.nativeElement.querySelector('.T' + id);
+    if (!this.globalCommentSubject){
+      this.renderer2.setProperty(commentInput, 'placeholder', '评论' + this.requestUsername);
+    }else {
+      this.renderer2.setProperty(commentInput, 'placeholder', '回复' + this.globalCommentSubject);
+    }
     commentInput.focus();
   }
 
   cancleCommen(id:string){
-    let commentDiv = this.elementRef.nativeElement.querySelector('#T' + id);
-    this.renderer2.setProperty(commentDiv, 'hidden', true);
+    if (id) {
+      let commentDiv = this.nativeElement.querySelector('#T' + id);
+      this.renderer2.setProperty(commentDiv, 'hidden', true);
+    }
     this.commentContent = '';
     this.commentMaxLength = this.initCommentMaxLength;
   }
 
   submitComment(id:string){
     let submitParams = new SubmitCommentParams();
-    submitParams.content = this.content;
+    submitParams.content = this.commentContent;
     submitParams.docId = id;
-    submitParams.subject = this.requestUsername;
+    submitParams.subject = this.globalCommentSubject;
     submitParams.from = this.authorizationService.getCurrentUser().username;
     submitParams.username = this.requestUsername;
     this.noteService.submitConment(submitParams).subscribe(
@@ -212,6 +225,7 @@ export class NoteComponent extends BaseComponent implements OnInit , OnDestroy{
         }
         this.showMsg = false;
         this.notes = data.data;
+        this.cancleCommen('');
       },
       err => {
         this.showMsg = true;

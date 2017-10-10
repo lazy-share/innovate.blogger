@@ -6,7 +6,7 @@ export class Comment {
 }
 
 export class Reply {
-  public reply_name: string;
+  public from_name: string;
   public subject_name: string;
   public content: string;
   public create_time: Date;

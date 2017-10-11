@@ -241,67 +241,52 @@ exports.praise = function (req, res) {
     });
 };
 
+//评论
 exports.comment = function (req, res) {
-    var obj = req.body.obj;
-    if (!obj){
-        log.error('note post comment error: params error :' + obj + '|' + JSON.stringify(obj));
+    var reply = req.body.reply;
+    if (!reply){
+        log.error('note post comment error: params error :' + reply + '|' + JSON.stringify(reply));
         res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
         return;
     }
-    NotesModel.findOne({username: obj.username, _id: obj.docId}).exec(function (err, doc) {
+    NotesModel.findOne({username: reply.username, _id: reply.doc_id}).exec(function (err, doc) {
         if (err) {
             log.error('note post comment error:' + err);
             res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
             return;
         }
         var nowTime = new Date();
-        var reply = new ReplyModel({
+        var newReply = new ReplyModel({
             create_time: nowTime,
             update_time: nowTime,
-            content: obj.content,
-            from_name: obj.from,
-            subject_name: obj.subject
+            content: reply.content,
+            from_name: reply.from_name,
+            subject_name: reply.subject_name
         });
-        if (!obj.subject) { //顶级评论发起者
-            addComment(req, res, reply, doc, obj.username);
+        if (!newReply.parent_id) { //顶级评论发起者
+            doc.comment.replies.push(newReply);
+            doc.toObject();
+            confirmComment(req, res, doc, newReply.username);
             return;
         }else {
             var allComment = doc.comment.replies;
             for(var i in allComment){
-                if (allComment[i].from_name == reply.subject_name) {
-                    allComment[i].replies.push(reply);
+                if (allComment[i]._id == newReply.root_id) { //找到对应的根评论发起者
+                    var newAllComent = appendComment(reply, allComment[i].replies, allComment[i].replies);
+                    doc.comment.replies[i] = newAllComent;
+                    confirmComment(req, res, doc, newReply.username);
                     break;
                 }
             }
-            doc.comment.replies = allComment;
-            doc.save(function (err) {
-                if (err){
-                    log.error('note post comment error:' + err);
-                    res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
-                    return;
-                }
-                var paging = req.body.paging;
-                if (paging) {
-                    NotesModel.find({username: obj.username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
-                        if (err) {
-                            log.error('note post comment后查询出错，error:' + err);
-                            res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
-                            return;
-                        }
-                        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, docs));
-                    });
-                }else {
-                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
-                }
-            });
         }
     });
 };
 
+//递归查找对应的父回复
 function appendComment(reply, rootReplies, currentReplies) {
     for (var i in currentReplies){
-        if (currentReplies[i].from_name == reply.subject_name){
-            currentReplies[i].push(reply);
+        if (currentReplies[i]._id == reply.parent_id){
+            currentReplies[i].replies.push(reply);
             return rootReplies;
         }else {
             appendComment(reply, rootReplies, currentReplies[i].replies);
@@ -309,9 +294,9 @@ function appendComment(reply, rootReplies, currentReplies) {
     }
 }
 
-function addComment(req, res, reply, doc, username) {
-    doc.comment.replies.push(reply);
-    doc.save(function (err) {
+//添加评论
+function confirmComment(req, res, doc, username) {
+    NotesModel.update({username: username, _id: doc._id},{$set: {comment: doc.comment}}, function (err) {
         if (err){
             log.error('note addComment error:' + err);
             res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
@@ -332,6 +317,66 @@ function addComment(req, res, reply, doc, username) {
         }
     });
 }
+
+//删除评论
+exports.delComment = function (req, res) {
+    var reply = req.query.reply;
+    if (!reply){
+        log.error('note delComment error: params error :' + reply + '|' + JSON.stringify(reply));
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+        return;
+    }
+    NotesModel.findOne({username: reply.username, _id: reply.doc()}).exec(function (err, doc) {
+        if (err) {
+            log.error('delComment error:' + err);
+            res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+            return;
+        }
+        if (!doc) {
+            log.error('delComment error: note not found');
+            res.json(result.json(response.C607.status, response.C607.code, response.C607.msg, null));
+            return;
+        }
+        var root_id = reply.root_id;
+        var allComment = doc.comment.replies;
+        if (!root_id) { //删除的是一个顶级评论
+            for (var i in allComment){
+                if (allComment[i]._id == reply.id) {
+                    allComment.splice(i, 1);
+                    doc.comment.replies = allComment;
+                    confirmComment(req, res, doc, reply.username);
+                    break;
+                }
+            }
+        }else { //删除的是一个子回复
+            for (var i in allComment){
+                if (allComment[i]._id == root_id) {
+                    var newAllComment = spliceComment(allComment[i].replies, allComment[i].replies, reply);
+                    doc.comment.replies = newAllComment;
+                    confirmComment(req, res, doc, reply.username);
+                    break;
+                }
+            }
+        }
+    });
+};
+
+//删除一个评论、回复
+function spliceComment(rootReply, currentReply, reply) {
+    for (var i in currentReply){
+        if (currentReply[i]._id == reply.id) {
+            currentReply.splice(i, 1);
+            return rootReply;
+        }else {
+            if (currentReply[i].replies.length > 0){
+                spliceComment(rootReply, currentReply[i].replies, reply);
+            }else {
+                continue;
+            }
+        }
+    }
+}
+
 
 
 

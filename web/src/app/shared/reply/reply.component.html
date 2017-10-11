@@ -1,0 +1,12 @@
+<ng-container *ngIf="replies.length > 0">
+  <div *ngFor="let r of replies">
+    <a style="text-decoration: none;" routerLink="/private/info/{{r.from_name}}">{{r.from_name}}</a>
+    <span>回复</span>
+    <a style="text-decoration: none;" routerLink="/private/info/{{r.subject_name}}">{{r.subject_name}}:</a>
+    <a *ngIf="r.from_name != authorizationService.currentUser.username" style="text-decoration: none; color:black;" (click)="reply(r.from_name, r._id)">{{r.content}}</a>
+    <a *ngIf="r.from_name == authorizationService.currentUser.username" style="text-decoration: none; color:black;" (click)="removeReply(r._id)">{{r.content}}</a>
+    <ng-container *ngIf="r.replies.length > 0">
+      <reply  (replies)="r.replies"></reply>
+    </ng-container>
+  </div>
+</ng-container>

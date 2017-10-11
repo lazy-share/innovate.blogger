@@ -1,12 +1,12 @@
 import {Injectable} from "@angular/core";
-import {HttpClient, HttpParams, HttpErrorResponse} from "@angular/common/http";
+import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
 import {AppResponse} from "../../vo/app-response";
-import {MY_NOTES, MY_NOTE, MY_NOTE_PRAISE, MY_NOTE_COMMENT} from "../../constant/uri";
+import {MY_NOTE, MY_NOTE_COMMENT, MY_NOTE_PRAISE, MY_NOTES} from "../../constant/uri";
 import {Router} from "@angular/router";
 import {Observable} from "rxjs";
 import {PagingParams} from "../../vo/paging";
 import {Note} from "../../vo/note";
-import {SubmitCommentParams} from "../../vo/submit-comment-params";
+import {Reply} from "../../vo/comment";
 /**
  * Created by lzy on 2017/10/7.
  */
@@ -73,10 +73,23 @@ export class NoteService {
     );
   }
 
-  submitConment(submitCommentObj:SubmitCommentParams): Observable<AppResponse> {
+  submitConment(reply:Reply): Observable<AppResponse> {
     return this.http.post<AppResponse>(
       MY_NOTE_COMMENT,
-      {obj: submitCommentObj, paging: PagingParams.instantiation()}
+      {reply: reply, paging: PagingParams.instantiation()}
+    ).map(
+      data => {
+        return data;
+      }
+    );
+  }
+
+  delConment(reply:Reply): Observable<AppResponse> {
+    return this.http.delete<AppResponse>(
+      MY_NOTE_COMMENT,
+      {
+        params: new HttpParams().set("reply", JSON.stringify(reply)).set('paging', JSON.stringify(PagingParams.instantiation()))
+      }
     ).map(
       data => {
         return data;

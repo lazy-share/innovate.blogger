@@ -16,4 +16,5 @@ module.exports = function (router) {
     router.delete(webRootApi +'/private/my/note', notesService.delNote);
     router.post(webRootApi +'/private/my/note/praise', notesService.praise);
     router.post(webRootApi +'/private/my/note/comment', notesService.comment);
+    router.delete(webRootApi +'/private/my/note/comment', notesService.delComment);
 };

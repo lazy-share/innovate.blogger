@@ -24,6 +24,7 @@ import {MyDatePickerModule} from "mydatepicker";
 import {MyDatePickerPipe} from "./form-pipe/my-date-picker";
 import {TinymceEditorComponent} from "./tinymce-editor/tinymce.component";
 import {IsExistsArrPipe, JoinArrPipe} from "./common/common.pipe";
+import {ReplyComponent} from "./reply/reply.component";
 /**
  * Created by laizhiyuan on 2017/9/25.
  */
@@ -57,7 +58,8 @@ import {IsExistsArrPipe, JoinArrPipe} from "./common/common.pipe";
     MyDatePickerPipe,
     IsExistsArrPipe,
     TinymceEditorComponent,
-    JoinArrPipe
+    JoinArrPipe,
+    ReplyComponent
   ],
   exports: [
     RouterModule,
@@ -86,7 +88,8 @@ import {IsExistsArrPipe, JoinArrPipe} from "./common/common.pipe";
     IsExistsArrPipe,
     JoinArrPipe,
     PopoverModule,
-    ModalModule
+    ModalModule,
+    ReplyComponent
   ]
 })
 export class SharedModule {

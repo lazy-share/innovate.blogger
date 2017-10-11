@@ -125,6 +125,8 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
   keyup() {
     if (this.content) {
       this.contentNumber = this.initContentNumber - this.content.length;
+    }else {
+      this.contentNumber = this.initContentNumber;
     }
   }
 
@@ -229,10 +231,10 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
     this.globalReply.root_id = root_id;
     this.globalReply.parent_id = parent_id;
     this.globalReply.subject_name = subject;
-    this.openCommentInput(noteId, parent_id, subject);
+    this.openCommentInput(noteId, root_id, subject);
   }
 
-  openCommentInput(templateId:string, parent_id:string, subject: string){
+  openCommentInput(templateId:string, root_id:string, subject: string){
     let isExists = false;
     //查找以及打开评论输入框的
     for (let i = 0; i < this.openCommentDiv.length; i++){
@@ -248,7 +250,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
     let commentDiv = this.nativeElement.querySelector('#T' + templateId); //评论 div
     this.renderer2.setProperty(commentDiv, 'hidden', false);
     let commentInput = this.nativeElement.querySelector('.T' + templateId); //评论 input
-    if (!parent_id){ //顶级评论发起者
+    if (!root_id){ //顶级评论发起者
       this.renderer2.setProperty(commentInput, 'placeholder', '评论' + this.requestUsername);
     }else { //子回复
       this.renderer2.setProperty(commentInput, 'placeholder', '回复' + subject);
@@ -264,8 +266,9 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
   onReply(noteId:string, root_id:string,  reply:Reply){
     reply.doc_id = noteId;
     reply.root_id = root_id;
+    reply.parent_id = reply._id;
     this.globalReply = reply;
-    this.openCommentInput(noteId, reply.parent_id, reply.subject_name);
+    this.openCommentInput(noteId, reply.parent_id, reply.from_name);
   }
 
   /**
@@ -348,9 +351,10 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
   keyupComment(){
     if (this.commentContent){
       this.hideSubmitComment = false;
+      this.commentMaxLength = this.initCommentMaxLength - this.commentContent.length;
     }else {
       this.hideSubmitComment = true;
+      this.commentMaxLength = this.initCommentMaxLength;
     }
-    this.commentMaxLength = this.initCommentMaxLength - this.commentContent.length;
   }
 }

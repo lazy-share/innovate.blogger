@@ -263,18 +263,28 @@ exports.comment = function (req, res) {
             from_name: reply.from_name,
             subject_name: reply.subject_name
         });
-        if (!newReply.parent_id) { //顶级评论发起者
+        if (!reply.root_id) { //顶级评论发起者
             doc.comment.replies.push(newReply);
-            doc.toObject();
-            confirmComment(req, res, doc, newReply.username);
+            confirmComment(req, res, doc, reply.username);
             return;
+        }else if (reply.root_id == reply.parent_id){
+            var allComment = doc.comment.replies;
+            for (var k = 0; k < allComment.length; k++) {
+                if (allComment[k]._id == reply.root_id) { //找到对应的根评论发起者
+                    doc.comment.replies[k].replies.push(reply);
+                    confirmComment(req, res, doc, reply.username);
+                    break;
+                }
+            }
         }else {
             var allComment = doc.comment.replies;
-            for(var i in allComment){
-                if (allComment[i]._id == newReply.root_id) { //找到对应的根评论发起者
-                    var newAllComent = appendComment(reply, allComment[i].replies, allComment[i].replies);
-                    doc.comment.replies[i] = newAllComent;
-                    confirmComment(req, res, doc, newReply.username);
+            for (var k = 0; k < allComment.length; k++) {
+                if (allComment[k]._id == reply.root_id) { //找到对应的根评论发起者
+                    var tempAllComent = allComment[k].replies;
+                    var newAllComent = appendComment(reply, tempAllComent, tempAllComent);
+                    doc.comment.replies[k].replies = newAllComent;
+                    doc.toObject();
+                    confirmComment(req, res, doc, reply.username);
                     break;
                 }
             }
@@ -284,12 +294,19 @@ exports.comment = function (req, res) {
 
 //递归查找对应的父回复
 function appendComment(reply, rootReplies, currentReplies) {
-    for (var i in currentReplies){
-        if (currentReplies[i]._id == reply.parent_id){
-            currentReplies[i].replies.push(reply);
-            return rootReplies;
-        }else {
-            appendComment(reply, rootReplies, currentReplies[i].replies);
+    if (currentReplies){
+        for (var i = 0; i < currentReplies.length; i++){
+            if (currentReplies[i]._id == reply.parent_id){
+                currentReplies[i].replies.push(reply);
+                rootReplies.toObject();
+                return rootReplies;
+            }else {
+                if (currentReplies[i].length > 0){
+                    appendComment(reply, rootReplies, currentReplies[i].replies);
+                }else {
+                    continue;
+                }
+            }
         }
     }
 }

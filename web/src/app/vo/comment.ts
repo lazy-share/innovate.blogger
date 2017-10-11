@@ -7,6 +7,7 @@ export class Comment {
 
 export class Reply {
   public id:string;
+  public _id:string;
   public from_name: string;
   public subject_name: string;
   public content: string;

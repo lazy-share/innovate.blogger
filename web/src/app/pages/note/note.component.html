@@ -43,7 +43,7 @@
           <div class="div-to-hide-hr"></div>
           <p>
             <a style="margin-right: 50px;cursor:default;text-decoration:none;">浏览{{note.visitor}}次</a>
-            <a (click)="comment(note._id, null)" style="margin-right: 16px;" tooltip='说出你的看法' *ngIf="authorizationService.currentUser.username != requestUsername"><span class="glyphicon glyphicon-comment"></span></a>
+            <a (click)="comment(note._id, '', '', '')" style="margin-right: 16px;" tooltip='说出你的看法' *ngIf="authorizationService.currentUser.username != requestUsername"><span class="glyphicon glyphicon-comment"></span></a>
             <a (click)="praise(note._id)" style="margin-right: 16px; color: black;" tooltip='交朋友就从赞开始吧' *ngIf="authorizationService.currentUser.username != requestUsername && (note.praise | isExistsArr: authorizationService.currentUser.username)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
             <a (click)="praise(note._id)" style="margin-right: 16px;" tooltip='交朋友就从赞开始吧' *ngIf="authorizationService.currentUser.username != requestUsername && !(note.praise | isExistsArr: authorizationService.currentUser.username)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
             <a (click)="toDeleteNote(note._id, appModalTemplate)" tooltip='永久删除该记录？' *ngIf="authorizationService.currentUser.username == requestUsername"><span class="glyphicon glyphicon-trash"></span></a>
@@ -61,10 +61,10 @@
           <div *ngFor="let rep of note.comment.replies">
             <p>
               <a style="text-decoration: none;" routerLink="/private/info/{{rep.from_name}}">{{rep.from_name}}:</a>
-              <a *ngIf="rep.from_name != authorizationService.currentUser.username" style="text-decoration: none; color:black;" (click)="comment(note._id, rep._id, '', rep.from_name)">{{rep.content}}</a>
+              <a *ngIf="rep.from_name != authorizationService.currentUser.username" style="text-decoration: none; color:black;" (click)="comment(note._id, rep._id, rep._id, rep.from_name)">{{rep.content}}</a>
               <a *ngIf="rep.from_name == authorizationService.currentUser.username" style="text-decoration: none; color:black;" (click)="delComment(note._id, rep._id, '')">{{rep.content}}</a>
               <ng-container *ngIf="rep.replies.length > 0">
-                <reply  (replies)="rep.replies" (root_reply)="rep.from_name" (onRemoveReply)="delComment(note._id, rep._id, $event)" (onReply)="onReply(note._id, rep._id, $event)"></reply>
+                <reply  [replies]="rep.replies" (onRemoveReply)="delComment(note._id, rep._id, $event)" (onReply)="onReply(note._id, rep._id, $event)"></reply>
               </ng-container>
             </p>
           </div>

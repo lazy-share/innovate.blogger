@@ -48,7 +48,9 @@
             <a (click)="praise(note._id)" style="margin-right: 16px;" tooltip='交朋友就从赞开始吧' *ngIf="authorizationService.currentUser.username != requestUsername && !(note.praise | isExistsArr: authorizationService.currentUser.username)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
             <a (click)="toDeleteNote(note._id)" tooltip='永久删除该记录？' *ngIf="authorizationService.currentUser.username == requestUsername"><span class="glyphicon glyphicon-trash"></span></a>
           </p>
-          <div class="div-to-hr-1"></div>
+          <ng-container *ngIf="note.praise.length >0 || note.comment.replies.length > 0">
+            <div class="div-to-hr-1"></div>
+          </ng-container>
           <p *ngIf="note.praise.length > 0">
             <span class="glyphicon glyphicon-thumbs-up"></span>
             <a style="text-decoration: none;" routerLink="/private/info/{{p}}" *ngFor="let p of note.praise; let i = index;" class="comment-font-color">

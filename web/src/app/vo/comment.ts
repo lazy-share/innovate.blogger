@@ -18,4 +18,23 @@ export class Reply {
   public parent_id:string;
   public doc_id:string;
   public username:string;
+
+  constructor(){}
+
+  static toNew(reply: Reply){
+    let newReply = new Reply();
+    newReply.id = reply.id;
+    newReply._id = reply._id;
+    newReply.from_name = reply.from_name;
+    newReply.subject_name = reply.subject_name;
+    newReply.content = reply.content;
+    newReply.create_time = reply.create_time;
+    newReply.update_time = reply.update_time;
+    newReply.root_id = reply.root_id;
+    newReply.parent_id = reply.parent_id;
+    newReply.doc_id = reply.doc_id;
+    newReply.username = reply.username;
+    newReply.replies = reply.replies;
+    return newReply;
+  }
 }

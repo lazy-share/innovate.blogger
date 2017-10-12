@@ -261,65 +261,54 @@ exports.comment = function (req, res) {
             update_time: nowTime,
             content: reply.content,
             from_name: reply.from_name,
-            subject_name: reply.subject_name
+            subject_name: reply.subject_name,
+            parent_id: reply.parent_id
         });
-        if (!reply.root_id) { //顶级评论发起者
+        if (!reply.parent_id) { //顶级评论发起者
             doc.comment.replies.push(newReply);
-            confirmComment(req, res, doc, reply.username);
+            updateComment(req, res, doc, reply.username, req.body.paging);
             return;
-        }else if (reply.root_id == reply.parent_id){
-            var allComment = doc.comment.replies;
-            for (var k = 0; k < allComment.length; k++) {
-                if (allComment[k]._id == reply.root_id) { //找到对应的根评论发起者
-                    doc.comment.replies[k].replies.push(reply);
-                    confirmComment(req, res, doc, reply.username);
-                    break;
-                }
-            }
         }else {
             var allComment = doc.comment.replies;
-            for (var k = 0; k < allComment.length; k++) {
-                if (allComment[k]._id == reply.root_id) { //找到对应的根评论发起者
-                    var tempAllComent = allComment[k].replies;
-                    var newAllComent = appendComment(reply, tempAllComent, tempAllComent);
-                    doc.comment.replies[k].replies = newAllComent;
-                    doc.toObject();
-                    confirmComment(req, res, doc, reply.username);
-                    break;
-                }
-            }
+            var newAllComent = recursionAppendChild(newReply, allComment, allComment);
+            doc.comment.replies = newAllComent;
+            doc.toObject();
+            updateComment(req, res, doc, reply.username, req.body.paging);
         }
     });
 };
 
-//递归查找对应的父回复
-function appendComment(reply, rootReplies, currentReplies) {
-    if (currentReplies){
-        for (var i = 0; i < currentReplies.length; i++){
-            if (currentReplies[i]._id == reply.parent_id){
+//递归查找对应的父回复 currentReplies:顶级评论文档的replies属性
+var isFind = false;
+function recursionAppendChild(reply, rootReplies, currentReplies) {
+    if (!currentReplies) {
+        return rootReplies;
+    }
+    for (var i = 0; i < currentReplies.length; i++){
+        if (isFind) {
+            break;
+        }else {
+            if (currentReplies[i]._id == reply.parent_id) {
                 currentReplies[i].replies.push(reply);
                 rootReplies.toObject();
-                return rootReplies;
+                isFind = true;
+                break;
             }else {
-                if (currentReplies[i].length > 0){
-                    appendComment(reply, rootReplies, currentReplies[i].replies);
-                }else {
-                    continue;
-                }
+                recursionAppendChild(reply, rootReplies, currentReplies[i].replies);
             }
         }
     }
+    return rootReplies;
 }
 
-//添加评论
-function confirmComment(req, res, doc, username) {
+
+function updateComment(req, res, doc, username, paging) {
     NotesModel.update({username: username, _id: doc._id},{$set: {comment: doc.comment}}, function (err) {
         if (err){
             log.error('note addComment error:' + err);
             res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
             return;
         }
-        var paging = req.body.paging;
         if (paging) {
             NotesModel.find({username: username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
                 if (err) {
@@ -338,15 +327,16 @@ function confirmComment(req, res, doc, username) {
 //删除评论
 exports.delComment = function (req, res) {
     var reply = req.query.reply;
+    reply = JSON.parse(reply);
     if (!reply){
         log.error('note delComment error: params error :' + reply + '|' + JSON.stringify(reply));
         res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
         return;
     }
-    NotesModel.findOne({username: reply.username, _id: reply.doc()}).exec(function (err, doc) {
+    NotesModel.findOne({username: reply.username, _id: reply.doc_id}).exec(function (err, doc) {
         if (err) {
             log.error('delComment error:' + err);
-            res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
         if (!doc) {
@@ -354,44 +344,34 @@ exports.delComment = function (req, res) {
             res.json(result.json(response.C607.status, response.C607.code, response.C607.msg, null));
             return;
         }
-        var root_id = reply.root_id;
         var allComment = doc.comment.replies;
-        if (!root_id) { //删除的是一个顶级评论
-            for (var i in allComment){
-                if (allComment[i]._id == reply.id) {
-                    allComment.splice(i, 1);
-                    doc.comment.replies = allComment;
-                    confirmComment(req, res, doc, reply.username);
-                    break;
-                }
-            }
-        }else { //删除的是一个子回复
-            for (var i in allComment){
-                if (allComment[i]._id == root_id) {
-                    var newAllComment = spliceComment(allComment[i].replies, allComment[i].replies, reply);
-                    doc.comment.replies = newAllComment;
-                    confirmComment(req, res, doc, reply.username);
-                    break;
-                }
-            }
-        }
+        var newAllComment = recursionSpliceChild(allComment, allComment, reply);
+        doc.comment.replies = newAllComment;
+        doc.comment.toObject();
+        updateComment(req, res, doc, reply.username, JSON.parse(req.query.paging));
     });
 };
 
 //删除一个评论、回复
-function spliceComment(rootReply, currentReply, reply) {
-    for (var i in currentReply){
-        if (currentReply[i]._id == reply.id) {
-            currentReply.splice(i, 1);
-            return rootReply;
+var isFindDelete = false;
+function recursionSpliceChild(rootReply, currentReply, reply) {
+    if (!currentReply) {
+        return rootReply;
+    }
+    for (var i = 0; i < currentReply.length; i++){
+        if (isFindDelete) {
+            break;
         }else {
-            if (currentReply[i].replies.length > 0){
-                spliceComment(rootReply, currentReply[i].replies, reply);
+            if (currentReply[i]._id == reply.id) {
+                currentReply.splice(i, 1);
+                isFind = true;
+                break;
             }else {
-                continue;
+                recursionAppendChild(reply, rootReply, currentReply[i].replies);
             }
         }
     }
+    return rootReply;
 }
 
 

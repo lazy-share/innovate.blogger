@@ -43,10 +43,10 @@
           <div class="div-to-hide-hr"></div>
           <p>
             <a style="margin-right: 50px;cursor:default;text-decoration:none;">浏览{{note.visitor}}次</a>
-            <a (click)="comment(note._id, '', '', '')" style="margin-right: 16px;" tooltip='说出你的看法' *ngIf="authorizationService.currentUser.username != requestUsername"><span class="glyphicon glyphicon-comment"></span></a>
+            <a (click)="comment(note._id, '', '')" style="margin-right: 16px;" tooltip='分享一下你的想法' *ngIf="authorizationService.currentUser.username != requestUsername"><span class="glyphicon glyphicon-comment"></span></a>
             <a (click)="praise(note._id)" style="margin-right: 16px; color: black;" tooltip='交朋友就从赞开始吧' *ngIf="authorizationService.currentUser.username != requestUsername && (note.praise | isExistsArr: authorizationService.currentUser.username)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
             <a (click)="praise(note._id)" style="margin-right: 16px;" tooltip='交朋友就从赞开始吧' *ngIf="authorizationService.currentUser.username != requestUsername && !(note.praise | isExistsArr: authorizationService.currentUser.username)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
-            <a (click)="toDeleteNote(note._id, appModalTemplate)" tooltip='永久删除该记录？' *ngIf="authorizationService.currentUser.username == requestUsername"><span class="glyphicon glyphicon-trash"></span></a>
+            <a (click)="toDeleteNote(note._id)" tooltip='永久删除该记录？' *ngIf="authorizationService.currentUser.username == requestUsername"><span class="glyphicon glyphicon-trash"></span></a>
           </p>
           <div class="div-to-hr-1"></div>
           <p *ngIf="note.praise.length > 0">
@@ -61,10 +61,10 @@
           <div *ngFor="let rep of note.comment.replies">
             <p>
               <a style="text-decoration: none;" routerLink="/private/info/{{rep.from_name}}">{{rep.from_name}}:</a>
-              <a *ngIf="rep.from_name != authorizationService.currentUser.username" style="text-decoration: none; color:black;" (click)="comment(note._id, rep._id, rep._id, rep.from_name)">{{rep.content}}</a>
-              <a *ngIf="rep.from_name == authorizationService.currentUser.username" style="text-decoration: none; color:black;" (click)="delComment(note._id, rep._id, '')">{{rep.content}}</a>
+              <a *ngIf="rep.from_name != authorizationService.currentUser.username" style="text-decoration: none; color:black;" (click)="comment(note._id, rep._id, rep.from_name)">{{rep.content}}</a>
+              <a *ngIf="rep.from_name == authorizationService.currentUser.username" style="text-decoration: none; color:black;" (click)="toDelComment(note._id, rep._id)">{{rep.content}}</a>
               <ng-container *ngIf="rep.replies.length > 0">
-                <reply  [replies]="rep.replies" (onRemoveReply)="delComment(note._id, rep._id, $event)" (onReply)="onReply(note._id, rep._id, $event)"></reply>
+                <reply  [replies]="rep.replies" (onRemoveReply)="toDelComment(note._id, $event)" (onReply)="onReply(note._id, $event)"></reply>
               </ng-container>
             </p>
           </div>
@@ -82,17 +82,16 @@
       <div [class.hidden]="paging.bigTotalItems <= 0" class="col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-lg-6 col-md-6 col-sm-8 col-xs-12">
         <pagination [firstText]="paging.firstText" [previousText]="paging.previousText" [lastText]="paging.lastText"
                     [nextText]="paging.nextText" [totalItems]="paging.bigTotalItems" [(ngModel)]="paging.bigCurrentPage"
-                    [maxSize]="paging.maxSize" class="pagination-sm" [boundaryLinks]="true" [rotate]="false"
+                    [maxSize]="paging.maxSize" class="pagination-sm" [boundaryLinks]="true" [rotate]="false" [itemsPerPage]="paging.limit"
                     (numPages)="paging.numPages = $event" (pageChanged)="pageChanged($event)"></pagination>
       </div>
-
       <template #appModalTemplate>
         <div class="modal-body">
           {{appModal.content}}
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" (click)="cancleModal()">取消</button>
-          <button type="button" class="btn btn-default" (click)="deleteNote()">确定</button>
+          <button type="button" class="btn btn-default" (click)="excuteDel()">确定</button>
         </div>
       </template>
     </div>

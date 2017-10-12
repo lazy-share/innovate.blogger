@@ -21,10 +21,13 @@ export class ReplyComponent {
   }
 
   reply(reply:Reply){
-    this.onReply.emit(reply);
+    let newReply = Reply.toNew(reply);
+    newReply.parent_id = newReply._id;
+    newReply.subject_name = newReply.from_name;
+    this.onReply.emit(newReply);
   }
 
-  removeReply(replyId:string, ele:any){
+  removeReply(replyId:string){
     this.onRemoveReply.emit(replyId);
   }
 }

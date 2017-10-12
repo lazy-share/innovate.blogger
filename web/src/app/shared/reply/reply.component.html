@@ -1,7 +1,8 @@
 <ng-container *ngIf="replies.length > 0">
   <div *ngFor="let r of replies">
     <a style="text-decoration: none;" routerLink="/private/info/{{r.from_name}}">{{r.from_name}}</a>
-    <a style="color:black; text-decoration:none;" (click)="reply(r.from_name, r._id)">回复</a>
+    <a *ngIf="r.from_name != authorizationService.currentUser.username" style="color:black; text-decoration:none;" (click)="reply(r)">回复</a>
+    <a *ngIf="r.from_name == authorizationService.currentUser.username" style="color:black; text-decoration:none;" (click)="removeReply(r._id)">回复</a>
     <a style="text-decoration: none;" routerLink="/private/info/{{r.subject_name}}">{{r.subject_name}}:</a>
     <a *ngIf="r.from_name != authorizationService.currentUser.username" style="text-decoration: none; color:black;" (click)="reply(r)">{{r.content}}</a>
     <a *ngIf="r.from_name == authorizationService.currentUser.username" style="text-decoration: none; color:black;" (click)="removeReply(r._id)">{{r.content}}</a>

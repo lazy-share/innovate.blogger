@@ -12,6 +12,7 @@ var replySchema = new Schema({
     from_name: {type: String, required: true},
     subject_name: {type: String, required: false},
     content: {type: String, required: true},
+    parent_id: {type:String, required: false},
     create_time: {type: Date, required: true, default: Date.now()},
     update_time: {type: Date, required: true, default: Date.now()}
 },{

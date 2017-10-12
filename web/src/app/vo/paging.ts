@@ -3,19 +3,20 @@
  */
 export class Paging {
   public maxSize:number = 5;
-  public bigTotalItems:number = 175;
+  public bigTotalItems:number = 0;
   public bigCurrentPage:number = 1;
   public numPages:number = 0;
   public firstText:string = '第一页';
   public previousText:string = '上一页';
   public nextText:string = '下一页';
   public lastText:string = '最后一页';
+  public limit = 5;
 
   static instantiation(): Paging{
     let vo: Paging = new Paging();
     vo.bigCurrentPage = 1;
     vo.numPages = 0;
-    vo.firstText = '第一页';;
+    vo.firstText = '第一页';
     vo.previousText = '上一页';
     vo.nextText = '下一页';
     vo.lastText = '最后一页';
@@ -41,11 +42,11 @@ export class PagingParams {
 
   static instantiation(): PagingParams{
     let vo = new PagingParams();
-    vo.limit = 10;
+    vo.limit = 5;
     vo.keywork = '';
     vo.currentPage = 1;
     vo.skip = vo.getSkip();
-    vo.pageSize = 10;
+    vo.pageSize = 5;
     return vo;
   }
 }

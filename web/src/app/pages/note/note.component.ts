@@ -1,4 +1,7 @@
-import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Renderer2, TemplateRef} from "@angular/core";
+import {
+  AfterViewInit, Component, ElementRef, OnDestroy, OnInit, Renderer2, TemplateRef,
+  ViewChild
+} from "@angular/core";
 import {BaseComponent} from "../common/BaseComponent";
 import {ActivatedRoute, ParamMap} from "@angular/router";
 import {AuthorizationService} from "../../core/authorization/authorization.service";
@@ -15,6 +18,10 @@ import {Reply} from "../../vo/comment";
 /**
  * Created by lzy on 2017/10/6.
  */
+enum ModalExcuteDeleteType {
+  DELETE_NOTE = 1,
+  DELETE_COMMENT = 2
+}
 @Component({
   templateUrl: './note.component.html',
   styleUrls: ['./note.component.css']
@@ -42,6 +49,9 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
   private appModal:AppModal = new AppModal('确定删除', '确定删除吗？', 'confirmDelNoteModal', false);
   public modalRef: BsModalRef;
   public nativeElement = this.elementRef.nativeElement;
+  @ViewChild('appModalTemplate')
+  public appModalTemplateDiv:TemplateRef<any>;
+  private modalExcuteDeleteType:ModalExcuteDeleteType; //执行删除类型 "1":删除日记   "2":删除评论
 
   /**
    * 构造器
@@ -157,14 +167,30 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
    * 确认删除日记
    */
   private noteId:string;
-  toDeleteNote(id:string, template: TemplateRef<any>){
+  toDeleteNote(id:string){
+    this.appModal.content = "确定永久删除该日记吗?";
+    this.modalExcuteDeleteType = ModalExcuteDeleteType.DELETE_NOTE;
     this.noteId = id;
-    this.modalRef = this.modalService.show(template);
+    this.modalRef = this.modalService.show(this.appModalTemplateDiv);
   }
 
+  /**
+   * 取消模态框
+   */
   cancleModal(){
     this.noteId = '';
     this.modalRef.hide();
+  }
+
+  /**
+   * 执行模态框的删除
+   */
+  excuteDel(){
+    if (this.modalExcuteDeleteType == ModalExcuteDeleteType.DELETE_NOTE) {
+      this.deleteNote();
+    }else if (this.modalExcuteDeleteType == ModalExcuteDeleteType.DELETE_COMMENT) {
+      this.delComment();
+    }
   }
 
   /**
@@ -266,7 +292,6 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
   onReply(noteId:string, root_id:string,  reply:Reply){
     reply.doc_id = noteId;
     reply.root_id = root_id;
-    reply.parent_id = reply._id;
     this.globalReply = reply;
     this.openCommentInput(noteId, reply.parent_id, reply.from_name);
   }
@@ -298,17 +323,28 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
   }
 
   /**
+   * 去删除评论
+   * @param noteId
+   * @param root_id
+   * @param replyId
+   */
+  toDelComment(noteId:string, replyId:string){
+    this.appModal.content = "确定永久删除该评论/回复吗?";
+    this.modalExcuteDeleteType = ModalExcuteDeleteType.DELETE_COMMENT;
+    this.globalReply = new Reply();
+    this.globalReply.doc_id = noteId;
+    this.globalReply.id = replyId;
+    this.globalReply.username = this.requestUsername;
+    this.modalRef = this.modalService.show(this.appModalTemplateDiv);
+  }
+
+  /**
    * 删除评论
    * @param reply
    * @param id
    * @param root_id
    */
-  delComment(noteId:string, root_id:string, replyId:string){
-    this.globalReply = new Reply();
-    this.globalReply.root_id = root_id;
-    this.globalReply.doc_id = noteId;
-    this.globalReply.id = replyId;
-    this.globalReply.username = this.requestUsername;
+  delComment(){
     this.noteService.delConment(this.globalReply).subscribe(
       data => {
         if (!data.status) {
@@ -319,6 +355,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
         this.showMsg = false;
         this.notes = data.data;
         this.cancleCommen('');
+        this.modalRef.hide();
       },
       err => {
         this.showMsg = true;

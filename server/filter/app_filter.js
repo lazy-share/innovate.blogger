@@ -98,6 +98,7 @@ exports.notFound = function (req, res, next) {
 
 //500
 exports.sysError = function (err, req, res, next) {
+    log.error('global error handle: errMsg:' + err);
     res.status(200);//设置为200前端人工处理
     res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
     return;

@@ -279,11 +279,11 @@ exports.comment = function (req, res) {
 };
 
 //递归查找对应的父回复 currentReplies:顶级评论文档的replies属性
-var isFind = false;
 function recursionAppendChild(reply, rootReplies, currentReplies) {
     if (!currentReplies) {
         return rootReplies;
     }
+    var isFind = false;
     for (var i = 0; i < currentReplies.length; i++){
         if (isFind) {
             break;
@@ -347,27 +347,26 @@ exports.delComment = function (req, res) {
         var allComment = doc.comment.replies;
         var newAllComment = recursionSpliceChild(allComment, allComment, reply);
         doc.comment.replies = newAllComment;
-        doc.comment.toObject();
         updateComment(req, res, doc, reply.username, JSON.parse(req.query.paging));
     });
 };
 
 //删除一个评论、回复
-var isFindDelete = false;
 function recursionSpliceChild(rootReply, currentReply, reply) {
     if (!currentReply) {
         return rootReply;
     }
+    var isFindDelete = false;
     for (var i = 0; i < currentReply.length; i++){
         if (isFindDelete) {
             break;
         }else {
             if (currentReply[i]._id == reply.id) {
                 currentReply.splice(i, 1);
-                isFind = true;
+                isFindDelete = true;
                 break;
             }else {
-                recursionAppendChild(reply, rootReply, currentReply[i].replies);
+                recursionSpliceChild(rootReply, currentReply[i].replies, reply);
             }
         }
     }

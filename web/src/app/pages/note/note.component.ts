@@ -52,6 +52,9 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
   @ViewChild('appModalTemplate')
   public appModalTemplateDiv:TemplateRef<any>;
   private modalExcuteDeleteType:ModalExcuteDeleteType; //执行删除类型 "1":删除日记   "2":删除评论
+  private hideSubmitComment = true;
+  private commentMaxLength = 50;
+  private initCommentMaxLength = 50;
 
   /**
    * 构造器
@@ -251,16 +254,18 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
    * @param parent_id  父回复id
    * @param subject    回复主题
    */
-  comment(noteId:string, root_id:string, parent_id:string, subject: string){
+  comment(noteId:string, parent_id:string, subject: string){
     this.globalReply = new Reply();
     this.globalReply.doc_id = noteId;
-    this.globalReply.root_id = root_id;
     this.globalReply.parent_id = parent_id;
     this.globalReply.subject_name = subject;
-    this.openCommentInput(noteId, root_id, subject);
+    this.commentContent = '';
+    this.commentMaxLength = this.initCommentMaxLength;
+    this.hideSubmitComment = true;
+    this.openCommentInput(noteId, parent_id, subject);
   }
 
-  openCommentInput(templateId:string, root_id:string, subject: string){
+  openCommentInput(templateId:string, parent_id:string, subject: string){
     let isExists = false;
     //查找以及打开评论输入框的
     for (let i = 0; i < this.openCommentDiv.length; i++){
@@ -276,7 +281,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
     let commentDiv = this.nativeElement.querySelector('#T' + templateId); //评论 div
     this.renderer2.setProperty(commentDiv, 'hidden', false);
     let commentInput = this.nativeElement.querySelector('.T' + templateId); //评论 input
-    if (!root_id){ //顶级评论发起者
+    if (!parent_id){ //顶级评论发起者
       this.renderer2.setProperty(commentInput, 'placeholder', '评论' + this.requestUsername);
     }else { //子回复
       this.renderer2.setProperty(commentInput, 'placeholder', '回复' + subject);
@@ -289,9 +294,8 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
    * @param noteId
    * @param reply
    */
-  onReply(noteId:string, root_id:string,  reply:Reply){
+  onReply(noteId:string, reply:Reply){
     reply.doc_id = noteId;
-    reply.root_id = root_id;
     this.globalReply = reply;
     this.openCommentInput(noteId, reply.parent_id, reply.from_name);
   }
@@ -376,11 +380,6 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
     this.commentContent = '';
     this.commentMaxLength = this.initCommentMaxLength;
   }
-
-
-  private hideSubmitComment = true;
-  private commentMaxLength = 50;
-  private initCommentMaxLength = 50;
 
   /**
    * 监听评论输入事件

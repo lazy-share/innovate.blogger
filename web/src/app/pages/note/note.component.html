@@ -14,7 +14,7 @@
       <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
       <form novalidate #noteForm="ngForm" (ngSubmit)="submitNote()" role="form">
         <div class="form-group">
-          <textarea class="form-control" [(ngModel)]="content" (keyup)="keyup()" name="content"
+          <textarea class="form-control" [(ngModel)]="content" (keyup)="keyup()" (mousemove)="keyup()" name="content"
                     maxlength="{{initContentNumber}}" rows="3" placeholder="说点什么..." required></textarea>
           <span>还可以输入{{contentNumber}}个字</span>
         </div>
@@ -71,11 +71,11 @@
 
           <div hidden="true" id="T{{note._id}}">
             <div style="margin-bottom: 5px;">
-              <input (keyup)="keyupComment()" maxlength="{{initCommentMaxLength}}" name="commentContent" [(ngModel)]="commentContent" type="text" class="form-control T{{note._id}}" placeholder="">
+              <input (keyup)="keyupComment()" (mousemove)="keyupComment()" maxlength="{{initCommentMaxLength}}" name="commentContent" [(ngModel)]="commentContent" type="text" class="form-control T{{note._id}}" placeholder="">
               <span>你还可以输入{{commentMaxLength}}个字</span>
             </div>
             <a (click)="cancleCommen(note._id)" class="comment-a-cancle" style="text-decoration: none;">取消评论</a>
-            <a (click)="submitComment(note._id)" [class.hidden]="hideSubmitComment" style="text-decoration: none;">提交评论</a>
+            <a (click)="submitComment(note._id)" *ngIf="!hideSubmitComment" style="text-decoration: none;">提交评论</a>
           </div>
         </div>
       </div>

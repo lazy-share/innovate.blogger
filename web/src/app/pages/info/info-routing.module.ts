@@ -1,18 +1,18 @@
 import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
 import {InfoComponent} from "./info.component";
-import {InfoResolverService} from "./info-resolver.service";
+import {InfoResolveService} from "./info-resolve.service";
 /**
  * Created by laizhiyuan on 2017/9/29.
  */
 const INFO_ROUTES: Routes = [
   {path: '', redirectTo: '/not-found', pathMatch: 'full'},
-  {path:':username', component: InfoComponent, resolve: {accountInfo: InfoResolverService}}
+  {path:':username', component: InfoComponent, resolve: {accountInfo: InfoResolveService}}
 ];
 @NgModule({
   imports: [RouterModule.forChild(INFO_ROUTES)],
   exports: [RouterModule],
-  providers: [InfoResolverService]
+  providers: [InfoResolveService]
 })
 export class InfoRoutingModule {
 

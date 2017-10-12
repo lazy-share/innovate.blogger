@@ -7,7 +7,7 @@ import {InfoService} from "./info.service";
  * Created by lzy on 2017/10/6.
  */
 @Injectable()
-export class InfoResolverService implements Resolve<Account>{
+export class InfoResolveService implements Resolve<Account>{
 
   constructor(
     private infoService: InfoService,

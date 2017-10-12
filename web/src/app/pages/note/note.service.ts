@@ -62,10 +62,10 @@ export class NoteService {
     );
   }
 
-  praise(requestUsername:string, currentUsername: string, id: string): Observable<AppResponse> {
+  praise(requestUsername:string, currentUsername: string, id: string, paging: PagingParams): Observable<AppResponse> {
     return this.http.post<AppResponse>(
       MY_NOTE_PRAISE,
-      {username: requestUsername, from: currentUsername, id: id, paging: PagingParams.instantiation()}
+      {username: requestUsername, from: currentUsername, id: id, paging: paging}
     ).map(
       data => {
         return data;
@@ -73,10 +73,10 @@ export class NoteService {
     );
   }
 
-  submitConment(reply:Reply): Observable<AppResponse> {
+  submitConment(reply:Reply, paging: PagingParams): Observable<AppResponse> {
     return this.http.post<AppResponse>(
       MY_NOTE_COMMENT,
-      {reply: reply, paging: PagingParams.instantiation()}
+      {reply: reply, paging: paging}
     ).map(
       data => {
         return data;
@@ -84,11 +84,11 @@ export class NoteService {
     );
   }
 
-  delConment(reply:Reply): Observable<AppResponse> {
+  delConment(reply:Reply, paging: PagingParams): Observable<AppResponse> {
     return this.http.delete<AppResponse>(
       MY_NOTE_COMMENT,
       {
-        params: new HttpParams().set("reply", JSON.stringify(reply)).set('paging', JSON.stringify(PagingParams.instantiation()))
+        params: new HttpParams().set("reply", JSON.stringify(reply)).set('paging', JSON.stringify(paging))
       }
     ).map(
       data => {

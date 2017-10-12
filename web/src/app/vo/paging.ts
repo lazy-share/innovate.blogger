@@ -11,6 +11,7 @@ export class Paging {
   public nextText:string = '下一页';
   public lastText:string = '最后一页';
   public limit = 5;
+  public xsV = 0;
 
   static instantiation(): Paging{
     let vo: Paging = new Paging();
@@ -22,6 +23,7 @@ export class Paging {
     vo.lastText = '最后一页';
     vo.bigTotalItems = 0;
     vo.maxSize = 5;
+    vo.xsV = 0;
     return vo;
   }
 }

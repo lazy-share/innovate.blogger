@@ -55,6 +55,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
   private hideSubmitComment = true;
   private commentMaxLength = 50;
   private initCommentMaxLength = 50;
+  private pagingParams = PagingParams.instantiation();
 
   /**
    * 构造器
@@ -108,12 +109,11 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
    * @param event
    */
   public pageChanged(event: any): void {
-    let pagingParams = PagingParams.instantiation();
-    pagingParams.currentPage = event.page;
-    pagingParams.pageSize = event.itemsPerPage;
-    pagingParams.skip = pagingParams.getSkip();
+    this.pagingParams.currentPage = event.page;
+    this.pagingParams.pageSize = event.itemsPerPage;
+    this.pagingParams.skip = this.pagingParams.getSkip();
 
-    this.noteService.notes(this.requestUsername, this.authorizationService.getCurrentUser().username, pagingParams).subscribe(
+    this.noteService.notes(this.requestUsername, this.authorizationService.getCurrentUser().username, this.pagingParams).subscribe(
       data => {
         if (!data.status) {
           this.showMsg = true;
@@ -150,7 +150,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
     let note = new Note();
     note.username = this.authorizationService.getCurrentUser().username;
     note.content = this.content;
-    this.noteService.submitNote(note, PagingParams.instantiation()).subscribe(
+    this.noteService.submitNote(note, this.pagingParams).subscribe(
       data => {
         if (!data.status) {
           this.showMsg = true;
@@ -203,7 +203,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
     let note = new Note();
     note.username = this.authorizationService.getCurrentUser().username;
     note.id = this.noteId;
-    this.noteService.deleteNote(note, PagingParams.instantiation()).subscribe(
+    this.noteService.deleteNote(note, this.pagingParams).subscribe(
       data => {
         if (!data.status) {
           this.showMsg = true;
@@ -226,7 +226,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
    */
   praise(id: string) {
     let currentUsername = this.authorizationService.getCurrentUser().username;
-    this.noteService.praise(this.requestUsername, currentUsername, id).subscribe(
+    this.noteService.praise(this.requestUsername, currentUsername, id, this.pagingParams).subscribe(
       data => {
         if (!data.status) {
           this.showMsg = true;
@@ -308,7 +308,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
     this.globalReply.from_name = this.authorizationService.getCurrentUser().username;
     this.globalReply.username = this.requestUsername;
     this.globalReply.content = this.commentContent;
-    this.noteService.submitConment(this.globalReply).subscribe(
+    this.noteService.submitConment(this.globalReply, this.pagingParams).subscribe(
       data => {
         if (!data.status) {
           this.showMsg = true;
@@ -349,7 +349,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
    * @param root_id
    */
   delComment(){
-    this.noteService.delConment(this.globalReply).subscribe(
+    this.noteService.delConment(this.globalReply, this.pagingParams).subscribe(
       data => {
         if (!data.status) {
           this.showMsg = true;

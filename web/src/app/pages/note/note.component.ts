@@ -15,6 +15,7 @@ import {NoteService} from "./note.service";
 import {AppModal} from "../../vo/app-modal";
 import {BsModalRef, BsModalService} from "ngx-bootstrap";
 import {Reply} from "../../vo/comment";
+import {Estimate} from "../../vo/estimate";
 /**
  * Created by lzy on 2017/10/6.
  */
@@ -89,6 +90,17 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
       }
       this.initNotes(rlt.notes);
     });
+  }
+
+  /**
+   * 确认删除日记
+   */
+  private noteId:string;
+  onDeleteDocBefore(id:string){
+    this.appModal.content = "确定永久删除该日记吗?";
+    this.modalExcuteDeleteType = ModalExcuteDeleteType.DELETE_NOTE;
+    this.noteId = id;
+    this.modalRef = this.modalService.show(this.appModalTemplateDiv);
   }
 
   /**
@@ -167,17 +179,6 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
   }
 
   /**
-   * 确认删除日记
-   */
-  private noteId:string;
-  toDeleteNote(id:string){
-    this.appModal.content = "确定永久删除该日记吗?";
-    this.modalExcuteDeleteType = ModalExcuteDeleteType.DELETE_NOTE;
-    this.noteId = id;
-    this.modalRef = this.modalService.show(this.appModalTemplateDiv);
-  }
-
-  /**
    * 取消模态框
    */
   cancleModal(){
@@ -224,7 +225,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
    * 赞
    * @param id
    */
-  praise(id: string) {
+  onPraise(id: string) {
     let currentUsername = this.authorizationService.getCurrentUser().username;
     this.noteService.praise(this.requestUsername, currentUsername, id, this.pagingParams).subscribe(
       data => {
@@ -254,15 +255,15 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
    * @param parent_id  父回复id
    * @param subject    回复主题
    */
-  comment(noteId:string, parent_id:string, subject: string){
+  onComment(estimate: Estimate){
     this.globalReply = new Reply();
-    this.globalReply.doc_id = noteId;
-    this.globalReply.parent_id = parent_id;
-    this.globalReply.subject_name = subject;
+    this.globalReply.doc_id = estimate.doc_id;
+    this.globalReply.parent_id = estimate.parent_id;
+    this.globalReply.subject_name = estimate.subject;
     this.commentContent = '';
     this.commentMaxLength = this.initCommentMaxLength;
     this.hideSubmitComment = true;
-    this.openCommentInput(noteId, parent_id, subject);
+    this.openCommentInput(estimate.doc_id, estimate.parent_id, estimate.subject);
   }
 
   openCommentInput(templateId:string, parent_id:string, subject: string){
@@ -294,10 +295,9 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
    * @param noteId
    * @param reply
    */
-  onReply(noteId:string, reply:Reply){
-    reply.doc_id = noteId;
+  onReply(reply:Reply){
     this.globalReply = reply;
-    this.openCommentInput(noteId, reply.parent_id, reply.from_name);
+    this.openCommentInput(reply.doc_id, reply.parent_id, reply.from_name);
   }
 
   /**
@@ -332,12 +332,12 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
    * @param root_id
    * @param replyId
    */
-  toDelComment(noteId:string, replyId:string){
+  onDeleteCommentBefore(reply: Reply){
     this.appModal.content = "确定永久删除该评论/回复吗?";
     this.modalExcuteDeleteType = ModalExcuteDeleteType.DELETE_COMMENT;
     this.globalReply = new Reply();
-    this.globalReply.doc_id = noteId;
-    this.globalReply.id = replyId;
+    this.globalReply.doc_id = reply.doc_id;
+    this.globalReply.id = reply.id;
     this.globalReply.username = this.requestUsername;
     this.modalRef = this.modalService.show(this.appModalTemplateDiv);
   }

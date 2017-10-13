@@ -8,31 +8,80 @@ var mongoose = require('mongoose');
 require('../models/articles');
 var ArticlesModel = mongoose.model('ArticlesModel');
 var CommentModel = mongoose.model('CommentModel');
+var AccountInfoModel = mongoose.model('AccountInfoModel');
+var result = require('../common/result');
+var response = require('../common/response');
+var log = require('log4js').getLogger('article');
+
+
 //新增文章
-exports.insert = function (req, res) {
+exports.addArticle = function (req, res) {
+    var article = req.body.article;
+    if (!article) {
+        log.error('addArticle error, params article is null or empty');
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+        return;
+    }
+    var nowTime = new Date();
     var comment = new CommentModel({
         replies: []
     });
-    var articlesModel = new ArticlesModel({
-        username: req.body.username,
-        title: req.body.title,
-        desc: req.body.desc,
-        type: req.body.type,
-        content: req.body.content,
-        praise: req.body.praise,
-        comment: comment,
-        visitor: 0
-    });
-
-    articlesModel.save(function (err, doc) {
-        if (err){
-            console.log('insert articles error, msg: ' + err);
-            res.json({code: false, msg: '系统错误！'});
+    comment.save(function (err, doc) {
+        if (err) {
+            log.error('addArticle error, params article is null or empty');
+            res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
             return;
         }
-        res.json({code: true, msg: '新增成功!'});
+        var newArticle = new ArticlesModel({
+            username: article.username,
+            praise: [],
+            visitor: 0,
+            comment: doc._id,
+            create_time: nowTime,
+            update_time: nowTime,
+            type: article.type
+        });
+        newArticle.save(function (err, doc) {
+            if (err){
+                log.error('addArticle error, errMsg:' + err);
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                return;
+            }
+            var paging = req.body.paging;
+            queryByPaging(res, article.username, paging, '新增文章后');
+        });
     });
 };
+
+function queryByPaging(res, username, paging, logMsg) {
+    if (paging) {
+        ArticlesModel.find({username: username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
+            if (err) {
+                log.error(logMsg + '查询出错，error:' + err);
+                res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                return;
+            }
+            ArticlesModel.find({username: username}).count().exec(function (err, count) {
+                if (err) {
+                    log.error(logMsg + '查询出错，error:' + err);
+                    res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                    return;
+                }
+                AccountInfoModel.findOne({username: username}, {head_portrait: 1}).exec(function (err, doc) {
+                    if (err) {
+                        log.error(logMsg + '查询出错，error:' + err);
+                        res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                        return;
+                    }
+                    var obj = {articles: docs, count: count, head_portrait: doc.head_portrait};
+                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+                });
+            });
+        });
+    } else { //不存在paging参数则不查
+        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
+    }
+}
 
 //编辑文章
 exports.update = function (req, res) {

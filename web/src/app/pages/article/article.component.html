@@ -1,4 +1,4 @@
-<sub-nav [requestUsername]="requestUsername" [tab]="2"></sub-nav>
+<sub-nav [requestUsername]="requestUsername" [tab]="1"></sub-nav>
 <div class="container">
   <div class="panel panel-info">
     <div class="panel-heading">
@@ -10,12 +10,44 @@
         <button [class.hidden]="!isShow" class="btn btn-default" (click)="changeBtn()" type="button">取消</button>
       </div>
     </div>
-    <div *ngIf="isShow" class="panel-body">
-
+    <div [class.hidden]="!isShow" class="panel-body">
+      <div class="well well-sm form-inline">
+        <div class="form-group">
+          <span>文章类型：</span>
+          <span></span>
+          <select id="article-types" class="form-control">
+            <option>web后台开发</option>
+            <option>linux服务器</option>
+            <option>自由文章</option>
+            <option>深度学习</option>
+            <option>AR</option>
+          </select>
+        </div>
+        <div class="form-group" style="margin-left: 20px;">
+          <input class="form-control" type="text" id="article-type" placeholder="输入你的文章类型">
+          <a class="btn btn-default" style="text-decoration: none;background-color: ghostwhite;">创建</a>
+        </div>
+        <a style="float: right;display: block;text-decoration: none;background-color: ghostwhite;" class="btn btn-default">草稿箱</a>
+      </div>
+      <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
+      <form novalidate #articleForm="ngForm" (ngSubmit)="submitArticle()" role="form">
+        <div>
+          <tinymce-editor [elementId]="tinymceElementId" required (onEditorContentChange)="onEditorContentChange($event)"></tinymce-editor>
+        </div>
+        <div class="div-to-hr-1"></div>
+        <div class="form-group col-lg-offset-6 col-md-offset-6 col-sm-offset-6 col-xs-offset-5">
+          <button [disabled]="isDisabledPublish" class="btn btn-success" type="submit">发&nbsp;&nbsp;表</button>
+        </div>
+      </form>
     </div>
 
     <div class="panel-body" *ngIf="!isShow">
-
+      <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
+      <div [class.hidden]="paging.bigTotalItems > 0">
+        <p>
+          暂无文章........
+        </p>
+      </div>
     </div>
   </div>
 </div>

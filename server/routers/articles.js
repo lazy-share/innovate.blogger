@@ -7,9 +7,13 @@
  *
  */
 var articlesService = require('../service/articles');
+const env = require('../conf/environments');
+const webRootApi = (require('../conf/sys_config')[env]).webRootUri;
 
 module.exports = function (router) {
-    router.post('/articles/add', articlesService.insert);
+    router.post(webRootApi + '/private/my/article', articlesService.addArticle);
+
+
     router.get('/articles/findOne', articlesService.findOne);
     router.post('/articles/update', articlesService.update);
     router.get('/articles/deleteOne', articlesService.deleteOne);

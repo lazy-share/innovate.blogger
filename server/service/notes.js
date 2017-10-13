@@ -70,6 +70,36 @@ exports.notes = function (req, res) {
     });
 };
 
+function queryByPaging(res, username, paging, logMsg) {
+    if (paging) {
+        NotesModel.find({username: username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
+            if (err) {
+                log.error(logMsg + '查询出错，error:' + err);
+                res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                return;
+            }
+            NotesModel.find({username: username}).count().exec(function (err, count) {
+                if (err) {
+                    log.error(logMsg + '查询出错，error:' + err);
+                    res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                    return;
+                }
+                AccountInfoModel.findOne({username: username}, {head_portrait: 1}).exec(function (err, doc) {
+                    if (err) {
+                        log.error(logMsg + '查询出错，error:' + err);
+                        res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                        return;
+                    }
+                    var obj = {notes: docs, count: count, head_portrait: doc.head_portrait};
+                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+                });
+            });
+        });
+    } else { //不存在paging参数则不查
+        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
+    }
+}
+
 //新增日记/心情
 exports.addNote = function (req, res) {
     var note = req.body.note;
@@ -95,33 +125,7 @@ exports.addNote = function (req, res) {
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-        if (paging) {
-            NotesModel.find({username: note.username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
-                if (err) {
-                    log.error('新增日记后查询出错，error:' + err);
-                    res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
-                    return;
-                }
-                NotesModel.find({username: note.username}).count().exec(function (err, count) {
-                    if (err) {
-                        log.error('新增日记后查询出错，error:' + err);
-                        res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
-                        return;
-                    }
-                    AccountInfoModel.findOne({username: note.username}, {head_portrait: 1}).exec(function (err, doc) {
-                        if (err) {
-                            log.error('新增日记后查询出错，error:' + err);
-                            res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
-                            return;
-                        }
-                        var obj = {notes: docs, count: count, head_portrait: doc.head_portrait};
-                        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
-                    });
-                });
-            });
-        } else { //不存在paging参数则不查
-            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
-        }
+       queryByPaging(res, note.username, paging, '新增日记后');
     })
 };
 
@@ -142,33 +146,7 @@ exports.delNote = function (req, res) {
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-        if (paging) {
-            NotesModel.find({username: note.username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
-                if (err) {
-                    log.error('删除日记后查询出错，error:' + err);
-                    res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
-                    return;
-                }
-                NotesModel.find({username: note.username}).count().exec(function (err, count) {
-                    if (err) {
-                        log.error('删除日记后查询出错，error:' + err);
-                        res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
-                        return;
-                    }
-                    AccountInfoModel.findOne({username: note.username}, {head_portrait: 1}).exec(function (err, doc) {
-                        if (err) {
-                            log.error('删除日记后查询出错，error:' + err);
-                            res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
-                            return;
-                        }
-                        var obj = {notes: docs, count: count, head_portrait: doc.head_portrait};
-                        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
-                    });
-                });
-            });
-        } else { //不存在paging参数则不查
-            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
-        }
+        queryByPaging(res, note.username, paging, '删除日记后');
     })
 };
 

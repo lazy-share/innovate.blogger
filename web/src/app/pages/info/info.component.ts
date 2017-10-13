@@ -11,6 +11,7 @@ import {FileUploader, FileItem, ParsedResponseHeaders} from "ng2-file-upload";
 import {ACCOUNT_INFO_HEADER} from "../../constant/uri";
 import {SelectAddressComponent} from "../../shared/form-component/select-address/select-address.component";
 import {IMyDpOptions} from "mydatepicker";
+import {MyDatePicker} from "../../vo/my-date-picker";
 /**
  * Created by laizhiyuan on 2017/9/29.
  */
@@ -109,6 +110,10 @@ export class InfoComponent extends BaseComponent implements OnInit {
   }
 
   confirmEdit() {
+    if (!this.accountInfo.birthday || !this.accountInfo.birthday.date || this.accountInfo.birthday.date.year == 0 ||
+      this.accountInfo.birthday.date.month == 0 || this.accountInfo.birthday.date.day == 0){
+      this.accountInfo.birthday = new MyDatePicker();
+    }
     this.infoService.confirmEdit(this.accountInfo).subscribe(
       data => {
         if (data.status) {

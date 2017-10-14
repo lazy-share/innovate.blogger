@@ -11,7 +11,9 @@ const env = require('../conf/environments');
 const webRootApi = (require('../conf/sys_config')[env]).webRootUri;
 
 module.exports = function (router) {
+    router.get(webRootApi + '/private/my/articles', articlesService.articles);
     router.post(webRootApi + '/private/my/article', articlesService.addArticle);
+    router.post(webRootApi + '/private/my/article/upload/images', articlesService.uploadImages);
 
 
     router.get('/articles/findOne', articlesService.findOne);

@@ -7,12 +7,60 @@
 var mongoose = require('mongoose');
 require('../models/articles');
 var ArticlesModel = mongoose.model('ArticlesModel');
+var ArticleTypeModel = mongoose.model('ArticlesTypeModel');
 var CommentModel = mongoose.model('CommentModel');
 var AccountInfoModel = mongoose.model('AccountInfoModel');
 var result = require('../common/result');
 var response = require('../common/response');
 var log = require('log4js').getLogger('article');
+var sysConnfig = require('../conf/sys_config');
+var env = require("../conf/environments");
 
+/**
+ * 文章列表
+ * @param req
+ * @param res
+ */
+exports.articles = function (req, res) {
+    var username = req.query.username;
+    if (!username) {
+        log.error('articles params error: username is null');
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+        return;
+    }
+    var paging = req.query.paging;
+    paging = JSON.parse(paging);
+    ArticlesModel.find({username: username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, articles) {
+        if (err) {
+            log.error('articles error, errMsg:' + err);
+            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+            return;
+        }
+        ArticleTypeModel.find({$or: [{username: username}, {username: 'sys'}]}).exec(function (err, types) {
+            if (err) {
+                log.error('articles error, errMsg:' + err);
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                return;
+            }
+            ArticlesModel.count({username: username}, function (err, count) {
+                if (err) {
+                    log.error('articles error, errMsg:' + err);
+                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                    return;
+                }
+                AccountInfoModel.findOne({username: username}, {head_portrait: 1}).exec(function (err, doc) {
+                    if (err) {
+                        log.error('articles error, errMsg:' + err);
+                        res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                        return;
+                    }
+                    var obj = {articles: articles, articleType: types, count: count, head_portrait: doc.head_portrait};
+                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+                });
+            });
+        });
+    });
+};
 
 //新增文章
 exports.addArticle = function (req, res) {
@@ -29,19 +77,21 @@ exports.addArticle = function (req, res) {
     comment.save(function (err, doc) {
         if (err) {
             log.error('addArticle error, params article is null or empty');
-            res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
         var newArticle = new ArticlesModel({
             username: article.username,
+            content: article.content,
             praise: [],
             visitor: 0,
             comment: doc._id,
             create_time: nowTime,
             update_time: nowTime,
-            type: article.type
+            type: article.type,
+            title: article.title
         });
-        newArticle.save(function (err, doc) {
+        newArticle.save(function (err) {
             if (err){
                 log.error('addArticle error, errMsg:' + err);
                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
@@ -67,21 +117,38 @@ function queryByPaging(res, username, paging, logMsg) {
                     res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
                     return;
                 }
-                AccountInfoModel.findOne({username: username}, {head_portrait: 1}).exec(function (err, doc) {
-                    if (err) {
-                        log.error(logMsg + '查询出错，error:' + err);
-                        res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
-                        return;
-                    }
-                    var obj = {articles: docs, count: count, head_portrait: doc.head_portrait};
-                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
-                });
+                var obj = {articles: docs, count: count};
+                res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
             });
         });
     } else { //不存在paging参数则不查
         res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
     }
 }
+
+//上传图片
+exports.uploadImages = function (req, res) {
+    var multiparty = require('multiparty');
+    var util = require('util');
+    //生成multiparty对象，并配置上传目标路径
+    var form = new multiparty.Form({uploadDir: process.cwd() + '/server/public/web/images/article'});
+    //上传完成后处理
+    form.parse(req, function (err, fields, files) {
+        if (err) {
+            console.log('article uploadImages error: ' + err);
+            log.error("article uploadImages error: " + err);
+            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+            return;
+        } else {
+            var inputFile = files.thumbnail[0];
+            log.info(" 成功上传图片：" + inputFile.path);
+            var startIndex = inputFile.path.indexOf('\\public\\web\\images\\article');
+            var filePath = inputFile.path.substring(startIndex, inputFile.path.length).replace(/\\/g, '/');
+            filePath = sysConnfig[env].thisDoman + filePath;
+            res.json({file_path: filePath});
+        }
+    });
+};
 
 //编辑文章
 exports.update = function (req, res) {

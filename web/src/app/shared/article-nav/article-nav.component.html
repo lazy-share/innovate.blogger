@@ -1,0 +1,40 @@
+<div class="well well-sm form-inline">
+  <div class="form-group">
+    <div class="dropdown">
+      <a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-default"><span>{{currentShowType}}</span>&nbsp;&nbsp;<span class="caret"></span></a>
+      <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+        <ng-container *ngIf="definedTypes.length > 0">
+          <li role="presentation" class="dropdown-header">自定义类型</li>
+          <ng-container *ngFor="let type of definedTypes">
+            <li class="dropdown-submenu">
+              <a tabindex="-1">{{type.name}}</a>
+              <ul class="dropdown-menu">
+                <li><a tabindex="-1" style="color:dodgerblue;" (click)="selectType(type._id, type.name)">选择</a></li>
+                <li><a tabindex="-1" style="color:red;" (click)="deleteType(type._id)">删除</a></li>
+              </ul>
+            </li>
+          </ng-container>
+          <li role="presentation" class="divider"></li>
+        </ng-container>
+
+        <ng-container *ngIf="sysDefaultTypes.length > 0">
+          <li role="presentation" class="dropdown-header">系统默认类型</li>
+          <ng-container *ngFor="let type of sysDefaultTypes">
+            <li><a (click)="selectType(type._id, type.name)">{{type.name}}</a></li>
+          </ng-container>
+        </ng-container>
+      </ul>
+    </div>
+  </div>
+  <div class="form-group" style="margin-left: 20px;">
+    <div class="visible-lg visible-md visible-sm">
+      <input class="form-control" type="text" [(ngModel)]="newTypeName" maxlength="10" placeholder="输入文章类型">
+      <button (click)="createType()" [disabled]="(newTypeName == '' || newTypeName == null)" class="btn btn-default" style="text-decoration: none;background-color: ghostwhite;">创建</button>
+    </div>
+  </div>
+  <div class="caogao">
+    <div class="visible-lg visible-md visible-sm">
+      <a (click)="drafts()" class="btn btn-default">草稿箱</a>
+    </div>
+  </div>
+</div>

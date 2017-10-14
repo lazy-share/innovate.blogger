@@ -27,4 +27,7 @@ export const MY_NOTES = root + "/private/my/notes";
 export const MY_NOTE = root + "/private/my/note";
 export const MY_NOTE_PRAISE = root + "/private/my/note/praise";
 export const MY_NOTE_COMMENT = root + "/private/my/note/comment";
+export const MY_ARTICLES = root + "/private/my/articles";
 export const MY_ARTICLE = root + "/private/my/article";
+export const MY_ARTICLE_TYPE = root + "/private/my/article/type";
+export const MY_ARTICLE_UPLOAD_IMAGES = root + "/private/my/article/upload/images";

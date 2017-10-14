@@ -5,10 +5,11 @@
  *     文章类型 路由
  */
 var articlesTypeService = require('../service/articles_type');
+const env = require('../conf/environments');
+const webRootApi = (require('../conf/sys_config')[env]).webRootUri;
 
 module.exports = function (router) {
-    router.post('/articlesType/add', articlesTypeService.insert);
-    router.get('/articlesType/findDefault', articlesTypeService.findByDefault);
-    router.get('/articlesType/findByAccount', articlesTypeService.findByAccount);
-    router.get('/articlesType/deleteOne', articlesTypeService.deleteOne);
+    router.post(webRootApi + '/private/my/article/type', articlesTypeService.addArticleType);
+    router.delete(webRootApi + '/private/my/article/type', articlesTypeService.delArticleType);
+
 };

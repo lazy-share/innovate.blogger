@@ -6,11 +6,11 @@
  */
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var articlesTypeSchema = require('./articles_type').articlesTypeSchema;
+
 var articlesSchema = new Schema({
     username: {type: String, required: true},
     title: {type: String},
-    type: {type: [articlesTypeSchema], required: true},
+    type: {type: Schema.ObjectId, required: true},
     content: {type: String},
     desc: {type: String},
     praise: [String],
@@ -24,7 +24,7 @@ var articlesSchema = new Schema({
     _id: true
 });
 
-articlesSchema.index({account_id: 1});
+articlesSchema.index({username: 1});
 articlesSchema.set('versionKey', '_articles');
 
 var ArticlesModel = mongoose.model('ArticlesModel', articlesSchema, 'articles', false);

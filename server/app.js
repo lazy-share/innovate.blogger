@@ -12,6 +12,8 @@ const routers = express.Router();
 const modelPath = path.join(__dirname, 'models');
 const routerPath = path.join(__dirname, 'routers');
 appInit.initModels(modelPath);
+//require('./db_script/article-type-script').initSysDefaultArticleType();
+//require('./db_script/address-script');
 
 //配置中间件
 const appFilter = require('./filter/app_filter');

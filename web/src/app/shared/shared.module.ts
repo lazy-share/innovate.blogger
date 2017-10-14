@@ -26,6 +26,7 @@ import {TinymceEditorComponent} from "./tinymce-editor/tinymce.component";
 import {IsExistsArrPipe, JoinArrPipe} from "./common/common.pipe";
 import {ReplyComponent} from "./reply/reply.component";
 import {EstimateComponent} from "./estimate/estimate.component";
+import {ArticleTypeComponent} from "./article-nav/article-nav.component";
 /**
  * Created by laizhiyuan on 2017/9/25.
  */
@@ -61,7 +62,8 @@ import {EstimateComponent} from "./estimate/estimate.component";
     TinymceEditorComponent,
     JoinArrPipe,
     ReplyComponent,
-    EstimateComponent
+    EstimateComponent,
+    ArticleTypeComponent
   ],
   exports: [
     RouterModule,
@@ -92,7 +94,8 @@ import {EstimateComponent} from "./estimate/estimate.component";
     PopoverModule,
     ModalModule,
     ReplyComponent,
-    EstimateComponent
+    EstimateComponent,
+    ArticleTypeComponent
   ]
 })
 export class SharedModule {

@@ -8,8 +8,8 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var articlesTypeSchema = new Schema({
-    name: {type: String, required: true, unique: true},
-    username: {type: String, required: true, default: 'null'}
+    name: {type: String, required: true},
+    username: {type: String, required: true}
 },{
     id: true,
     _id:true,

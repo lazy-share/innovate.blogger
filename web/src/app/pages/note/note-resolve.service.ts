@@ -1,9 +1,8 @@
 import {Injectable} from "@angular/core";
 import {Resolve, RouterStateSnapshot, ActivatedRouteSnapshot} from "@angular/router";
-import {Note} from "../../vo/note";
 import {Observable} from "rxjs";
 import {NoteService} from "./note.service";
-import {Paging, PagingParams} from "../../vo/paging";
+import {PagingParams} from "../../vo/paging";
 import {AuthorizationService} from "../../core/authorization/authorization.service";
 /**
  * Created by lzy on 2017/10/7.

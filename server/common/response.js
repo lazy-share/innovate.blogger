@@ -13,5 +13,6 @@ module.exports = {
     C604: {code: 604, msg: '登录密码不正确', status: false},
     C605: {code: 605, msg: '查无数据', status: false},
     C606: {code: 606, msg: '新增后查询出错', status: false},
-    C607: {code: 607, msg: '该文章/日记不存在', status: false}
+    C607: {code: 607, msg: '该文章/日记不存在', status: false},
+    C608: {code: 608, msg: '创建失败, 该文章类型已经存在', status: false}
 };

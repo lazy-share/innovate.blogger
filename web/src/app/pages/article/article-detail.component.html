@@ -7,7 +7,12 @@
     <div class="panel-body">
       <div *ngIf="showSuccess" class="alert alert-success">{{successMsg}}</div>
       <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
-      <div [innerHTML]="article.content"></div>
+
+      <ng-container *ngIf="article">
+        <div [innerHTML]="article.content"></div>
+
+
+      </ng-container>
     </div>
   </div>
 </div>

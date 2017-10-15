@@ -114,6 +114,14 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
   }
 
   /**
+   * 取消模态框
+   */
+  cancleModal(){
+    this.globalArticleId = '';
+    this.modalRef.hide();
+  }
+
+  /**
    * 删除文章类型
    * @param type_id
    */

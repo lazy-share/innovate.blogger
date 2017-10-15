@@ -1,3 +1,4 @@
+import {Comment} from "./comment";
 /**
  * Created by lzy on 2017/10/12.
  */
@@ -9,6 +10,7 @@ export class Article {
   public desc:string;
   public isPrivate:boolean;
   public id:string;
+  public comment:Comment;
 
   static instantiation() {
     let article = new Article();

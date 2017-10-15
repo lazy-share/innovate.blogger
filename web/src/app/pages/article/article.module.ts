@@ -11,7 +11,6 @@ import {ArticleDetailComponent} from "./article-detail.component";
  */
 @NgModule({
   imports: [
-    CoreModule,
     SharedModule,
     ArticleRoutingModule
   ],

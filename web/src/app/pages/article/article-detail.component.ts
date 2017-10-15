@@ -17,7 +17,9 @@ export class ArticleDetailComponent extends BaseComponent implements OnInit{
   private requestUsername: string;
   private globalArticleId:string;
   private article:Article = Article.instantiation();
-  private replys:Reply[] = new Array<Reply>();
+  private commentContent:string = '';
+  private initCommentMaxLength = 50;
+  private commentMaxLength = 50;
 
   constructor(private authorizationService: AuthorizationService,
               private articleService: ArticleService,
@@ -40,7 +42,7 @@ export class ArticleDetailComponent extends BaseComponent implements OnInit{
           return;
         }
         this.article = data.data.article;
-        this.replys = data.data.comment.replys;
+        this.article.comment = data.data.comment;
       },
       err => {
         this.showMsg = true;

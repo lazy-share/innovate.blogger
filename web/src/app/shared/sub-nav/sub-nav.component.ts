@@ -15,9 +15,6 @@ export class SubNavComponent {
   @Input() private requestUsername:string;
   @Input() private tab:string = "0";
 
-  private storageUsername = this.authorizationService.getCurrentUser() &&
-    this.authorizationService.getCurrentUser().username || "";
-
   constructor(
     private authorizationService:AuthorizationService
   ){

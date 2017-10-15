@@ -7,9 +7,8 @@ import {ArticleDetailComponent} from "./article-detail.component";
  * Created by lzy on 2017/10/12.
  */
 const ARTICLES_ROUTERS: Routes = [
-  {path : '', redirectTo: '/not-found', pathMatch: 'full', children: [
-    {path: 'detail/:id', component: ArticleDetailComponent}
-  ]},
+  {path : '', redirectTo: '/not-found', pathMatch: 'full'},
+  {path: 'detail/:username/:id', component: ArticleDetailComponent},
   {path: ':username', component: ArticleComponent, resolve: {articles: ArticleResolveService}},
 ];
 @NgModule({

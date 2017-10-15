@@ -3,7 +3,7 @@ import {AppResponse} from "../../vo/app-response";
 import {Observable} from "rxjs/Observable";
 import {Article, ArticleType} from "../../vo/article";
 import {HttpClient, HttpParams, HttpErrorResponse} from "@angular/common/http";
-import {MY_ARTICLE, MY_ARTICLES, MY_ARTICLE_TYPE} from "../../constant/uri";
+import {MY_ARTICLE, MY_ARTICLES, MY_ARTICLE_TYPE, MY_ARTICLE_DETAIL} from "../../constant/uri";
 import {PagingParams} from "../../vo/paging";
 import {Router} from "@angular/router";
 import {AuthorizationService} from "../../core/authorization/authorization.service";
@@ -18,6 +18,19 @@ export class ArticleService {
     private router:Router,
     private authorizationService:AuthorizationService
   ){}
+
+  detail(id: string, username:string, currentUsername:string):Observable<AppResponse>{
+    return this.http.get<AppResponse>(
+      MY_ARTICLE_DETAIL,
+      {
+        params: new HttpParams().set('id', id).set('username', username).set('currentUsername', currentUsername)
+      }
+    ).map(
+      data => {
+        return data;
+      }
+    );
+  }
 
   /**
    * 保存文章

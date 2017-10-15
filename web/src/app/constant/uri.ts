@@ -31,3 +31,4 @@ export const MY_ARTICLES = root + "/private/my/articles";
 export const MY_ARTICLE = root + "/private/my/article";
 export const MY_ARTICLE_TYPE = root + "/private/my/article/type";
 export const MY_ARTICLE_UPLOAD_IMAGES = root + "/private/my/article/upload/images";
+export const MY_ARTICLE_DETAIL = root + "/private/my/article/detail";

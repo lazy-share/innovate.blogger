@@ -1,1 +1,13 @@
-
+<sub-nav [requestUsername]="requestUsername" [tab]="1"></sub-nav>
+<div class="container">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <h3 class="panel-title">文章全文</h3>
+    </div>
+    <div class="panel-body">
+      <div *ngIf="showSuccess" class="alert alert-success">{{successMsg}}</div>
+      <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
+      <div [innerHTML]="article.content"></div>
+    </div>
+  </div>
+</div>

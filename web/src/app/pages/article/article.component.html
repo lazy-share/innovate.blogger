@@ -1,4 +1,3 @@
-<script src="article.component.ts"></script>
 <sub-nav [requestUsername]="requestUsername" [tab]="1"></sub-nav>
 <div class="container">
   <div class="panel panel-info">
@@ -80,14 +79,14 @@
           <div [innerHTML]="article.desc"></div>
           <div class="div-to-hide-hr-2"></div>
           <div>
-            <div style="float: left; margin-right: 10px;"><a style="cursor:default;text-decoration:none;"><span class="glyphicon glyphicon-eye-open"></span>&nbsp;浏览{{article.visitor}}次</a></div>
-            <div class="hidden-xs" style="float: left; margin-right: 50px;"><a style="text-decoration: none; cursor: default;">{{article.update_time | date: "yyyy-MM-dd HH:mm:ss"}}</a></div>
+            <div style="float: left; margin-right: 10px;"><a style="cursor:default;text-decoration:none;"><span class="glyphicon glyphicon-eye-open"></span>&nbsp;阅读{{article.visitor}}次</a></div>
+            <div class="hidden-xs" style="float: left; margin-right: 50px;"><a style="text-decoration: none; cursor: default;color:#779ECB;">发表于{{article.update_time | date: "yyyy-MM-dd HH:mm:ss"}}</a></div>
             <div class="hidden-xs" *ngIf="authorizationService.currentUser.username == requestUsername" style="float: left; margin-right: 10px;"><a (click)="toEditArticle(article._id)" style="text-decoration: none; cursor: pointer;">编辑</a></div>
             <div class="hidden-xs" *ngIf="authorizationService.currentUser.username == requestUsername"><a (click)="toDeleteArticle(article._id)" style="text-decoration: none; cursor: pointer; color: red;">删除</a></div>
           </div>
           <div class="div-to-hr-2"></div>
           <p>
-            <a class="btn" routerLink="/private/article/detail/{{article._id}}">查看全文 »</a>
+            <a class="btn" routerLink="/private/article/detail/{{requestUsername}}/{{article._id}}">查看全文 »</a>
           </p>
         </div>
       </div>

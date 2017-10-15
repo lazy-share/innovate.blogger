@@ -256,190 +256,42 @@ exports.uploadImages = function (req, res) {
     });
 };
 
-//编辑文章
-exports.update = function (req, res) {
+/**
+ * 文章全文
+ * @param req
+ * @param res
+ */
+exports.detail = function (req, res) {
     var id = req.query.id;
-    if (!id){
-        console.log("update error, id param is null or empty");
-        res.json({code: false, msg: '参数id不能为空!'});
+    var username = req.query.username;
+    var currentUsername = req.query.currentUsername;
+    if (!id || !username || !currentUsername){
+        log.error('article detail error, params is null or empty:' + id + '|' + username + '|' + currentUsername);
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
         return;
     }
-    ArticlesModel.update({_id: id},{$set: {
-        title: req.body.title,
-        content: req.body.content,
-        desc: req.body.desc
-    }}, function (err) {
+    ArticlesModel.findOne({username: username, _id: id}).exec(function (err, article) {
         if (err){
-            console.log('update articles error, msg: ' + err);
-            res.json({code: false, msg: '系统错误！'});
+            log.error('article detail error:' + err);
+            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-        res.json({code: true, msg: '编辑成功!'});
-    })
-};
-
-//删除文章
-exports.deleteOne = function (req, res) {
-    var id = req.body.id;
-    if (!id){
-        console.log("delete error, id param is null or empty");
-        res.json({code: false, msg: '参数id不能为空!'});
-        return;
-    }
-    ArticlesModel.findOne({_id: id},function (err, doc) {
-        if (err){
-            console.log('delete articles error, msg: ' + err);
-            res.json({code: false, msg: '系统错误！'});
-            return;
-        }
-        if (doc){
-            var commentId = [];
-            commentId.push(doc.comment);
-            try{
-                require('./comment').deleteInId(commentId);
-                doc.remove(function (err) {
+        CommentModel.findOne({_id: article.comment}).exec(function (err, comment) {
+            if (err){
+                log.error('article detail error:' + err);
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                return;
+            }
+            if (username != currentUsername){ //异步添加阅读数量
+                ArticlesModel.update({_id: id}, {$inc: {visitor: 1}}).exec(function (err) {
                     if (err){
-                        console.log('delete articles error, msg: ' + err);
-                        res.json({code: false, msg: '系统错误！'});
+                        log.error('异步添加阅读数量错误！err:' + err);
                         return;
                     }
-                    res.json({code: true, msg: '删除成功!'});
-                });
-            }catch (err){
-                res.json({code: false, msg: '删除失败'});
+                })
             }
-        }
-    })
-};
-
-exports.deleteByAccount = function (username) {
-    if (!username){
-        return true;
-    }
-    ArticlesModel.find({username: username},function (err, docs) {
-        if (docs){
-            var commentIds = [];
-            for (var doc in docs){
-                commentIds.push(doc.comment);
-            }
-            try{
-                require('./comment').deleteInId(commentIds);
-                ArticlesModel.remove({username: username})
-                    .exec(function (err) {
-                        if (err){
-                            throw new Error(err);
-                        }else{
-                            return true;
-                        }
-                    })
-            }catch (err){
-                throw new Error(err);
-            }
-        }
-    });
-};
-
-//找出某个账号所有的文章
-exports.findByAccount = function (req, res) {
-    var username = req.query.username;
-    if (!username){
-        console.log("findByAccount username param is null or empty");
-        res.json({code: false, msg: '参数username不能为空!'});
-        return;
-    }
-    ArticlesModel.find({username: username}, function (err, docs) {
-        if (err){
-            console.log('findByAccount articles error, msg: ' + err);
-            res.json({code: false, msg: '系统错误！'});
-            return;
-        }
-        if (!docs){
-            res.json({code: false, msg: '查无数据！'});
-            return;
-        }
-        res.json({code: true, msg: '查询成功!', data: docs});
-    });
-};
-
-//查找某篇文章
-exports.findOne = function (req, res) {
-    var id = req.query.id;
-    if (!id){
-        console.log("find error, id param is null or empty");
-        res.json({code: false, msg: '参数id不能为空!'});
-        return;
-    }
-    ArticlesModel.findOne({_id: id}, function (err, doc) {
-        if (err){
-            console.log('findOne articles error, msg: ' + err);
-            res.json({code: false, msg: '系统错误！'});
-            return;
-        }
-        if (!doc){
-            res.json({code: false, msg: '查无数据！'});
-            return;
-        }
-        res.json({code: true, msg: '查询成功!', data: doc});
-    })
-};
-
-//访问量
-exports.visitor = function (req, res) {
-    var id = req.query.id;
-    if (!id){
-        console.log("visitor error, id param is null or empty");
-        res.json({code: false, msg: '参数id不能为空!'});
-        return;
-    }
-    ArticlesModel.findOne({_id: id},function (err, doc) {
-        if (err){
-            console.log('visitor articles error, msg: ' + err);
-            res.json({code: false, msg: '系统错误！'});
-            return;
-        }
-        if (!doc){
-            res.json({code: false, msg: '查无数据！'});
-            return;
-        }
-        doc.visitor = doc.visitor + 1;
-        doc.save(function (err) {
-            if (err){
-                console.log('visitor articles error, msg: ' + err);
-                res.json({code: false, msg: '系统错误！'});
-                return;
-            }
-            res.json({code: true, msg: '更新成功!'});
-        });
-    });
-}
-
-//赞
-exports.praise = function (req, res) {
-    var id = req.query.id;
-    var username = req.query.username;
-    if (!username || !id){
-        console.log('praise articles id and username param is null or empty');
-        res.json({code: false, msg: '参数id、username不能为空!'});
-        return;
-    }
-    ArticlesModel.findOne({_id: id}, function (err, doc) {
-        if (err){
-            console.log('praise articles error, msg: ' + err);
-            res.json({code: false, msg: '系统错误！'});
-            return;
-        }
-        if (!doc){
-            res.json({code: false, msg: '查无数据！'});
-            return;
-        }
-        doc.praise.push(username);
-        doc.save(function (err) {
-            if (err){
-                console.log('praise articles error, msg: ' + err);
-                res.json({code: false, msg: '系统错误！'});
-                return;
-            }
-            res.json({code: true, msg: '更新成功！'});
-        });
+            var obj = {article: article, comment: comment};
+            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+        })
     });
 };

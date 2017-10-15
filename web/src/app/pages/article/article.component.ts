@@ -190,6 +190,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
     if (this.isShow) {
     }
     this.isShow = !this.isShow;
+    this.clearTinyMceEdit();
   }
 
   /**
@@ -362,7 +363,6 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
         setTimeout(() => {this.showSuccess = false}, 1000);
         this.articles = data.data.articles;
         this.paging.bigTotalItems = data.data.count;
-        this.globalArticleId = '';
       },
       err => {
         this.showMsg = true;
@@ -382,9 +382,14 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
     if (data.data.count){ //编辑不查这个
       this.paging.bigTotalItems = data.data.count;
     }
+    this.clearTinyMceEdit();
+  }
+
+  clearTinyMceEdit(){
     this.globalArticleDesc = '';
     this.globalArticleTitle = '';
     this.globalArticleContent = '';
+    this.globalArticleId = '';
     this.globalTypeId = '';
     this.articleNavComponent.changeCurrentShowType('选择文章类型');
     this.articleNavComponent.initDefaultData();

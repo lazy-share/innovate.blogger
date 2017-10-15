@@ -32,9 +32,9 @@
       <button (click)="createType()" [disabled]="(newTypeName == '' || newTypeName == null)" class="btn btn-default" style="text-decoration: none;background-color: ghostwhite;">创建</button>
     </div>
   </div>
-  <div class="caogao">
-    <div class="visible-lg visible-md visible-sm">
-      <a (click)="drafts()" class="btn btn-default">草稿箱</a>
-    </div>
+  <div style="margin-left: 20px;" class="checkbox">
+    <label>
+      <input (change)="changeIsPrivate()" [(ngModel)]="isPrivate"  name="isPrivate" type="checkbox">&nbsp;不公开
+    </label>
   </div>
 </div>

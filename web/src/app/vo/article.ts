@@ -6,6 +6,9 @@ export class Article {
   public username:string;
   public type:string;
   public title:string;
+  public desc:string;
+  public isPrivate:boolean;
+  public id:string;
 
   static instantiation() {
     let article = new Article();
@@ -13,6 +16,8 @@ export class Article {
     article.type = '';
     article.username = '';
     article.title = '';
+    article.isPrivate = false;
+    article.desc = '';
     return article;
   }
 }

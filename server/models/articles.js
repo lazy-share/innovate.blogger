@@ -12,6 +12,7 @@ var articlesSchema = new Schema({
     title: {type: String},
     type: {type: Schema.ObjectId, required: true},
     content: {type: String},
+    is_private: {type: Boolean, default: false, required: true},
     desc: {type: String},
     praise: [String],
     comment: {type: Schema.ObjectId, required: true},

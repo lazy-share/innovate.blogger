@@ -6,6 +6,7 @@ import {HttpClient, HttpParams, HttpErrorResponse} from "@angular/common/http";
 import {MY_ARTICLE, MY_ARTICLES, MY_ARTICLE_TYPE} from "../../constant/uri";
 import {PagingParams} from "../../vo/paging";
 import {Router} from "@angular/router";
+import {AuthorizationService} from "../../core/authorization/authorization.service";
 /**
  * Created by lzy on 2017/10/12.
  */
@@ -14,7 +15,8 @@ export class ArticleService {
 
   constructor(
     private http:HttpClient,
-    private router:Router
+    private router:Router,
+    private authorizationService:AuthorizationService
   ){}
 
   /**
@@ -34,11 +36,18 @@ export class ArticleService {
       );
   }
 
-  articles(username:string, paging: PagingParams):Observable<AppResponse> {
+  /**
+   * 文章列表
+   * @param username
+   * @param currentUsername
+   * @param paging
+   * @returns {Observable<R>}
+   */
+  articles(username:string, currentUsername:string, paging: PagingParams):Observable<AppResponse> {
     return this.http.get<AppResponse>(
       MY_ARTICLES,
       {
-        params: new HttpParams().set('username', username).set('paging', JSON.stringify(paging))
+        params: new HttpParams().set('username', username).set('paging', JSON.stringify(paging)).set('currentUsername', currentUsername)
       }
     ).map(
       data => {
@@ -70,6 +79,11 @@ export class ArticleService {
     );
   }
 
+  /**
+   * 删除文章类型
+   * @param docId
+   * @returns {Observable<R>}
+   */
   deleteArticleType(docId:string):Observable<AppResponse>{
     return this.http.delete<AppResponse>(
       MY_ARTICLE_TYPE,
@@ -78,6 +92,54 @@ export class ArticleService {
       }
     ).map(
       data =>{
+        return data;
+      }
+    );
+  }
+
+  deleteArticle(articleId:string, paging:PagingParams):Observable<AppResponse> {
+    return this.http.delete<AppResponse>(
+      MY_ARTICLE,
+      {
+        params: new HttpParams().set('id', articleId).set('paging', JSON.stringify(paging)).set('username', this.authorizationService.getCurrentUser().username)
+      }
+    ).map(
+      data => {
+        return data;
+      }
+    );
+  }
+
+  /**
+   * 去编辑文章
+   * @param id
+   * @returns {Observable<R>}
+   */
+  toEditArticle(id:string):Observable<AppResponse>{
+    return this.http.get<AppResponse>(
+      MY_ARTICLE,
+      {
+        params: new HttpParams().set('id', id).set('username', this.authorizationService.getCurrentUser().username)
+      }
+    ).map(
+      data => {
+        return data;
+      }
+    );
+  }
+
+  /**
+   * 确认编辑
+   * @param article
+   * @param paging
+   * @returns {Observable<R>}
+   */
+  confirmEditArticle(article:Article, paging: PagingParams):Observable<AppResponse>{
+    return this.http.put(
+      MY_ARTICLE,
+      {article: article, paging: paging, username: this.authorizationService.getCurrentUser().username}
+    ).map(
+      data => {
         return data;
       }
     );

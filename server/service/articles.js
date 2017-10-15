@@ -23,14 +23,19 @@ var env = require("../conf/environments");
  */
 exports.articles = function (req, res) {
     var username = req.query.username;
-    if (!username) {
-        log.error('articles params error: username is null');
+    var currentUsername = req.query.currentUsername;
+    if (!username || !currentUsername) {
+        log.error('articles params error: username or currentUsername is null' + username + '|' + currentUsername);
         res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
         return;
     }
     var paging = req.query.paging;
     paging = JSON.parse(paging);
-    ArticlesModel.find({username: username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, articles) {
+    var queryOpt = {username: username};
+    if (username != currentUsername){
+        queryOpt.is_private = false;
+    }
+    ArticlesModel.find(queryOpt).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, articles) {
         if (err) {
             log.error('articles error, errMsg:' + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
@@ -48,16 +53,81 @@ exports.articles = function (req, res) {
                     res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                     return;
                 }
-                AccountInfoModel.findOne({username: username}, {head_portrait: 1}).exec(function (err, doc) {
-                    if (err) {
-                        log.error('articles error, errMsg:' + err);
-                        res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
-                        return;
-                    }
-                    var obj = {articles: articles, articleType: types, count: count, head_portrait: doc.head_portrait};
-                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
-                });
+                var obj = {articles: articles, articleType: types, count: count};
+                res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
             });
+        });
+    });
+};
+
+/**
+ * 查一篇文章
+ * @param req
+ * @param res
+ */
+exports.article = function (req, res) {
+    var username = req.query.username;
+    var id = req.query.id;
+    if (!username || !id) {
+        log.error('select article params error: username or id is null' + username + '|' + id);
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+        return;
+    }
+
+    ArticlesModel.findOne({username: username, _id: id}).exec(function (err, article) {
+        if (err) {
+            log.error('select article error, errMsg:' + err);
+            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+            return;
+        }
+        ArticleTypeModel.findOne({_id: article.type}).exec(function (err, type) {
+            if (err) {
+                log.error('select article error, errMsg:' + err);
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                return;
+            }
+            var obj = {article: article, type_name: type.name};
+            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+        });
+    });
+};
+
+/**
+ * 保存编辑文章
+ * @param req
+ * @param res
+ */
+exports.editArticle = function (req, res) {
+    var username = req.body.username;
+    var article = req.body.article;
+    if (!username || !article) {
+        log.error('edit article params error: username or article is null' + username + '|' + article);
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+        return;
+    }
+
+    var updateOpt = {
+        is_private: article.isPrivate,
+        title: article.title,
+        desc:article.desc,
+        content: article.content,
+        type: article.type,
+        update_time: new Date()
+    };
+    ArticlesModel.update({username: username, _id: article.id}, {$set: updateOpt}).exec(function (err) {
+        if (err) {
+            log.error('edit article error, errMsg:' + err);
+            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+            return;
+        }
+        var paging = req.body.paging;
+        ArticlesModel.find({username: username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, articles) {
+            if (err) {
+                log.error('edit article error, errMsg:' + err);
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                return;
+            }
+            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, {articles: articles}));
         });
     });
 };
@@ -89,7 +159,9 @@ exports.addArticle = function (req, res) {
             create_time: nowTime,
             update_time: nowTime,
             type: article.type,
-            title: article.title
+            title: article.title,
+            desc: article.desc,
+            is_private: article.isPrivate
         });
         newArticle.save(function (err) {
             if (err){
@@ -99,6 +171,40 @@ exports.addArticle = function (req, res) {
             }
             var paging = req.body.paging;
             queryByPaging(res, article.username, paging, '新增文章后');
+        });
+    });
+};
+
+//删除文章
+exports.delArticle = function (req, res) {
+    var id = req.query.id;
+    var username = req.query.username;
+    if (!id || !username) {
+        log.error('delArticle error, params id or username is null or empty' + id + '|' + username);
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+        return;
+    }
+    ArticlesModel.findOne({username: username, _id: id}).exec(function (err, article) {
+        if (err) {
+            log.error('delArticle error, errMsg:' + err);
+            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+            return;
+        }
+        CommentModel.remove({_id: article.comment}).exec(function (err) {
+            if (err) {
+                log.error('delArticle remove comment error, errMsg:' + err);
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                return;
+            }
+            article.remove(function (err) {
+                if (err) {
+                    log.error('delArticle error, errMsg:' + err);
+                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                    return;
+                }
+                var paging = req.query.paging;
+                queryByPaging(res, username, JSON.parse(paging), '删除文章后');
+            })
         });
     });
 };

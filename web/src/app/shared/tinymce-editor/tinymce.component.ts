@@ -54,7 +54,7 @@ export class TinymceEditorComponent implements AfterViewInit, OnDestroy{
       skin_url: '../../../assets/skins/lightgray',
       content_css: '../../../assets/skins/lightgray/content.min.css',
       plugins: [
-        'advlist autolink lists link charmap print preview anchor textcolor image',
+        'advlist autolink lists link charmap print preview anchor textcolor',
         'searchreplace visualblocks code fullscreen',
         'insertdatetime autosave table contextmenu paste code wordcount uploadimage'
       ],
@@ -87,5 +87,13 @@ export class TinymceEditorComponent implements AfterViewInit, OnDestroy{
 
   ngOnDestroy() {
     tinymce.remove(this.editor);
+  }
+
+  clearContent(){
+    tinymce.activeEditor.setContent('');
+  }
+
+  setContent(content:string){
+    tinymce.activeEditor.setContent(content);
   }
 }

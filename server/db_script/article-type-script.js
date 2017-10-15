@@ -9,14 +9,22 @@ exports.initSysDefaultArticleType = function () {
         new ArticleType('sys', 'WEB前端开发'),
         new ArticleType('sys', 'Linux系统'),
         new ArticleType('sys', '大数据'),
-        new ArticleType('sys', '分布式'),
+        new ArticleType('sys', '分步式'),
         new ArticleType('sys', '关系型数据库'),
         new ArticleType('sys', 'NOSQL数据库'),
         new ArticleType('sys', '编程语言'),
         new ArticleType('sys', 'NodeJS'),
         new ArticleType('sys', '深度学习'),
         new ArticleType('sys', '人工智能'),
-        new ArticleType('sys', 'AR')
+        new ArticleType('sys', 'AR'),
+        new ArticleType('sys', 'Windows系统'),
+        new ArticleType('sys', '量子计算'),
+        new ArticleType('sys', '云计算'),
+        new ArticleType('sys', '云存储'),
+        new ArticleType('sys', '文件系统'),
+        new ArticleType('sys', '设计模式'),
+        new ArticleType('sys', 'APP应用'),
+        new ArticleType('sys', '其它')
     ];
 
     for (var i in initData){

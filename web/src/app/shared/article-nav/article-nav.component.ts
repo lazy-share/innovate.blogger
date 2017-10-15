@@ -7,12 +7,13 @@ import {ArticleType} from "../../vo/article";
   selector: 'article-nav',
   templateUrl: './article-nav.component.html'
 })
-export class ArticleTypeComponent {
+export class ArticleNavComponent {
 
   @Input()
   private sysDefaultTypes: ArticleType[] = new Array <ArticleType>();
   @Input()
   private definedTypes: ArticleType[] = new Array<ArticleType>();
+  private currentShowType: string = '选择文章类型';
   @Output()
   private onSelectType = new EventEmitter<string>();
   @Output()
@@ -20,9 +21,11 @@ export class ArticleTypeComponent {
   @Output()
   private onCreateType = new EventEmitter<ArticleType>();
   @Output()
+  private onChangeIsPrivate = new EventEmitter<boolean>();
+  @Output()
   private onDrafts = new EventEmitter();
-  private currentShowType: string = '选择文章类型';
   private newTypeName:string;
+  private isPrivate:boolean = false;
 
 
   selectType(type_id: string, type_name:string) {
@@ -43,5 +46,21 @@ export class ArticleTypeComponent {
 
   drafts() {
     this.onDrafts.emit();
+  }
+
+  changeCurrentShowType(name:string){
+    this.currentShowType = name;
+  }
+
+  setIsPrivate(isPrivate:boolean){
+    this.isPrivate = isPrivate;
+  }
+
+  initDefaultData(){
+    this.isPrivate = false;
+  }
+
+  changeIsPrivate(){
+    this.onChangeIsPrivate.emit(this.isPrivate);
   }
 }

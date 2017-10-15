@@ -1,3 +1,4 @@
+<script src="article.component.ts"></script>
 <sub-nav [requestUsername]="requestUsername" [tab]="1"></sub-nav>
 <div class="container">
   <div class="panel panel-info">
@@ -8,32 +9,47 @@
       <div *ngIf="authorizationService.currentUser.username == requestUsername">
         <button [class.hidden]="isShow" class="btn btn-default" (click)="changeBtn()" type="button">写文章</button>
         <button [class.hidden]="!isShow" class="btn btn-default" (click)="changeBtn()" type="button">取消</button>
+        <button class="btn btn-default" (click)="changeBtn()" type="button">草稿箱</button>
       </div>
     </div>
 
-    <div [class.hidden]="!isShow" class="panel-body">
+    <div [class.hidden]="!isShow" *ngIf="authorizationService.currentUser.username == requestUsername" class="panel-body">
+
       <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
       <div *ngIf="showSuccess" class="alert alert-success">{{successMsg}}</div>
-      <span style="font-weight: bolder;">文章类型：</span>
-      <article-nav [sysDefaultTypes]="sysDefaultTypes" [definedTypes]="definedTypes"
-                    (onSelectType)="onSelectType($event)"
-                    (onDeleteType)="onDeleteType($event)" (onCreateType)="onCreateType($event)"
-                    (onDrafts)="onDrafts($event)"></article-nav>
 
-      <span style="font-weight: bolder;">标题：</span>
+      <span style="font-weight: bolder;">文章类型：</span>
+      <article-nav [sysDefaultTypes]="sysDefaultTypes"
+                   [definedTypes]="definedTypes"
+                   (onSelectType)="onSelectType($event)"
+                   (onDeleteType)="onDeleteType($event)"
+                   (onCreateType)="onCreateType($event)"
+                   (onDrafts)="onDrafts($event)"
+                   (onChangeIsPrivate)="onChangeIsPrivate($event)"></article-nav>
+
+      <span style="font-weight: bolder;">文章标题：</span>
       <div class="well well-sm form-inline">
         <div class="input-group col-md-12 col-lg-12 col-sm-12 col-xs-12">
-          <input style="border-radius:5px;" [(ngModel)]="globalArticleTitle" name="articleTitle" class="form-control" maxlength="50"  type="text" placeholder="输入文章标题">
+          <input style="border-radius:5px;" [(ngModel)]="globalArticleTitle"
+                 name="articleTitle" class="form-control" maxlength="30" type="text" placeholder="输入文章标题(最大30个字)">
+        </div>
+      </div>
+
+      <span style="font-weight: bolder;">文章描述：</span>
+      <div class="well well-sm form-inline">
+        <div class="input-group col-md-12 col-lg-12 col-sm-12 col-xs-12">
+           <textarea class="form-control" [(ngModel)]="globalArticleDesc" name="desc" maxlength="100" rows="2" placeholder="输入文字描述(最大100个字)"></textarea>
         </div>
       </div>
 
       <div>
-        <span style="font-weight:bolder;">内容:</span>
-        <tinymce-editor [elementId]="tinymceElementId" required
-                        (onEditorContentChange)="onEditorContentChange($event)"></tinymce-editor>
+        <span style="font-weight:bolder;">文章内容:</span>
+        <tinymce-editor [elementId]="tinymceElementId" required (onEditorContentChange)="onEditorContentChange($event)"></tinymce-editor>
       </div>
+
       <div class="div-to-hide-hr"></div>
-      <div class="form-inline" *ngIf="isShowPublish">
+      <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
+      <div class="form-inline" *ngIf="(globalArticleContent != '' && globalArticleContent != null && !isEdit)">
         <div (click)="saveDrafts()" class="well well-sm col-lg-6 col-md-6 col-sm-6 col-xs-6 text-center shou">
           <span style="color: #8a6d3b;">保存为草稿</span>
         </div>
@@ -42,11 +58,15 @@
           <span style="color: #2b669a;">发&nbsp;&nbsp;表</span>
         </div>
       </div>
-      <div class="div-to-hide-hr"></div>
-      <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
+      <div class="form-inline" *ngIf="(globalArticleContent != '' && globalArticleContent != null && isEdit)">
+        <div (click)="confirmEditArticle()" class="well well-sm col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center shou">
+          <span style="color: #2b669a;">保存修改</span>
+        </div>
+      </div>
     </div>
 
     <div class="panel-body" *ngIf="!isShow">
+      <div *ngIf="showSuccess" class="alert alert-success">{{successMsg}}</div>
       <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
       <div [class.hidden]="paging.bigTotalItems > 0">
         <p>
@@ -55,37 +75,52 @@
       </div>
 
       <div [class.hidden]="paging.bigTotalItems < 0">
-        <div class="" *ngFor="let article of articles">
+        <div class="well well-sm" *ngFor="let article of articles">
+          <h4 [innerHTML]="article.title"></h4>
+          <div [innerHTML]="article.desc"></div>
+          <div class="div-to-hide-hr-2"></div>
           <div>
-            <div style="float: left; margin-right: 10px;"><img style="width:50px; height: 50px;" class="img-circle"
-                                                               [src]="head_portrait"/></div>
-            <div style="padding-top: 8px;"><span>{{article.username}}</span></div>
-            <div><span>{{article.update_time | date: "yyyy-MM-dd HH:mm:ss"}}</span></div>
+            <div style="float: left; margin-right: 10px;"><a style="cursor:default;text-decoration:none;"><span class="glyphicon glyphicon-eye-open"></span>&nbsp;浏览{{article.visitor}}次</a></div>
+            <div class="hidden-xs" style="float: left; margin-right: 50px;"><a style="text-decoration: none; cursor: default;">{{article.update_time | date: "yyyy-MM-dd HH:mm:ss"}}</a></div>
+            <div class="hidden-xs" *ngIf="authorizationService.currentUser.username == requestUsername" style="float: left; margin-right: 10px;"><a (click)="toEditArticle(article._id)" style="text-decoration: none; cursor: pointer;">编辑</a></div>
+            <div class="hidden-xs" *ngIf="authorizationService.currentUser.username == requestUsername"><a (click)="toDeleteArticle(article._id)" style="text-decoration: none; cursor: pointer; color: red;">删除</a></div>
           </div>
-          <div class="div-to-hide-hr"></div>
-          <div>{{article.content}}</div>
+          <div class="div-to-hr-2"></div>
+          <p>
+            <a class="btn" routerLink="/private/article/detail/{{article._id}}">查看全文 »</a>
+          </p>
         </div>
       </div>
-      <div *ngIf="(paging.bigTotalItems > 0)"
-           class="visible-lg visible-md visible-sm col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-lg-6 col-md-6 col-sm-8 col-xs-12">
-        <pagination [firstText]="paging.firstText" [previousText]="paging.previousText" [lastText]="paging.lastText"
-                    [nextText]="paging.nextText" [totalItems]="paging.bigTotalItems" [(ngModel)]="paging.bigCurrentPage"
-                    [maxSize]="paging.maxSize" class="pagination-sm" [boundaryLinks]="true" [rotate]="false"
-                    [itemsPerPage]="paging.limit"
-                    (numPages)="paging.numPages = $event" (pageChanged)="pageChanged($event)"></pagination>
-      </div>
-      <div *ngIf="(paging.bigTotalItems > 0)" class="visible-xs col-xs-12">
-        <pagination [previousText]="paging.previousText"
-                    [nextText]="paging.nextText"
-                    [totalItems]="paging.bigTotalItems"
-                    [(ngModel)]="paging.bigCurrentPage"
-                    [maxSize]="paging.xsV" class="pagination-sm"
-                    [boundaryLinks]="false" [rotate]="false"
-                    [itemsPerPage]="paging.limit"
-                    (numPages)="paging.numPages = $event"
-                    (pageChanged)="pageChanged($event)"></pagination>
+      <div class="row">
+        <div *ngIf="(paging.bigTotalItems > 0)"
+             class="visible-lg visible-md visible-sm col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-lg-6 col-md-6 col-sm-8 col-xs-12">
+          <pagination [firstText]="paging.firstText" [previousText]="paging.previousText" [lastText]="paging.lastText"
+                      [nextText]="paging.nextText" [totalItems]="paging.bigTotalItems" [(ngModel)]="paging.bigCurrentPage"
+                      [maxSize]="paging.maxSize" class="pagination-sm" [boundaryLinks]="true" [rotate]="false"
+                      [itemsPerPage]="paging.limit"
+                      (numPages)="paging.numPages = $event" (pageChanged)="pageChanged($event)"></pagination>
+        </div>
+        <div *ngIf="(paging.bigTotalItems > 0)" class="visible-xs col-xs-12">
+          <pagination [previousText]="paging.previousText"
+                      [nextText]="paging.nextText"
+                      [totalItems]="paging.bigTotalItems"
+                      [(ngModel)]="paging.bigCurrentPage"
+                      [maxSize]="paging.xsV" class="pagination-sm"
+                      [boundaryLinks]="false" [rotate]="false"
+                      [itemsPerPage]="paging.limit"
+                      (numPages)="paging.numPages = $event"
+                      (pageChanged)="pageChanged($event)"></pagination>
+        </div>
       </div>
     </div>
   </div>
 </div>
-
+<template #appModalTemplate>
+  <div class="modal-body">
+    <span>{{appModal.content}}</span>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="cancleModal()">取消</button>
+    <button type="button" class="btn btn-default" (click)="excuteDel()">确定</button>
+  </div>
+</template>

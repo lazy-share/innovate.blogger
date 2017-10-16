@@ -38,6 +38,9 @@ exports.articles = function (req, res) {
         queryOpt.is_private = false;
         queryOpt.is_manuscript = false;
     }
+    if (paging.keywork){
+        queryOpt.content = new RegExp('content', paging.keywork);
+    }
     ArticlesModel.find(queryOpt).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, articles) {
         if (err) {
             log.error('articles error, errMsg:' + err);

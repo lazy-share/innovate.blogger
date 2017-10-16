@@ -10,6 +10,8 @@ import {ArticleNavComponent} from "../../shared/article-nav/article-nav.componen
 import {TinymceEditorComponent} from "../../shared/tinymce-editor/tinymce.component";
 import {BsModalService, BsModalRef} from "ngx-bootstrap";
 import {AppModal} from "../../vo/app-modal";
+import {SearchService} from "../../core/search/search.service";
+import {Subscription} from "rxjs";
 /**
  * Created by lzy on 2017/10/12.
  *
@@ -43,19 +45,47 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
   public appModalTemplateDiv:TemplateRef<any>;
   private isEdit:boolean = false;
   private isManuscript:boolean = false; //草稿箱/文章
+  subscription: Subscription;
 
   constructor(private authorizationService: AuthorizationService,
               private articleService: ArticleService,
               private modalService: BsModalService,
+              private searchService:SearchService,
               private route: ActivatedRoute) {
     super();
     this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get('username')).subscribe();
+    this.subscription = this.searchService.search$.subscribe(
+      keyword => {
+        this.doSearch(keyword);
+      });
+  }
+
+  doSearch(keyword:string){
+    let pag = PagingParams.instantiation();
+    pag.keywork = keyword;
+    this.articleService.articles(
+      this.requestUsername,
+      this.authorizationService.getCurrentUser().username,
+      this.isManuscript,
+      PagingParams.instantiation()
+    ).subscribe(
+      data => {
+        if (!data.status) {
+          this.showMsg = true;
+          this.sysMsg = data.msg;
+          return;
+        }
+        this.initData(data.data);
+      }
+    );
   }
 
   ngAfterViewInit(): void {
   }
 
   ngOnDestroy() {
+    // prevent memory leak when component destroyed
+    this.subscription.unsubscribe();
   }
 
   ngOnInit(): void {

@@ -13,9 +13,9 @@
       <ul class="nav navbar-nav navbar-right">
         <form class="navbar-form navbar-left visible-lg visible-md" role="search">
           <div class="form-group">
-            <input type="text" class="form-control" placeholder="Search">
+            <input type="text" name="keyword" [(ngModel)]="keyword" class="form-control" placeholder="Search">
           </div>
-          <button type="submit" class="btn btn-default">搜索</button>
+          <button (click)="doSearch()" class="btn btn-default">搜索</button>
         </form>
         <li class="visible-lg visible-md visible-sm" *ngIf="authorizationService.currentUser && authorizationService.currentUser.last_login_time"><a style="color: white;"><span class="glyphicon glyphicon-time"></span>上次登录时间：{{authorizationService.currentUser.last_login_time | date:"yyyy-MM-dd HH:mm:ss"}}</a></li>
         <li *ngIf="authorizationService.currentUser"><a routerLink="/private/info/{{authorizationService.currentUser.username}}" routerLinkActive="active"><span class="glyphicon glyphicon-home"></span> 个人中心</a></li>

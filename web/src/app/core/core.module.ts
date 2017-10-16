@@ -1,6 +1,7 @@
 import {NgModule} from "@angular/core";
 import {AuthorizationModule} from "./authorization/authorization.module";
 import {StorageModule} from "./storage/storage.module";
+import {SearchService} from "./search/search.service";
 /**
  * Created by laizhiyuan on 2017/9/25.
  */
@@ -9,7 +10,7 @@ import {StorageModule} from "./storage/storage.module";
     AuthorizationModule,
     StorageModule
   ],
-  providers:[],
+  providers:[SearchService],
   exports: [
     AuthorizationModule,
     StorageModule

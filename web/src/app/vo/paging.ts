@@ -39,7 +39,7 @@ export class PagingParams {
     if (this.currentPage <= 1){
       return 0;
     }
-    return (this.currentPage - 1) * this.pageSize;
+    return (this.currentPage - 1) * this.limit;
   }
 
   static instantiation(): PagingParams{

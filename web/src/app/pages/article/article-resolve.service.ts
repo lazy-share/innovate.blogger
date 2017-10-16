@@ -18,7 +18,6 @@ export class ArticleResolveService implements Resolve<any>{
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
     let username = route.paramMap.get('username');
     let paging = PagingParams.instantiation();
-    paging.limit = 10;
     return this.articliService.articles(username, this.authorizationService.getCurrentUser().username, false,  paging);
   }
 

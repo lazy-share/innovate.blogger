@@ -59,7 +59,6 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
   }
 
   ngOnInit(): void {
-    this.pagingParams.limit = 12;
     this.route.data.subscribe((data: { articles: any }) => {
       if (!data.articles.status) {
         this.showMsg = true;
@@ -211,6 +210,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
    * @param isManuscript
    */
   listForDrafts(isManuscript:boolean) {
+    this.paging = Paging.instantiation();
     this.isManuscript = isManuscript;
     this.articleService.articles(
       this.requestUsername,
@@ -393,6 +393,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
         setTimeout(() => {this.showSuccess = false}, 1000);
         this.articles = data.data.articles;
         this.paging.bigTotalItems = data.data.count;
+        this.globalArticleId = '';
       },
       err => {
         this.showMsg = true;

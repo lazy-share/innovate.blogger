@@ -15,9 +15,10 @@ module.exports = function (router) {
     router.post(webRootApi + '/private/my/article', articlesService.addArticle);
     router.get(webRootApi + '/private/my/article', articlesService.article);
     router.get(webRootApi + '/private/my/article/detail', articlesService.detail);
+    router.post(webRootApi + '/private/my/article/praise', articlesService.praise);
+    router.post(webRootApi + '/private/my/article/comment', articlesService.comment);
+    router.delete(webRootApi + '/private/my/article/comment', articlesService.delComment);
     router.put(webRootApi + '/private/my/article', articlesService.editArticle);
     router.delete(webRootApi + '/private/my/article', articlesService.delArticle);
     router.post(webRootApi + '/private/my/article/upload/images', articlesService.uploadImages);
-
-
 };

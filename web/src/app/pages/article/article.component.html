@@ -79,8 +79,8 @@
           <div [innerHTML]="article.desc"></div>
           <div class="div-to-hide-hr-2"></div>
           <div>
-            <div style="float: left; margin-right: 10px;"><a style="cursor:default;text-decoration:none;"><span class="glyphicon glyphicon-eye-open"></span>&nbsp;阅读{{article.visitor}}次</a></div>
-            <div class="hidden-xs" style="float: left; margin-right: 50px;"><a style="text-decoration: none; cursor: default;">发表于{{article.update_time | date: "yyyy-MM-dd HH:mm:ss"}}</a></div>
+            <div style="float: left; margin-right: 30px;"><a style="cursor:default;text-decoration:none;"><span class="glyphicon glyphicon-eye-open"></span>&nbsp;阅读&nbsp;{{article.visitor}}&nbsp;次</a></div>
+            <div class="hidden-xs" style="float: left; margin-right: 50px;"><a style="text-decoration: none; cursor: default;color: burlywood;">发表于{{article.update_time | date: "yyyy-MM-dd HH:mm:ss"}}</a></div>
             <div class="hidden-xs" *ngIf="authorizationService.currentUser.username == requestUsername" style="float: left; margin-right: 10px;"><a (click)="toEditArticle(article._id)" style="text-decoration: none; cursor: pointer;">编辑</a></div>
             <div class="hidden-xs" *ngIf="authorizationService.currentUser.username == requestUsername"><a (click)="toDeleteArticle(article._id)" style="text-decoration: none; cursor: pointer; color: red;">删除</a></div>
           </div>

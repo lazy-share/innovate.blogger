@@ -3,10 +3,14 @@ import {AppResponse} from "../../vo/app-response";
 import {Observable} from "rxjs/Observable";
 import {Article, ArticleType} from "../../vo/article";
 import {HttpClient, HttpParams, HttpErrorResponse} from "@angular/common/http";
-import {MY_ARTICLE, MY_ARTICLES, MY_ARTICLE_TYPE, MY_ARTICLE_DETAIL} from "../../constant/uri";
+import {
+  MY_ARTICLE, MY_ARTICLES, MY_ARTICLE_TYPE, MY_ARTICLE_DETAIL, MY_ARTICLE_PRAISE,
+  MY_ARTICLE_COMMENT
+} from "../../constant/uri";
 import {PagingParams} from "../../vo/paging";
 import {Router} from "@angular/router";
 import {AuthorizationService} from "../../core/authorization/authorization.service";
+import {Reply} from "../../vo/comment";
 /**
  * Created by lzy on 2017/10/12.
  */
@@ -19,6 +23,64 @@ export class ArticleService {
     private authorizationService:AuthorizationService
   ){}
 
+  /**
+   * 删除评论
+   * @param reply
+   * @returns {Observable<R>}
+   */
+  deleteComment(reply: Reply):Observable<AppResponse>{
+      return this.http.delete<AppResponse>(
+        MY_ARTICLE_COMMENT,
+        {
+          params: new HttpParams().set('reply', JSON.stringify(reply))
+        }
+      ).map(
+        data => {
+          return data;
+        }
+      );
+  }
+
+  /**
+   * 提交评论
+   * @param reply
+   * @returns {Observable<R>}
+   */
+  submitReply(reply: Reply):Observable<AppResponse>{
+      return this.http.post<AppResponse>(
+        MY_ARTICLE_COMMENT,
+        {reply: reply}
+      ).map(
+        data => {
+          return data;
+        }
+      );
+  }
+
+  /**
+   * 赞
+   * @param id
+   * @param currentUsername
+   * @returns {Observable<R>}
+   */
+  praise(id:string, currentUsername:string):Observable<AppResponse>{
+      return this.http.post<AppResponse>(
+        MY_ARTICLE_PRAISE,
+        {id: id, currentUsername: currentUsername}
+      ).map(
+        data => {
+          return data;
+        }
+      );
+  }
+
+  /**
+   * 查看全文
+   * @param id
+   * @param username
+   * @param currentUsername
+   * @returns {Observable<R>}
+   */
   detail(id: string, username:string, currentUsername:string):Observable<AppResponse>{
     return this.http.get<AppResponse>(
       MY_ARTICLE_DETAIL,

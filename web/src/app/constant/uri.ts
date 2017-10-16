@@ -32,3 +32,5 @@ export const MY_ARTICLE = root + "/private/my/article";
 export const MY_ARTICLE_TYPE = root + "/private/my/article/type";
 export const MY_ARTICLE_UPLOAD_IMAGES = root + "/private/my/article/upload/images";
 export const MY_ARTICLE_DETAIL = root + "/private/my/article/detail";
+export const MY_ARTICLE_PRAISE = root + "/private/my/article/praise";
+export const MY_ARTICLE_COMMENT = root + "/private/my/article/comment";

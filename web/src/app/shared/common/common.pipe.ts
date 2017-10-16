@@ -6,6 +6,9 @@ import {PipeTransform, Pipe} from "@angular/core";
 export class IsExistsArrPipe implements PipeTransform {
 
   transform(value: Array<string>, ele: string): boolean {
+    if (!(value instanceof Array)){
+      return false;
+    }
     if (!value || value.length == 0 || !ele) {
       return false;
     }

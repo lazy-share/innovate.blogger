@@ -230,7 +230,7 @@ exports.comment = function (req, res) {
     NotesModel.findOne({username: reply.username, _id: reply.doc_id}).exec(function (err, doc) {
         if (err) {
             log.error('note post comment error:' + err);
-            res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
         var nowTime = new Date();
@@ -308,7 +308,7 @@ exports.delComment = function (req, res) {
     reply = JSON.parse(reply);
     if (!reply){
         log.error('note delComment error: params error :' + reply + '|' + JSON.stringify(reply));
-        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+        res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
         return;
     }
     NotesModel.findOne({username: reply.username, _id: reply.doc_id}).exec(function (err, doc) {

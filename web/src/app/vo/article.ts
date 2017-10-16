@@ -1,4 +1,3 @@
-import {Comment} from "./comment";
 /**
  * Created by lzy on 2017/10/12.
  */
@@ -10,7 +9,9 @@ export class Article {
   public desc:string;
   public isPrivate:boolean;
   public id:string;
-  public comment:Comment;
+  public comment:string;
+  public praise:string[] = new Array<string>();
+  public isManuscript:boolean = false;
 
   static instantiation() {
     let article = new Article();
@@ -20,6 +21,9 @@ export class Article {
     article.title = '';
     article.isPrivate = false;
     article.desc = '';
+    article.praise =  new Array<string>();
+    article.comment = '';
+    article.isManuscript = false;
     return article;
   }
 }

@@ -7,9 +7,8 @@
           <li role="presentation" class="dropdown-header">自定义类型</li>
           <ng-container *ngFor="let type of definedTypes">
             <li class="dropdown-submenu">
-              <a tabindex="-1">{{type.name}}</a>
+              <a tabindex="-1" (click)="selectType(type._id, type.name)">{{type.name}}</a>
               <ul class="dropdown-menu">
-                <li><a tabindex="-1" style="color:dodgerblue;" (click)="selectType(type._id, type.name)">选择</a></li>
                 <li><a tabindex="-1" style="color:red;" (click)="deleteType(type._id)">删除</a></li>
               </ul>
             </li>

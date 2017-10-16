@@ -2,15 +2,13 @@
 <div class="container">
   <div class="panel panel-info">
     <div class="panel-heading">
-      <h3 class="panel-title">文章全文</h3>
+      <h3 class="panel-title">文章全文<a style="margin-left: 30px;text-decoration: none;" routerLink="/private/article/{{requestUsername}}" class="btn btn-default">文章列表</a></h3>
     </div>
     <div class="panel-body">
       <div *ngIf="showSuccess" class="alert alert-success">{{successMsg}}</div>
       <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
-
-      <ng-container *ngIf="article">
-        <div [innerHTML]="article.content"></div>
-
+      <div [innerHTML]="article.content"></div>
+      <ng-container *ngIf="article && !article.is_manuscript">
         <div class="div-to-hide-hr-3"></div>
         <a style="margin-right: 50px;cursor:default;text-decoration:none;"><span class="glyphicon glyphicon-eye-open"></span>&nbsp;阅读&nbsp;{{article.visitor}}&nbsp;次</a>
         <a (click)="comment('', '')" style="margin-right: 16px;" tooltip='分享一下你的看法'><span class="glyphicon glyphicon-comment"></span></a>

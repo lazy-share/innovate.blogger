@@ -210,9 +210,31 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
   }
 
   /**
+   * 查草稿箱列表
+   * @param isManuscript
+   */
+  listForDrafts(isManuscript:boolean) {
+    this.articleService.articles(
+      this.requestUsername,
+      this.authorizationService.getCurrentUser().username,
+      isManuscript,
+      PagingParams.instantiation()
+    ).subscribe(
+      data => {
+        if (!data.status) {
+          this.showMsg = true;
+          this.sysMsg = data.msg;
+          return;
+        }
+        this.initData(data.data);
+      }
+    );
+  }
+
+  /**
    * 保存文章
    */
-  submitArticle() {
+  submitArticle(isManuscript:boolean) {
     if (!this.globalTypeId) {
       this.showMsg = true;
       this.sysMsg = '请选择文章类型';
@@ -238,6 +260,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
     article.desc = this.globalArticleDesc;
     article.title = this.globalArticleTitle;
     article.isPrivate = this.globalArticleIsPrivate;
+    article.isManuscript = isManuscript;
     this.articleService.submitArticle(article, this.pagingParams).subscribe(
       data => {
         if (!data.status) {
@@ -293,7 +316,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
   /**
    * 保存编辑
    */
-  confirmEditArticle(){
+  confirmEditArticle(isManuscript:boolean){
     if (!this.globalTypeId) {
       this.showMsg = true;
       this.sysMsg = '请选择文章类型';
@@ -320,6 +343,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
     article.title = this.globalArticleTitle;
     article.isPrivate = this.globalArticleIsPrivate;
     article.id = this.globalArticleId;
+    article.isManuscript = isManuscript;
     this.articleService.confirmEditArticle(article, this.pagingParams).subscribe(
       data => {
         if (!data.status) {
@@ -414,7 +438,11 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
     this.pagingParams.pageSize = event.itemsPerPage;
     this.pagingParams.skip = this.pagingParams.getSkip();
 
-    this.articleService.articles(this.requestUsername, this.authorizationService.getCurrentUser().username, this.pagingParams).subscribe(
+    this.articleService.articles(
+      this.requestUsername,
+      this.authorizationService.getCurrentUser().username,
+      this.articles[0].isManuscript,
+      this.pagingParams).subscribe(
       data => {
         if (!data.status) {
           this.showMsg = true;
@@ -425,12 +453,4 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
       }
     );
   }
-
-  /**
-   * 保存到草稿箱
-   */
-  saveDrafts() {
-    alert();
-  }
-
 }

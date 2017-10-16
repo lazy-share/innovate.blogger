@@ -208,7 +208,7 @@ exports.delArticle = function (req, res) {
                     return;
                 }
                 var paging = req.query.paging;
-                queryByPaging(res, username, JSON.parse(paging), '删除文章后');
+                queryByPaging(res, article, JSON.parse(paging), '删除文章后');
             })
         });
     });

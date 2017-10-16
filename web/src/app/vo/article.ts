@@ -12,6 +12,7 @@ export class Article {
   public comment:string;
   public praise:string[] = new Array<string>();
   public isManuscript:boolean = false;
+  public is_anuscript:boolean = false;
 
   static instantiation() {
     let article = new Article();

@@ -115,14 +115,15 @@ export class ArticleService {
    * 文章列表
    * @param username
    * @param currentUsername
+   * @param isManuscript 是否是草稿箱
    * @param paging
    * @returns {Observable<R>}
    */
-  articles(username:string, currentUsername:string, paging: PagingParams):Observable<AppResponse> {
+  articles(username:string, currentUsername:string, isManuscript:boolean, paging: PagingParams):Observable<AppResponse> {
     return this.http.get<AppResponse>(
       MY_ARTICLES,
       {
-        params: new HttpParams().set('username', username).set('paging', JSON.stringify(paging)).set('currentUsername', currentUsername)
+        params: new HttpParams().set('username', username).set('paging', JSON.stringify(paging)).set('currentUsername', currentUsername).set('isManuscript', JSON.stringify(isManuscript))
       }
     ).map(
       data => {

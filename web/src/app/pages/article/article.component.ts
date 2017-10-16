@@ -42,6 +42,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
   @ViewChild('appModalTemplate')
   public appModalTemplateDiv:TemplateRef<any>;
   private isEdit:boolean = false;
+  private isManuscript:boolean = false; //草稿箱/文章
 
   constructor(private authorizationService: AuthorizationService,
               private articleService: ArticleService,
@@ -187,10 +188,6 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
     );
   }
 
-  onDrafts() {
-
-  }
-
   /**
    * 取消/写文章
    */
@@ -214,6 +211,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
    * @param isManuscript
    */
   listForDrafts(isManuscript:boolean) {
+    this.isManuscript = isManuscript;
     this.articleService.articles(
       this.requestUsername,
       this.authorizationService.getCurrentUser().username,
@@ -441,7 +439,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
     this.articleService.articles(
       this.requestUsername,
       this.authorizationService.getCurrentUser().username,
-      this.articles[0].isManuscript,
+      this.isManuscript,
       this.pagingParams).subscribe(
       data => {
         if (!data.status) {

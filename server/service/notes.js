@@ -26,19 +26,18 @@ exports.notes = function (req, res) {
         return;
     }
     paging = JSON.parse(paging);
-    var query = NotesModel.find({username: username});
+    var queryOpt = {username: username};
     if (paging.keyword) {
-        query.where('content',paging.keyword);
+        queryOpt.content = new RegExp(paging.keyword, 'i');
     }
-    query.sort({update_time: -1}).limit(paging.limit).skip(paging.skip);
-    query.exec(function (err, docs) {
+    NotesModel.find(queryOpt).sort({update_time: -1}).limit(paging.limit).skip(paging.skip).exec(function (err, docs) {
         if (err) {
             console.log('notes err! msg:' + err);
             log.error('notes err! msg:' + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-        NotesModel.find({username: username}).count(function (err, count) {
+        NotesModel.find(queryOpt).count(function (err, count) {
             if (err) {
                 console.log('notes err! msg:' + err);
                 log.error('notes err! msg:' + err);

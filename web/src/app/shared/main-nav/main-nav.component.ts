@@ -1,7 +1,7 @@
-import {Component, ElementRef} from "@angular/core";
+import {Component, ElementRef, Renderer2} from "@angular/core";
 import {AuthorizationService} from "../../core/authorization/authorization.service";
 import {Router} from "@angular/router";
-import {ViewChild} from "@angular/core/src/metadata/di";
+import {ViewChild} from "@angular/core";
 import {SearchService} from "../../core/search/search.service";
 /**
  * Created by laizhiyuan on 2017/9/25.
@@ -14,11 +14,14 @@ import {SearchService} from "../../core/search/search.service";
 export class MainNavComponent {
 
   private keyword:string = '';
+  @ViewChild('keywordInput')
+  private keywordInput:ElementRef;
 
   constructor(
     private authorizationService: AuthorizationService,
     private searchService:SearchService,
-    private route: Router
+    private route: Router,
+    private render2:Renderer2
   ){
 
   }
@@ -29,9 +32,12 @@ export class MainNavComponent {
   }
 
   doSearch(){
-    if (this.keyword){
-      this.searchService.doSearch(this.keyword);
-    }
+    this.searchService.announceMission(this.keyword);
+  }
+
+  clear(){
+    this.render2.setProperty(this.keywordInput.nativeElement, 'value', '');
+    this.keyword = '';
   }
 }
 

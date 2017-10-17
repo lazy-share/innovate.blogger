@@ -16,6 +16,8 @@ import {AppModal} from "../../vo/app-modal";
 import {BsModalRef, BsModalService} from "ngx-bootstrap";
 import {Reply} from "../../vo/comment";
 import {Estimate} from "../../vo/estimate";
+import {SearchService} from "../../core/search/search.service";
+import {Subscription} from "rxjs/Subscription";
 /**
  * Created by lzy on 2017/10/6.
  */
@@ -57,6 +59,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
   private commentMaxLength = 50;
   private initCommentMaxLength = 50;
   private pagingParams = PagingParams.instantiation();
+  private subscription: Subscription;
 
   /**
    * 构造器
@@ -72,10 +75,34 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
               private noteService: NoteService,
               private modalService: BsModalService,
               private elementRef:ElementRef,
+              private searchService:SearchService,
               private renderer2:Renderer2
   ) {
     super();
     this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get("username")).subscribe();
+    this.subscription = this.searchService.missionAnnounced$.subscribe(
+      keyword => {
+        this.doSearch(keyword);
+      });
+  }
+
+  /**
+   * 关键字搜索
+   * @param keyword
+   */
+  doSearch(keyword:string){
+    let pag = PagingParams.instantiation();
+    pag.keyword = keyword;
+    this.noteService.notes(this.requestUsername, this.authorizationService.getCurrentUser().username, pag).subscribe(
+      data => {
+        if (!data.status) {
+          this.showMsg = true;
+          this.sysMsg = data.msg;
+          return;
+        }
+        this.initNotes(data);
+      }
+    );
   }
 
   /**

@@ -33,7 +33,7 @@ export class PagingParams {
   public skip:number = 0; //从第几条数据开始
   public currentPage:number;
   public pageSize:number;
-  public keywork:string;
+  public keyword:string;
 
   getSkip():number {
     if (this.currentPage <= 1){
@@ -45,7 +45,7 @@ export class PagingParams {
   static instantiation(): PagingParams{
     let vo = new PagingParams();
     vo.limit = 5;
-    vo.keywork = '';
+    vo.keyword = '';
     vo.currentPage = 1;
     vo.skip = vo.getSkip();
     vo.pageSize = 5;

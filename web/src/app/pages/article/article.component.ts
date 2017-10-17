@@ -54,20 +54,24 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
               private route: ActivatedRoute) {
     super();
     this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get('username')).subscribe();
-    this.subscription = this.searchService.search$.subscribe(
+    this.subscription = this.searchService.missionAnnounced$.subscribe(
       keyword => {
         this.doSearch(keyword);
       });
   }
 
+  /**
+   * 关键字搜索
+   * @param keyword
+   */
   doSearch(keyword:string){
     let pag = PagingParams.instantiation();
-    pag.keywork = keyword;
+    pag.keyword = keyword;
     this.articleService.articles(
       this.requestUsername,
       this.authorizationService.getCurrentUser().username,
       this.isManuscript,
-      PagingParams.instantiation()
+      pag
     ).subscribe(
       data => {
         if (!data.status) {

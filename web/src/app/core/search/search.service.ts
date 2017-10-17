@@ -7,14 +7,14 @@ import {Subject} from "rxjs";
 export class SearchService {
 
   // Observable string sources
-  private searchSource = new Subject<string>();
+  private missionAnnouncedSource = new Subject<string>();
 
   // Observable string streams
-  search$ = this.missionAnnouncedSource.asObservable();
+  missionAnnounced$ = this.missionAnnouncedSource.asObservable();
 
   // Service message commands
-  doSearch(keyword: string) {
-    this.search$.next(keyword);
+  announceMission(mission: string) {
+    this.missionAnnouncedSource.next(mission);
   }
 
 }

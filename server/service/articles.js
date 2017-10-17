@@ -33,13 +33,15 @@ exports.articles = function (req, res) {
     }
     var paging = req.query.paging;
     paging = JSON.parse(paging);
-    var queryOpt = {username: username, is_manuscript: isManuscript};
+    var queryOpt = {};
+    if (paging.keyword){
+        queryOpt = {username: username, is_manuscript: isManuscript, content: new RegExp(paging.keyword, 'i')};
+    }else {
+        queryOpt = {username: username, is_manuscript: isManuscript};
+    }
     if (username != currentUsername){
         queryOpt.is_private = false;
         queryOpt.is_manuscript = false;
-    }
-    if (paging.keywork){
-        queryOpt.content = new RegExp('content', paging.keywork);
     }
     ArticlesModel.find(queryOpt).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, articles) {
         if (err) {

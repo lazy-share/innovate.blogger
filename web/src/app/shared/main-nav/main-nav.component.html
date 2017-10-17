@@ -11,7 +11,7 @@
     </div>
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav navbar-right">
-        <form class="navbar-form navbar-left visible-lg visible-md" role="search">
+        <form *ngIf="showSearchFrom" class="navbar-form navbar-left visible-lg visible-md" role="search">
           <button (click)="clear()" class="btn btn-default">清空</button>
           <div class="form-group">
             <input type="text" name="keyword" [(ngModel)]="keyword" class="form-control" #keywordInput placeholder="Search">

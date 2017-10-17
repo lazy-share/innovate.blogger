@@ -58,6 +58,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
       keyword => {
         this.doSearch(keyword);
       });
+    this.searchService.confirmMission(true);
   }
 
   /**
@@ -65,6 +66,10 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
    * @param keyword
    */
   doSearch(keyword:string){
+    if (this.paging.bigCurrentPage > 1){
+      this.paging.bigCurrentPage = 1;
+      this.paging.bigTotalItems = -1;
+    }
     let pag = PagingParams.instantiation();
     pag.keyword = keyword;
     this.articleService.articles(
@@ -467,6 +472,9 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
    * @param event
    */
   public pageChanged(event: any): void {
+    if (this.paging.bigTotalItems == -1){
+      return;
+    }
     this.pagingParams.currentPage = event.page;
     this.pagingParams.pageSize = event.itemsPerPage;
     this.pagingParams.skip = this.pagingParams.getSkip();

@@ -9,7 +9,7 @@ import {AuthorizationGuardService} from "./core/authorization/authorization-guar
  * Created by laizhiyuan on 2017/9/25.
  */
 const APP_ROUTES: Routes = [
-  {path: 'home', loadChildren: 'app/pages/home/home.module#HomeModule'},
+  {path: 'home', loadChildren: 'app/pages/home/home.module#HomeModule', canActivate: [AuthorizationGuardService]},
   {path: 'login', loadChildren: 'app/pages/login/login.module#LoginModule'},
   {path: "register", loadChildren: 'app/pages/register/register.module#RegisterModule'},
   {path: 'forget', loadChildren: 'app/pages/forget/forget.module#ForgetModule'},
@@ -24,7 +24,7 @@ const APP_ROUTES: Routes = [
       {path: 'note', loadChildren: 'app/pages/note/note.module#NoteModule'},
       {path: 'article', loadChildren: 'app/pages/article/article.module#ArticleModule'}
     ],
-    canActivate: [AuthorizationGuardService],
+    canActivateChild: [AuthorizationGuardService],
   },
   {path: 'illegal', component: IllegalRequestComponent},
   {path: 'not-found', component: NotFoundComponent},

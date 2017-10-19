@@ -22,7 +22,8 @@ const APP_ROUTES: Routes = [
       {path: 'fans', loadChildren: 'app/pages/fans/fans.module#FansModule'},
       {path: 'visitor', loadChildren: 'app/pages/visitor/visitor.module#VisitorModule'},
       {path: 'note', loadChildren: 'app/pages/note/note.module#NoteModule'},
-      {path: 'article', loadChildren: 'app/pages/article/article.module#ArticleModule'}
+      {path: 'article', loadChildren: 'app/pages/article/article.module#ArticleModule'},
+      {path: 'media', loadChildren: 'app/pages/media/media.module#MediaModule'}
     ],
     canActivateChild: [AuthorizationGuardService],
   },

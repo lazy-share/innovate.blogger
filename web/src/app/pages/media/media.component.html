@@ -1,0 +1,53 @@
+<sub-nav [requestUsername]="requestUsername" [tab]="3"></sub-nav>
+
+<div class="container">
+  <div class="panel panel-info">
+    <div class="panel-heading">
+      <div *ngIf="authorizationService.currentUser.username != requestUsername">
+        <h3 class="panel-title">媒体</h3>
+      </div>
+      <div *ngIf="authorizationService.currentUser.username == requestUsername">
+        <button [class.hidden]="isShow" class="btn btn-default" (click)="changeBtn()" type="button">上传媒体</button>
+        <button [class.hidden]="!isShow" class="btn btn-default" (click)="changeBtn()" type="button">取消</button>
+      </div>
+    </div>
+    <div *ngIf="isShow" class="panel-body">
+
+    </div>
+
+    <div *ngIf="!isShow" class="panel-body">
+      <div class="row clearfix">
+        <video class="video-js vjs-default-skin" controls preload="none" poster="" data-setup="{}">
+          <source src="http://video-js.zencoder.com/oceans-clip.mp4" type='video/mp4'/>
+        </video>
+       <!-- <div class="col-md-4 column">
+          <video class="video-js vjs-default-skin" controls preload="none" poster="" data-setup="{}">
+            <source src="http://video-js.zencoder.com/oceans-clip.mp4" type='video/mp4'/>
+          </video>
+        </div>
+        <div class="col-md-4 column">
+          <video class="video-js vjs-default-skin" controls preload="none" poster="" data-setup="{}">
+            <source src="http://video-js.zencoder.com/oceans-clip.mp4" type='video/mp4'/>
+          </video>
+        </div>-->
+        <!--<div class="div-to-hr-6"></div>
+        <div class="col-md-4 column">
+          <video class="video-js vjs-default-skin" controls preload="none" poster="" data-setup="{}">
+            <source src="http://video-js.zencoder.com/oceans-clip.mp4" type='video/mp4'/>
+          </video>
+        </div>
+        <div class="col-md-4 column">
+          <video class="video-js vjs-default-skin" controls preload="none" poster="" data-setup="{}">
+            <source src="http://video-js.zencoder.com/oceans-clip.mp4" type='video/mp4'/>
+          </video>
+        </div>
+        <div class="col-md-4 column">
+          <video class="video-js vjs-default-skin" controls preload="none" poster="" data-setup="{}">
+            <source src="http://video-js.zencoder.com/oceans-clip.mp4" type='video/mp4'/>
+          </video>
+        </div>-->
+      </div>
+    </div>
+  </div>
+</div>
+

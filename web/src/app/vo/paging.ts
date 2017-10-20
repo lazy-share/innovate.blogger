@@ -13,6 +13,21 @@ export class Paging {
   public limit = 5;
   public xsV = 0;
 
+  static instantiation6(): Paging{
+    let vo: Paging = new Paging();
+    vo.bigCurrentPage = 1;
+    vo.numPages = 0;
+    vo.firstText = '第一页';
+    vo.previousText = '上一页';
+    vo.nextText = '下一页';
+    vo.lastText = '最后一页';
+    vo.bigTotalItems = 0;
+    vo.maxSize = 5;
+    vo.xsV = 0;
+    vo.limit = 6;
+    return vo;
+  }
+
   static instantiation(): Paging{
     let vo: Paging = new Paging();
     vo.bigCurrentPage = 1;
@@ -52,13 +67,13 @@ export class PagingParams {
     return vo;
   }
 
-  static instantiation10(): PagingParams{
+  static instantiation6(): PagingParams{
     let vo = new PagingParams();
-    vo.limit = 10;
+    vo.limit = 6;
     vo.keyword = '';
     vo.currentPage = 1;
     vo.skip = vo.getSkip();
-    vo.pageSize = 10;
+    vo.pageSize = 6;
     return vo;
   }
 }

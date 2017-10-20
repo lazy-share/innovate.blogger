@@ -20,13 +20,14 @@ export class MediaComponent extends BaseComponent implements OnInit{
   ngOnInit(): void {
     this.initUploadFileConfig();
     this.route.data.subscribe((data: {medias: any}) => {
-      this.medias = data.medias.data;
+      this.medias = data.medias.data.medias;
+      this.paging.bigTotalItems = data.medias.data.count;
     })
   }
 
   private requestUsername: string;
-  private paging: Paging = Paging.instantiation();
-  private pagingParams = PagingParams.instantiation10();
+  private paging: Paging = Paging.instantiation6();
+  private pagingParams = PagingParams.instantiation6();
   private uploader: FileUploader = new FileUploader({});
   private medias:Media[] = new Array<Media>();
   private appModal:AppModal = new AppModal('确定删除', '确定永久删除该媒体吗？', 'confirmDelNoteModal', false);

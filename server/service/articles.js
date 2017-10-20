@@ -248,7 +248,7 @@ exports.uploadImages = function (req, res) {
     var multiparty = require('multiparty');
     var util = require('util');
     //生成multiparty对象，并配置上传目标路径
-    var form = new multiparty.Form({uploadDir: process.cwd() + '/server/public/web/images/article'});
+    var form = new multiparty.Form({uploadDir: process.cwd() + sysConnfig[env].server_project_name + sysConnfig[env].upload_article_dir});
     //上传完成后处理
     form.parse(req, function (err, fields, files) {
         if (err) {
@@ -259,8 +259,12 @@ exports.uploadImages = function (req, res) {
         } else {
             var inputFile = files.thumbnail[0];
             log.info(" 成功上传图片：" + inputFile.path);
-            var startIndex = inputFile.path.indexOf('\\public\\web\\images\\article');
-            var filePath = inputFile.path.substring(startIndex, inputFile.path.length).replace(/\\/g, '/');
+            var oldFilePath = inputFile.path;
+            if (oldFilePath.indexOf('\\') > -1) {
+                oldFilePath = oldFilePath.replace(/\\/g, '/');
+            }
+            var startIndex = oldFilePath.indexOf(sysConnfig[env].upload_article_dir);
+            var filePath = oldFilePath.substring(startIndex, oldFilePath.length);
             filePath = sysConnfig[env].thisDoman + filePath;
             res.json({file_path: filePath});
         }

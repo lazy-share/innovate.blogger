@@ -7,6 +7,5 @@
 var commentService = require('../service/comment');
 
 module.exports = function (router) {
-    router.post('/comment/add', commentService.addComment);
-    router.get('/comment/findOne', commentService.findOne);
+
 };

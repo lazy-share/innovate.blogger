@@ -34,3 +34,6 @@ export const MY_ARTICLE_UPLOAD_IMAGES = root + "/private/my/article/upload/image
 export const MY_ARTICLE_DETAIL = root + "/private/my/article/detail";
 export const MY_ARTICLE_PRAISE = root + "/private/my/article/praise";
 export const MY_ARTICLE_COMMENT = root + "/private/my/article/comment";
+export const MY_MEDIAS = root + "/private/my/medias";
+export const MY_MEDIA = root + "/private/my/media";
+export const MY_MEDIA_UPLOAD = root + "/private/my/media/upload";

@@ -19,6 +19,10 @@ var sysConfig = {
       redisOpts:{},
       webRootUri: '/v1/api/web',
       thisDoman: 'http://127.0.0.1:3000',
+      upload_media_dir: '/public/web/medias',
+      upload_header_dir: '/public/web/images/header',
+      upload_article_dir: '/public/web/images/article',
+      server_project_name: '/server'
   },
     test: {
         dbIp: '127.0.0.1',

@@ -51,4 +51,14 @@ export class PagingParams {
     vo.pageSize = 5;
     return vo;
   }
+
+  static instantiation10(): PagingParams{
+    let vo = new PagingParams();
+    vo.limit = 10;
+    vo.keyword = '';
+    vo.currentPage = 1;
+    vo.skip = vo.getSkip();
+    vo.pageSize = 10;
+    return vo;
+  }
 }

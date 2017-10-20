@@ -2,7 +2,7 @@
  * Created by lzy on 2017/9/6.
  *
  * <p>
- *     首页
+ *     首页  废弃
  */
 var RelationshipModel = require('../models/relationship').RelationshipModel;
 module.exports = function (router) {

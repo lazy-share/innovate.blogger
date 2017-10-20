@@ -12,42 +12,67 @@
       </div>
     </div>
     <div *ngIf="isShow" class="panel-body">
-
+      <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
+      <div style="text-align: center;" class="alert alert-success alert-dismissable">
+        <span class="fileinput-button">
+            <span style="font-size: 20px;">点击选择媒体</span>
+            <input type="file" ng2FileSelect [uploader]="uploader"/>
+        </span>
+        <div class="progress" style="" *ngIf="uploader.progress > 0">
+          <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+        </div>
+      </div>
     </div>
 
     <div *ngIf="!isShow" class="panel-body">
-      <div class="row clearfix">
-        <video class="video-js vjs-default-skin" controls preload="none" poster="" data-setup="{}">
-          <source src="http://video-js.zencoder.com/oceans-clip.mp4" type='video/mp4'/>
-        </video>
-       <!-- <div class="col-md-4 column">
-          <video class="video-js vjs-default-skin" controls preload="none" poster="" data-setup="{}">
-            <source src="http://video-js.zencoder.com/oceans-clip.mp4" type='video/mp4'/>
-          </video>
+      <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
+      <div class="container">
+        <div class="row clearfix">
+          <ng-container *ngFor="let media of medias; let i = index">
+            <ng-container *ngIf="(i != 0 && i % 3 == 0)">
+              <div class="div-to-hide-hr-3"></div>
+            </ng-container>
+            <div class="col-md-4 column">
+              <video  class="video-js vjs-default-skin" controls preload="auto"  data-setup="{}">
+                <source src="{{media.media_url}}" type="video/mp4">
+              </video>
+              <div class="div-to-hide-hr"></div>
+              <p>
+                <a style="text-decoration: none;"><span>更新时间：{{media.update_time}}</span></a>
+                &nbsp;&nbsp;&nbsp;
+                <a (click)="toDeleteMedia(media._id)" style="text-decoration: none; color: red;"><span>删除</span></a>
+              </p>
+            </div>
+          </ng-container>
         </div>
-        <div class="col-md-4 column">
-          <video class="video-js vjs-default-skin" controls preload="none" poster="" data-setup="{}">
-            <source src="http://video-js.zencoder.com/oceans-clip.mp4" type='video/mp4'/>
-          </video>
-        </div>-->
-        <!--<div class="div-to-hr-6"></div>
-        <div class="col-md-4 column">
-          <video class="video-js vjs-default-skin" controls preload="none" poster="" data-setup="{}">
-            <source src="http://video-js.zencoder.com/oceans-clip.mp4" type='video/mp4'/>
-          </video>
-        </div>
-        <div class="col-md-4 column">
-          <video class="video-js vjs-default-skin" controls preload="none" poster="" data-setup="{}">
-            <source src="http://video-js.zencoder.com/oceans-clip.mp4" type='video/mp4'/>
-          </video>
-        </div>
-        <div class="col-md-4 column">
-          <video class="video-js vjs-default-skin" controls preload="none" poster="" data-setup="{}">
-            <source src="http://video-js.zencoder.com/oceans-clip.mp4" type='video/mp4'/>
-          </video>
-        </div>-->
+      </div>
+
+      <div *ngIf="(paging.bigTotalItems > 0)" class="visible-lg visible-md visible-sm col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-lg-6 col-md-6 col-sm-8 col-xs-12">
+        <pagination [firstText]="paging.firstText" [previousText]="paging.previousText" [lastText]="paging.lastText"
+                    [nextText]="paging.nextText" [totalItems]="paging.bigTotalItems" [(ngModel)]="paging.bigCurrentPage"
+                    [maxSize]="paging.maxSize" class="pagination-sm" [boundaryLinks]="true" [rotate]="false" [itemsPerPage]="paging.limit"
+                    (numPages)="paging.numPages = $event" (pageChanged)="pageChanged($event)"></pagination>
+      </div>
+      <div *ngIf="(paging.bigTotalItems > 0)" class="visible-xs col-xs-12">
+        <pagination [previousText]="paging.previousText"
+                    [nextText]="paging.nextText"
+                    [totalItems]="paging.bigTotalItems"
+                    [(ngModel)]="paging.bigCurrentPage"
+                    [maxSize]="paging.xsV" class="pagination-sm"
+                    [boundaryLinks]="false" [rotate]="false"
+                    [itemsPerPage]="paging.limit"
+                    (numPages)="paging.numPages = $event"
+                    (pageChanged)="pageChanged($event)"></pagination>
       </div>
     </div>
   </div>
 </div>
-
+<template #appModalTemplate>
+  <div class="modal-body">
+    {{appModal.content}}
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="cancleModal()">取消</button>
+    <button type="button" class="btn btn-default" (click)="excuteDel()">确定</button>
+  </div>
+</template>

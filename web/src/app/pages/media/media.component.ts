@@ -1,4 +1,4 @@
-import {Component, OnInit, TemplateRef, ViewChild} from "@angular/core";
+import {Component, OnInit, TemplateRef, ViewChild, OnDestroy} from "@angular/core";
 import {AuthorizationService} from "../../core/authorization/authorization.service";
 import {ParamMap, ActivatedRoute} from "@angular/router";
 import {Paging, PagingParams} from "../../vo/paging";
@@ -16,7 +16,10 @@ import {BsModalRef, BsModalService} from "ngx-bootstrap";
 @Component({
   templateUrl: './media.component.html'
 })
-export class MediaComponent extends BaseComponent implements OnInit{
+export class MediaComponent extends BaseComponent implements OnInit, OnDestroy{
+  ngOnDestroy(): void {
+    this.uploader.destroy();
+  }
   ngOnInit(): void {
     this.initUploadFileConfig();
     this.route.data.subscribe((data: {medias: any}) => {
@@ -59,6 +62,7 @@ export class MediaComponent extends BaseComponent implements OnInit{
     this.uploader.onSuccessItem = this.successItem.bind(this);
   }
 
+
   successItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): any {
     // 上传媒体成功
     if (status == 200) {
@@ -80,6 +84,9 @@ export class MediaComponent extends BaseComponent implements OnInit{
   }
 
   changeBtn() {
+    if (this.uploader.isUploading){
+      this.uploader.cancelAll();
+    }
     this.isShow = !this.isShow;
   }
 

@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from "@angular/core";
+import {Component, OnInit, ViewChild, OnDestroy} from "@angular/core";
 import {BaseComponent} from "../common/BaseComponent";
 import {Account} from "../../vo/account";
 import {AuthorizationService} from "../../core/authorization/authorization.service";
@@ -21,7 +21,10 @@ import {MyDatePicker} from "../../vo/my-date-picker";
     './info.component.css'
   ]
 })
-export class InfoComponent extends BaseComponent implements OnInit {
+export class InfoComponent extends BaseComponent implements OnInit, OnDestroy {
+  ngOnDestroy(): void {
+    this.uploader.destroy();
+  }
 
   private requestUsername: string = "";
   private storageUsername: string = "";

@@ -21,4 +21,5 @@ module.exports = function(router){
     router.get('/example/testAggregate', exampleService.testAggregate);
     router.post('/example/insert', exampleService.insert);
     router.get('/example/index', exampleService.index);
+    router.get('/example/news', exampleService.news);
 };

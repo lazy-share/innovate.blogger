@@ -12,6 +12,55 @@ var example = require('../models/example');
 
 var mongoose = require('mongoose');
 var ExampleModel = example.ExampleModel;
+/*推荐：http://3g.163.com/touch/article/list/BA8J7DG9wangning/20-20.html      主要修改20-20
+    新闻：http://3g.163.com/touch/article/list/BBM54PGAwangning/0-10.html
+    娱乐：http://3g.163.com/touch/article/list/BA10TA81wangning/0-10.html
+    体育：http://3g.163.com/touch/article/list/BA8E6OEOwangning/0-10.html
+    财经：http://3g.163.com/touch/article/list/BA8EE5GMwangning/0-10.html
+    时尚：http://3g.163.com/touch/article/list/BA8F6ICNwangning/0-10.html
+    军事：http://3g.163.com/touch/article/list/BAI67OGGwangning/0-10.html
+    手机：http://3g.163.com/touch/article/list/BAI6I0O5wangning/0-10.html
+    科技：http://3g.163.com/touch/article/list/BA8D4A3Rwangning/0-10.html
+    游戏：http://3g.163.com/touch/article/list/BAI6RHDKwangning/0-10.html
+    数码：http://3g.163.com/touch/article/list/BAI6JOD9wangning/0-10.html
+    教育：http://3g.163.com/touch/article/list/BA8FF5PRwangning/0-10.html
+    健康：http://3g.163.com/touch/article/list/BDC4QSV3wangning/0-10.html
+    汽车：http://3g.163.com/touch/article/list/BA8DOPCSwangning/0-10.html
+    家居：http://3g.163.com/touch/article/list/BAI6P3NDwangning/0-10.html
+    房产：http://3g.163.com/touch/article/list/BAI6MTODwangning/0-10.html
+    旅游：http://3g.163.com/touch/article/list/BEO4GINLwangning/0-10.html
+    亲子：http://3g.163.com/touch/article/list/BEO4PONRwangning/0-10.html*/
+exports.news = function (req, res) {
+    var express=require('express');//引入模块
+    var cheerio=require('cheerio');
+    var superagent=require('superagent');
+    var app=express();
+    //http://news.baidu.com/
+    //http://wangyi.butterfly.mopaasapp.com/detail/api?simpleId=8
+    superagent.get('http://tuijian.hao123.com/hotrank')//请求页面地址
+        .end(function(err,sres){//页面获取到的数据
+            if(err) return next(err);
+
+            var $=cheerio.load(sres.text);//用cheerio解析页面数据
+            var arr=[];
+
+            $(".ulist.focuslistnews").each(function(index,element){//下面类似于jquery的操作，前端的小伙伴们肯定很熟悉啦
+                var $eleItem=$(element).find('.bold-item a');
+                var $eleItemSon=$(element).find('.bold-item ~ li a')
+                arr.push(
+                    {
+                        title: $eleItem.text(),
+                        href: $eleItem.attr('href'),
+                        item:{
+                            title: $eleItemSon.text(),
+                            href: $eleItemSon.attr('href')
+                        }
+                    }
+                );
+            });
+            res.send(arr);
+        })
+};
 
 exports.index = function (req, res) {
     res.render('example');

@@ -13,6 +13,8 @@ export const FORGET_VALIDATE = root + "/forget/validate";
 export const FORGET = root + "/forget";
 
 //受保护URI
+export const NEWS = root + "/news";
+export const NEWS_TYPES = root + "/news/types";
 export const ACCOUNT_INFO = root + "/private/account/info";
 export const ADDRESS_PROVINCES = root + "/private/address/provinces";
 export const ADDRESS_CITYS = root + "/private/address/citys";

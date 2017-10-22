@@ -47,7 +47,7 @@ var sysConfig = {
         server_project_name: '/server'
     },
     prod: {
-        dbIp: 'http://47.94.226.67',
+        dbIp: '47.94.226.67',
         dbPort: '27017',
         dbDatabase: 'blogger',
         dbUsername: 'laizhiyuan',

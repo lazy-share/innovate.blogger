@@ -22,7 +22,8 @@ var sysConfig = {
       upload_media_dir: '/public/web/medias',
       upload_header_dir: '/public/web/images/header',
       upload_article_dir: '/public/web/images/article',
-      server_project_name: '/server'
+      server_project_name: '/server',
+      static_path:'/public/web'
   },
     test: {
         dbIp: '127.0.0.1',
@@ -66,7 +67,8 @@ var sysConfig = {
         upload_media_dir: '/public/web/medias',
         upload_header_dir: '/public/web/images/header',
         upload_article_dir: '/public/web/images/article',
-        server_project_name: '/server'
+        server_project_name: '/server',
+        static_path:'/server/public/web'
     }
 };
 module.exports = sysConfig;

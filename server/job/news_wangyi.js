@@ -48,7 +48,7 @@ const wangyi_news_info_arr = [
 ];
 
 module.exports = function () {
-    var interval = setInterval(start, 1000 * 60 * 3); //30分钟执行一次
+    var interval = setInterval(start, 1000 * 60 * 30); //30分钟执行一次
     //start();
 };
 

@@ -12,9 +12,11 @@ build_dir=/usr/local/build
 branch=develop
 project_name=innovate.blogger
 web_module=${build_dir}/${project_name}/web
-web_module_envfile=${web_module}/package.json
 server_module=${build_dir}/${project_name}/server
 server_module_envfile=${server_module}/conf/environments.js
+server_module_pm2_name=blogger-server
+publish_front_sources_dir=/usr/local/publish/
+ng_build_dist_name=front
 git_address=https://github.com/lzy369/innovate.blogger
 
 #make build dir
@@ -54,6 +56,15 @@ else
 fi
 sleep 3s
 
+#make publish dir dir
+if [ ! -d "${publish_front_sources_dir}" ];then
+        echo "===============> ${publish_front_sources_dir} dir not exists, created it now"
+        mkdir -p ${publish_front_sources_dir}
+else
+        echo "===================> ${publish_front_sources_dir} dir exists"
+fi
+sleep 3s
+
 #back images web and server node_modules after clear project
 if [ -d "${build_dir}/${project_name}" ];then
 	echo "=================> ${build_dir}/${project_name} exists, begin back images node_modules after delete ${build_dir}/${project_name}";
@@ -84,9 +95,19 @@ sleep 5s
 #install server
 sed -i "s/dev/prod/g" ${server_module_envfile}
 cd ${server_module} && npm install
+pid=pm2 list | grep "${server_module_pm2_name}" | awk '{print $12}'
+if [ $pid != '' ]; then
+	kill -9 $pid
+fi
+pm2 start ./bin/www --name ${server_module_pm2_name}
 
 #install web
-sed -i "s/disable-host-chec/disable-host-chec --env=prod/g" ${web_module_envfile}
 cd ${web_module} && npm install
+cp -R ../temp/uploadimage ./node_modules/tinymce/plugins
+npm run build
+rm -rf ${publish_front_sources_dir}/*
+cp -R ${web_module}/${ng_build_dist_name} ${publish_front_sources_dir}/
+ 
+
 
 

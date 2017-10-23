@@ -1,9 +1,9 @@
 export const environment = {
   production: true,
   api: {
-    host: 'www.laizhiyuan.xin',
+    host: 'http://47.94.226.67',
     port: 3000,
-    uri: "www.laizhiyuan.xin/v1/api/web",
-    picuri: "www.laizhiyuan.xin"
+    uri: "http://47.94.226.67/v1/api/web",
+    picuri: "http://47.94.226.67"
   }
 };

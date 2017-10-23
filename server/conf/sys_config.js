@@ -23,7 +23,8 @@ var sysConfig = {
       upload_header_dir: '/public/web/images/header',
       upload_article_dir: '/public/web/images/article',
       server_project_name: '/server',
-      static_path:'/public/web'
+      static_path:'/public/web',
+      Access_Control_Allow_Origin: 'http://127.0.0.1:4200'
   },
     test: {
         dbIp: '127.0.0.1',
@@ -68,7 +69,8 @@ var sysConfig = {
         upload_header_dir: '/public/web/images/header',
         upload_article_dir: '/public/web/images/article',
         server_project_name: '/server',
-        static_path:'/server/public/web'
+        static_path:'/public/web',
+        Access_Control_Allow_Origin:'www.laizhiyuan.xin'
     }
 };
 module.exports = sysConfig;

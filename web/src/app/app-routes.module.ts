@@ -5,6 +5,7 @@ import {
   SystemErrorComponent
 } from "./shared/common/common.component";
 import {AuthorizationGuardService} from "./core/authorization/authorization-guard.service";
+import {environment} from "../environments/environment";
 /**
  * Created by laizhiyuan on 2017/9/25.
  */
@@ -34,11 +35,16 @@ const APP_ROUTES: Routes = [
   {path: '', redirectTo: '/home', pathMatch: 'full'},
   {path: '**', redirectTo: 'not-found'}
 ];
+
+const appRouteOpt = {useHash:true, enableTracing: true};
+if (environment.production){
+  appRouteOpt.enableTracing = false;
+}
 @NgModule({
   imports: [
     RouterModule.forRoot(
       APP_ROUTES,
-      { enableTracing: true }
+      appRouteOpt
     )
   ],
   exports: [

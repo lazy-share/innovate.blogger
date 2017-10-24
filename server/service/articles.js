@@ -248,7 +248,7 @@ exports.uploadImages = function (req, res) {
     var multiparty = require('multiparty');
     var util = require('util');
     //生成multiparty对象，并配置上传目标路径
-    var form = new multiparty.Form({uploadDir: process.cwd() + sysConnfig[env].server_project_name + sysConnfig[env].upload_article_dir});
+    var form = new multiparty.Form({uploadDir: sysConnfig[env].upload_article_dir});
     //上传完成后处理
     form.parse(req, function (err, fields, files) {
         if (err) {

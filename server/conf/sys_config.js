@@ -22,6 +22,7 @@ var sysConfig = {
       upload_header_dir:  '/public/web/images/header',
       upload_article_dir:  '/public/web/images/article',
       static_path: '/public/web',
+      default_upload_dir: process.cwd() + '/server/public/web',
       Access_Control_Allow_Origin: 'http://127.0.0.1:4200'
   },
     prod: {
@@ -41,9 +42,10 @@ var sysConfig = {
         thisDoman: 'http://47.94.226.67',
         upload_root_dir: '/usr/local/publish',
         upload_media_dir:  '/media/video',
-        upload_header_dir: '/media/image/header',
-        upload_article_dir: '/media/image/article',
+        upload_header_dir: '/media/images/header',
+        upload_article_dir: '/media/images/article',
         static_path:'/public/web',
+        default_upload_dir:  '/usr/local/publish/media',
         Access_Control_Allow_Origin:'http://47.94.226.67'
     }
 };

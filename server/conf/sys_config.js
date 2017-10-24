@@ -17,10 +17,11 @@ var sysConfig = {
       redisOpts:{},
       webRootUri: '/v1/api/web',
       thisDoman: 'http://127.0.0.1:3000',
+      upload_root_dir: process.cwd() + '/server',
       upload_media_dir: '/public/web/medias',
-      upload_header_dir: '/public/web/images/header',
-      upload_article_dir: '/public/web/images/article',
-      static_path:'/public/web',
+      upload_header_dir:  '/public/web/images/header',
+      upload_article_dir:  '/public/web/images/article',
+      static_path: '/public/web',
       Access_Control_Allow_Origin: 'http://127.0.0.1:4200'
   },
     prod: {
@@ -38,9 +39,10 @@ var sysConfig = {
         redisOpts:{},
         webRootUri: '/v1/api/web',
         thisDoman: 'http://47.94.226.67:3000',
-        upload_media_dir: process.cwd() + '/public/web/medias',
-        upload_header_dir:process.cwd() + '/public/web/images/header',
-        upload_article_dir: process.cwd() + '/public/web/images/article',
+        upload_root_dir: process.cwd(),
+        upload_media_dir:  '/public/web/medias',
+        upload_header_dir: '/public/web/images/header',
+        upload_article_dir: '/public/web/images/article',
         static_path:'/public/web',
         Access_Control_Allow_Origin:'http://47.94.226.67'
     }

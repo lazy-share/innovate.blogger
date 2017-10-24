@@ -65,7 +65,7 @@ exports.uploadHead = function (req, res) {
         var multiparty = require('multiparty');
         var util = require('util');
         //生成multiparty对象，并配置上传目标路径
-        var form = new multiparty.Form({uploadDir: sysConnfig[env].upload_header_dir});
+        var form = new multiparty.Form({uploadDir: sysConnfig[env].upload_root_dir + sysConnfig[env].upload_header_dir});
         //上传完成后处理
         form.parse(req, function (err, fields, files) {
             if (err) {

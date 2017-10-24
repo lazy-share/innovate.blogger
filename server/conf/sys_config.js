@@ -38,7 +38,7 @@ var sysConfig = {
         jwtValidity: 60 * 30, // 开发设置为30分钟 没有时间单位以秒为准 其它格式"2 days" "3h" "1y"
         redisOpts:{},
         webRootUri: '/v1/api/web',
-        thisDoman: 'http://47.94.226.67:3000',
+        thisDoman: 'http://47.94.226.67',
         upload_root_dir: process.cwd(),
         upload_media_dir:  '/public/web/medias',
         upload_header_dir: '/public/web/images/header',

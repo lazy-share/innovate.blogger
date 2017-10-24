@@ -13,7 +13,7 @@ export class AuthorizationService {
     private static STORAGE_POOL_KEY = "lzyblogger-authorization";
     private static STORAGE_KEY = "current-user";
     private storageType: StorageType;
-    private currentUser: any;
+    public currentUser: any;
 
     constructor(private storageService: StorageService) {
         this.storageType = StorageType.localStorage;

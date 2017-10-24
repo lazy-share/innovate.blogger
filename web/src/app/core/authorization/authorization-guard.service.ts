@@ -16,13 +16,11 @@ export class AuthorizationGuardService implements CanActivate, CanActivateChild{
 
   canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     this.searchService.confirmMission(false); //进入前关闭搜索框
-    if (this.authorizationService.getCurrentUser()){
-      return true;
-    }else {
-      this.router.navigate(['login']);
+    if (!this.authorizationService.getCurrentUser()){
+      this.authorizationService.currentUser = null;
+      this.authorizationService.logout();
     }
-
-    return false;
+    return true;
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {

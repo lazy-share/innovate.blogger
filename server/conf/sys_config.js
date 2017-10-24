@@ -39,10 +39,10 @@ var sysConfig = {
         redisOpts:{},
         webRootUri: '/v1/api/web',
         thisDoman: 'http://47.94.226.67',
-        upload_root_dir: process.cwd(),
-        upload_media_dir:  '/public/web/medias',
-        upload_header_dir: '/public/web/images/header',
-        upload_article_dir: '/public/web/images/article',
+        upload_root_dir: '/usr/local/publish',
+        upload_media_dir:  '/media/video',
+        upload_header_dir: '/media/image/header',
+        upload_article_dir: '/media/image/article',
         static_path:'/public/web',
         Access_Control_Allow_Origin:'http://47.94.226.67'
     }

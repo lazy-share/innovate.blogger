@@ -4,6 +4,7 @@ import {AppResponse} from "../../vo/app-response";
 import {NEWS_TYPES, NEWS} from "../../constant/uri";
 import {BaseComponent} from "../common/BaseComponent";
 import {Paging, PagingParams} from "../../vo/paging";
+import {environment} from '../../../environments/environment';
 /**
  * Created by laizhiyuan on 2017/9/25.
  */
@@ -19,6 +20,7 @@ export class HomeComponent extends BaseComponent implements OnInit{
   public paging: Paging = Paging.instantiation6();
   public pagingParams = PagingParams.instantiation6();
   public globalType:string;
+  public thisDomain = environments.api.host;
 
   constructor(
     public http:HttpClient

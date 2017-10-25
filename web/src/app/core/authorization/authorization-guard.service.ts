@@ -28,6 +28,11 @@ export class AuthorizationGuardService implements CanActivate, CanActivateChild{
     if (this.authorizationService.getCurrentUser()){
       return true;
     }else {
+      let path = route.url[0].path;
+      this.authorizationService.logout();
+      if (path == 'home'){
+        return true;
+      }
       this.router.navigate(['login']);
     }
 

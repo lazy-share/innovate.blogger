@@ -331,13 +331,13 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
         }
         let article = data.data.article;
         this.globalArticleDesc = article.desc;
-        this.globalArticleIsPrivate = article.is_public;
+        this.globalArticleIsPrivate = article.is_private;
         this.globalTypeId = article.type;
         this.globalArticleId = article._id;
         this.globalArticleContent = article.content;
         this.globalArticleTitle = article.title;
         this.articleNavComponent.changeCurrentShowType(data.data.type_name);
-        this.articleNavComponent.setIsPrivate(article.is_public);
+        this.articleNavComponent.setIsPrivate(article.is_private);
         this.tinymceComponent.setContent(article.content);
         this.isShow = true;
         this.isEdit = true;

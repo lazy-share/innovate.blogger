@@ -17,30 +17,6 @@ import {AuthorizationService} from './core/authorization/authorization.service';
 import {Router} from '@angular/router';
 import {environment} from './../environments/environment';
 import {Account} from "./vo/account";
-/**
- * 是否是对象
- * @param value
- */
-function isObject(value): boolean {
-  return value !== null && typeof value === 'object';
-}
-
-/**
- * 是否是undefined
- * @param value
- */
-function isUndefined(value) {
-  return typeof value === 'undefined';
-}
-
-/**
- * 是否是空
- * @param value
- */
-function isEmpty(value) {
-  return isUndefined(value) || value === null || value === '';
-}
-
 
 @Injectable()
 export class APPRequestInterceptor implements HttpInterceptor {

@@ -18,9 +18,9 @@ import {Reply} from "../../vo/comment";
 export class ArticleService {
 
   constructor(
-    private http:HttpClient,
-    private router:Router,
-    private authorizationService:AuthorizationService
+    public http:HttpClient,
+    public router:Router,
+    public authorizationService:AuthorizationService
   ){}
 
   /**

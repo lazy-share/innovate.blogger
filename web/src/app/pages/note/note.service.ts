@@ -13,8 +13,8 @@ import {Reply} from "../../vo/comment";
 @Injectable()
 export class NoteService {
 
-  constructor(private http: HttpClient,
-              private router: Router) {
+  constructor(public http: HttpClient,
+              public router: Router) {
 
   }
 

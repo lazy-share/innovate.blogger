@@ -26,15 +26,15 @@ export class InfoComponent extends BaseComponent implements OnInit, OnDestroy {
     this.uploader.destroy();
   }
 
-  private requestUsername: string = "";
-  private storageUsername: string = "";
-  private accountInfo: Account = Account.instantiation();
+  public requestUsername: string = "";
+  public storageUsername: string = "";
+  public accountInfo: Account = Account.instantiation();
   @ViewChild(SelectAddressComponent)
-  private selectAddressComponentChild: SelectAddressComponent;
-  private minDate = new Date(1900, 1, 1);
-  private maxDate = new Date(2050, 1, 1);
-  private uploader: FileUploader = new FileUploader({});
-  private birthdayDatePickerOptions: IMyDpOptions = {
+  public selectAddressComponentChild: SelectAddressComponent;
+  public minDate = new Date(1900, 1, 1);
+  public maxDate = new Date(2050, 1, 1);
+  public uploader: FileUploader = new FileUploader({});
+  public birthdayDatePickerOptions: IMyDpOptions = {
     dateFormat: 'yyyy-mm-dd',
     showTodayBtn: false,
     sunHighlight: true,
@@ -46,12 +46,12 @@ export class InfoComponent extends BaseComponent implements OnInit, OnDestroy {
     openSelectorOnInputClick: true,
     maxYear: new Date().getFullYear() - 1
   };
-  private birthdayPlusInitDate = {date: {year: 1993, month: 1, day: 1}};
-  private birthdayPlusLocale = 'zh-cn';
+  public birthdayPlusInitDate = {date: {year: 1993, month: 1, day: 1}};
+  public birthdayPlusLocale = 'zh-cn';
 
-  constructor(private authorizationService: AuthorizationService,
-              private route: ActivatedRoute,
-              private infoService: InfoService) {
+  constructor(public authorizationService: AuthorizationService,
+              public route: ActivatedRoute,
+              public infoService: InfoService) {
     super();
   }
 

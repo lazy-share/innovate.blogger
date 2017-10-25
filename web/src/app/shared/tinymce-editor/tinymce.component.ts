@@ -41,10 +41,10 @@ export class TinymceEditorComponent implements AfterViewInit, OnDestroy{
   @Output() onEditorContentChange = new EventEmitter();
 
   constructor(
-    private authorizationService: AuthorizationService
+    public authorizationService: AuthorizationService
   ){}
 
-  editor;
+  public editor:any;
   ngAfterViewInit() {
     let token = this.authorizationService.getCurrentUser().token;
     tinymce.init({
@@ -75,7 +75,7 @@ export class TinymceEditorComponent implements AfterViewInit, OnDestroy{
       autosave_ask_before_unload: true, //当尝试关闭当前窗口时编辑器是否应提示用户建议他们有未保存的更改
       advlist_bullet_styles: "square",
       advlist_number_styles: "lower-alpha",
-      setup: editor => {
+      setup: (editor:any) => {
         this.editor = editor;
         editor.on('keyup change', () => {
           const content = editor.getContent();

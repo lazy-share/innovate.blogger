@@ -11,8 +11,8 @@ import {AuthorizationService} from "../../core/authorization/authorization.servi
 export class NoteResolveService implements Resolve<any>{
 
   constructor(
-    private noteService: NoteService,
-    private authorizationService: AuthorizationService
+    public noteService: NoteService,
+    public authorizationService: AuthorizationService
   ){
 
   }

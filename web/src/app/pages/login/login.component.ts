@@ -10,14 +10,14 @@ import {Router} from "@angular/router";
 })
 export class LoginComponent {
 
-  private username:string = "";
-  private password:string = "";
-  private showMsg:boolean = false;
-  private sysMsg:string = "";
+  public username:string = "";
+  public password:string = "";
+  public showMsg:boolean = false;
+  public sysMsg:string = "";
 
   constructor(
-    private loginService: LoginService,
-    private route: Router
+    public loginService: LoginService,
+    public route: Router
   ){}
 
   login(){

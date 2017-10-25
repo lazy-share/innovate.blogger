@@ -14,7 +14,7 @@ export class AttentionResolveService implements Resolve<any>{
   }
 
   constructor(
-    private attentionService:AttentionService
+    public attentionService:AttentionService
   ){
 
   }

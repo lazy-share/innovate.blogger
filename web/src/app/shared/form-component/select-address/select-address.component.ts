@@ -11,23 +11,23 @@ import {AppResponse} from "../../../vo/app-response";
 })
 export class SelectAddressComponent{
 
-  @Input() private provinceCode: string = "";
-  @Input() private cityCode: string = "";
-  @Input() private countyCode: string = "";
-  @Input() private streetCode: string = "";
-  @Input() private isDisabled: boolean = false;
-  @Output() private onChange = new EventEmitter<any>();
+  @Input() public provinceCode: string = "";
+  @Input() public cityCode: string = "";
+  @Input() public countyCode: string = "";
+  @Input() public streetCode: string = "";
+  @Input() public isDisabled: boolean = false;
+  @Output() public onChange = new EventEmitter<any>();
 
-  private provinces: {name:string, code:string}[] = [{name: '--请选择地址--', code: ''}];
-  private citys: {name:string, code:string}[];
-  private countys: {name:string, code:string}[];
-  private streets: {name:string, code:string}[];
+  public provinces: {name:string, code:string}[] = [{name: '--请选择地址--', code: ''}];
+  public citys: {name:string, code:string}[];
+  public countys: {name:string, code:string}[];
+  public streets: {name:string, code:string}[];
 
-  private showCity: boolean = false;
-  private showCounty: boolean = false;
-  private showStreet: boolean = false;
+  public showCity: boolean = false;
+  public showCounty: boolean = false;
+  public showStreet: boolean = false;
 
-  constructor(private http: HttpClient) {
+  constructor(public http: HttpClient) {
 
   }
 
@@ -65,7 +65,7 @@ export class SelectAddressComponent{
     );
   };
 
-  loadCitysByProvinceCode(isChange) {
+  loadCitysByProvinceCode(isChange:boolean) {
   if (isChange) {
     if (!this.provinceCode) {
       this.showCity = false;
@@ -117,7 +117,7 @@ export class SelectAddressComponent{
   );
 };
 
-  loadCountysByCityCode(isChange) {
+  loadCountysByCityCode(isChange:boolean) {
     this.showCounty = true;
     this.http.get<AppResponse>(
       ADDRESS_COUNTYS,
@@ -153,7 +153,7 @@ export class SelectAddressComponent{
     );
   };
 
-  loadStreetsByCountyCode(isChange) {
+  loadStreetsByCountyCode(isChange:boolean) {
     this.showStreet = true;
     this.http.get<AppResponse>(
       ADDRESS_STREETS,

@@ -9,7 +9,7 @@ import {FansService} from "./fans.service";
 export class FansResolveService implements Resolve<any>{
 
   constructor(
-    private fansService:FansService
+    public fansService:FansService
   ){
 
   }

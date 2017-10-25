@@ -10,7 +10,7 @@ import {Account} from "../../vo/account";
 @Injectable()
 export class RegisterService {
 
-  constructor(private http: HttpClient) {
+  constructor(public http: HttpClient) {
   }
 
   validate(username: string): Observable<any> {

@@ -18,17 +18,17 @@ export class MainNavComponent implements OnDestroy{
     this.subscription.unsubscribe();
   }
 
-  private keyword:string = '';
+  public keyword:string = '';
   @ViewChild('keywordInput')
-  private keywordInput:ElementRef;
-  private showSearchFrom:boolean = false;
+  public keywordInput:ElementRef;
+  public showSearchFrom:boolean = false;
   subscription: Subscription;
 
   constructor(
-    private authorizationService: AuthorizationService,
-    private searchService:SearchService,
-    private route: Router,
-    private render2:Renderer2
+    public authorizationService: AuthorizationService,
+    public searchService:SearchService,
+    public route: Router,
+    public render2:Renderer2
   ){
     this.subscription = this.searchService.missionConfirmed$.subscribe(
       showSearchFrom => {

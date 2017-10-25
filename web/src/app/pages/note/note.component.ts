@@ -42,24 +42,24 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
   /**
    * 初始化变量
    */
-  private requestUsername: string;
-  private paging: Paging = Paging.instantiation();
-  private notes: Note[] = new Array<Note>();
-  private content: string;
-  private contentNumber: number = 200;
-  private initContentNumber: number = 200;
-  private head_portrait: string;
-  private appModal:AppModal = new AppModal('确定删除', '确定删除吗？', 'confirmDelNoteModal', false);
+  public requestUsername: string;
+  public paging: Paging = Paging.instantiation();
+  public notes: Note[] = new Array<Note>();
+  public content: string;
+  public contentNumber: number = 200;
+  public initContentNumber: number = 200;
+  public head_portrait: string;
+  public appModal:AppModal = new AppModal('确定删除', '确定删除吗？', 'confirmDelNoteModal', false);
   public modalRef: BsModalRef;
   public nativeElement = this.elementRef.nativeElement;
   @ViewChild('appModalTemplate')
   public appModalTemplateDiv:TemplateRef<any>;
-  private modalExcuteDeleteType:ModalExcuteDeleteType; //执行删除类型 "1":删除日记   "2":删除评论
-  private hideSubmitComment = true;
-  private commentMaxLength = 50;
-  private initCommentMaxLength = 50;
-  private pagingParams = PagingParams.instantiation();
-  private subscription: Subscription;
+  public modalExcuteDeleteType:ModalExcuteDeleteType; //执行删除类型 "1":删除日记   "2":删除评论
+  public hideSubmitComment = true;
+  public commentMaxLength = 50;
+  public initCommentMaxLength = 50;
+  public pagingParams = PagingParams.instantiation();
+  public subscription: Subscription;
 
   /**
    * 构造器
@@ -70,13 +70,13 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
    * @param elementRef
    * @param renderer2
    */
-  constructor(private route: ActivatedRoute,
-              private authorizationService: AuthorizationService,
-              private noteService: NoteService,
-              private modalService: BsModalService,
-              private elementRef:ElementRef,
-              private searchService:SearchService,
-              private renderer2:Renderer2
+  constructor(public route: ActivatedRoute,
+              public authorizationService: AuthorizationService,
+              public noteService: NoteService,
+              public modalService: BsModalService,
+              public elementRef:ElementRef,
+              public searchService:SearchService,
+              public renderer2:Renderer2
   ) {
     super();
     this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get("username")).subscribe();
@@ -127,7 +127,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
   /**
    * 确认删除日记
    */
-  private noteId:string;
+  public noteId:string;
   onDeleteDocBefore(id:string){
     this.appModal.content = "确定永久删除该日记吗?";
     this.modalExcuteDeleteType = ModalExcuteDeleteType.DELETE_NOTE;
@@ -279,9 +279,9 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
     );
   }
 
-  private openCommentDiv:string[] = new Array<string>();
-  private commentContent:string;
-  private globalReply:Reply;
+  public openCommentDiv:string[] = new Array<string>();
+  public commentContent:string;
+  public globalReply:Reply;
 
   /**
    * 打开评论输入框

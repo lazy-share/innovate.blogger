@@ -18,14 +18,14 @@ export class FansComponent extends BaseComponent implements OnInit{
     this.initFans();
   }
 
-  private requestUsername: string;
-  private fans: RelationShip[] = new Array<RelationShip>();
-  private headPortraits: RelationShip[] = new Array<RelationShip>();
-  private isShowAttention: boolean = true;
+  public requestUsername: string;
+  public fans: RelationShip[] = new Array<RelationShip>();
+  public headPortraits: RelationShip[] = new Array<RelationShip>();
+  public isShowAttention: boolean = true;
 
-  constructor(private attentionService: FansService,
-              private route: ActivatedRoute,
-              private authorizationService: AuthorizationService,) {
+  constructor(public attentionService: FansService,
+              public route: ActivatedRoute,
+              public authorizationService: AuthorizationService,) {
     super();
     this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get("username")).subscribe();
   }

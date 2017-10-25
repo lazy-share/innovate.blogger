@@ -7,7 +7,7 @@ export class Article {
   public type:string;
   public title:string;
   public desc:string;
-  public isPrivate:boolean;
+  public ispublic:boolean;
   public id:string;
   public comment:string;
   public praise:string[] = new Array<string>();
@@ -20,7 +20,7 @@ export class Article {
     article.type = '';
     article.username = '';
     article.title = '';
-    article.isPrivate = false;
+    article.ispublic = false;
     article.desc = '';
     article.praise =  new Array<string>();
     article.comment = '';

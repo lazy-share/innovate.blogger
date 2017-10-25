@@ -8,10 +8,10 @@ import {Component, EventEmitter, Input, Output} from "@angular/core";
 })
 export class SelectEducationComponent {
 
-  private educations = [{key: '--请选择--', val: ''}, {key: '中专/高中', val: 1}, {key: '大专', val: 2}, {key: '本科', val: 3}, {key: '研究生', val: 4}, {key: '博士', val: 5}, {key: '博士后', val: 6}, {key: '其它', val: 7}];
-  @Input() private education: string| number = "";
-  @Input() private isDisabled: boolean = false;
-  @Input() private componentId:string = 'education';
+  public educations = [{key: '--请选择--', val: ''}, {key: '中专/高中', val: 1}, {key: '大专', val: 2}, {key: '本科', val: 3}, {key: '研究生', val: 4}, {key: '博士', val: 5}, {key: '博士后', val: 6}, {key: '其它', val: 7}];
+  @Input() public education: string| number = "";
+  @Input() public isDisabled: boolean = false;
+  @Input() public componentId:string = 'education';
   @Output() onChange = new EventEmitter<number|string>();
 
   change() {

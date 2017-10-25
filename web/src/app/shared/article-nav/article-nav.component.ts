@@ -10,22 +10,22 @@ import {ArticleType} from "../../vo/article";
 export class ArticleNavComponent {
 
   @Input()
-  private sysDefaultTypes: ArticleType[] = new Array <ArticleType>();
+  public sysDefaultTypes: ArticleType[] = new Array <ArticleType>();
   @Input()
-  private definedTypes: ArticleType[] = new Array<ArticleType>();
-  private currentShowType: string = '选择文章类型';
+  public definedTypes: ArticleType[] = new Array<ArticleType>();
+  public currentShowType: string = '选择文章类型';
   @Output()
-  private onSelectType = new EventEmitter<string>();
+  public onSelectType = new EventEmitter<string>();
   @Output()
-  private onDeleteType = new EventEmitter<string>();
+  public onDeleteType = new EventEmitter<string>();
   @Output()
-  private onCreateType = new EventEmitter<ArticleType>();
+  public onCreateType = new EventEmitter<ArticleType>();
   @Output()
-  private onChangeIsPrivate = new EventEmitter<boolean>();
+  public onChangeIspublic = new EventEmitter<boolean>();
   @Output()
-  private onDrafts = new EventEmitter();
-  private newTypeName:string;
-  private isPrivate:boolean = false;
+  public onDrafts = new EventEmitter();
+  public newTypeName:string;
+  public ispublic:boolean = false;
 
 
   selectType(type_id: string, type_name:string) {
@@ -52,15 +52,15 @@ export class ArticleNavComponent {
     this.currentShowType = name;
   }
 
-  setIsPrivate(isPrivate:boolean){
-    this.isPrivate = isPrivate;
+  setIspublic(ispublic:boolean){
+    this.ispublic = ispublic;
   }
 
   initDefaultData(){
-    this.isPrivate = false;
+    this.ispublic = false;
   }
 
-  changeIsPrivate(){
-    this.onChangeIsPrivate.emit(this.isPrivate);
+  changeIspublic(){
+    this.onChangeIspublic.emit(this.ispublic);
   }
 }

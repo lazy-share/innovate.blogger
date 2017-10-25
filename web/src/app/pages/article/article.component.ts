@@ -21,37 +21,37 @@ import {Subscription} from "rxjs";
 })
 export class ArticleComponent extends BaseComponent implements OnDestroy, AfterViewInit, OnInit {
 
-  private requestUsername: string;
-  private globalTypeId: string;
-  private tinymceElementId: string = "tinymceElementId";
-  private articles: Article[] = new Array<Article>();
-  private paging: Paging = Paging.instantiation();
-  private pagingParams: PagingParams = PagingParams.instantiation();
-  private globalArticleId:string = '';
-  private globalArticleContent: string = "";
-  private globalArticleTitle:string = "";
-  private globalArticleDesc:string = '';
-  private globalArticleIsPrivate:boolean = false;
-  private articleTypes: ArticleType[] = new Array<ArticleType>();
-  private sysDefaultTypes: ArticleType[] = new Array<ArticleType>();
-  private definedTypes: ArticleType[] = new Array<ArticleType>();
+  public requestUsername: string;
+  public globalTypeId: string;
+  public tinymceElementId: string = "tinymceElementId";
+  public articles: Article[] = new Array<Article>();
+  public paging: Paging = Paging.instantiation();
+  public pagingParams: PagingParams = PagingParams.instantiation();
+  public globalArticleId:string = '';
+  public globalArticleContent: string = "";
+  public globalArticleTitle:string = "";
+  public globalArticleDesc:string = '';
+  public globalArticleIspublic:boolean = false;
+  public articleTypes: ArticleType[] = new Array<ArticleType>();
+  public sysDefaultTypes: ArticleType[] = new Array<ArticleType>();
+  public definedTypes: ArticleType[] = new Array<ArticleType>();
   @ViewChild(ArticleNavComponent)
-  private articleNavComponent:ArticleNavComponent;
+  public articleNavComponent:ArticleNavComponent;
   @ViewChild(TinymceEditorComponent)
-  private tinymceComponent:TinymceEditorComponent;
-  private appModal:AppModal = new AppModal('确定删除', '确定删除吗？', 'confirmDelNoteModal', false);
+  public tinymceComponent:TinymceEditorComponent;
+  public appModal:AppModal = new AppModal('确定删除', '确定删除吗？', 'confirmDelNoteModal', false);
   public modalRef: BsModalRef;
   @ViewChild('appModalTemplate')
   public appModalTemplateDiv:TemplateRef<any>;
-  private isEdit:boolean = false;
-  private isManuscript:boolean = false; //草稿箱/文章
+  public isEdit:boolean = false;
+  public isManuscript:boolean = false; //草稿箱/文章
   subscription: Subscription;
 
-  constructor(private authorizationService: AuthorizationService,
-              private articleService: ArticleService,
-              private modalService: BsModalService,
-              private searchService:SearchService,
-              private route: ActivatedRoute) {
+  constructor(public authorizationService: AuthorizationService,
+              public articleService: ArticleService,
+              public modalService: BsModalService,
+              public searchService:SearchService,
+              public route: ActivatedRoute) {
     super();
     this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get('username')).subscribe();
     this.subscription = this.searchService.missionAnnounced$.subscribe(
@@ -146,10 +146,10 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
 
   /**
    * 文章是否不公开
-   * @param isPrivate
+   * @param ispublic
    */
-  onChangeIsPrivate(isPrivate:boolean){
-    this.globalArticleIsPrivate = isPrivate;
+  onChangeIspublic(ispublic:boolean){
+    this.globalArticleIspublic = ispublic;
   }
 
   /**
@@ -296,7 +296,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
     article.type = this.globalTypeId;
     article.desc = this.globalArticleDesc;
     article.title = this.globalArticleTitle;
-    article.isPrivate = this.globalArticleIsPrivate;
+    article.ispublic = this.globalArticleIspublic;
     article.isManuscript = isManuscript;
     this.articleService.submitArticle(article, this.pagingParams).subscribe(
       data => {
@@ -331,13 +331,13 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
         }
         let article = data.data.article;
         this.globalArticleDesc = article.desc;
-        this.globalArticleIsPrivate = article.is_private;
+        this.globalArticleIspublic = article.is_public;
         this.globalTypeId = article.type;
         this.globalArticleId = article._id;
         this.globalArticleContent = article.content;
         this.globalArticleTitle = article.title;
         this.articleNavComponent.changeCurrentShowType(data.data.type_name);
-        this.articleNavComponent.setIsPrivate(article.is_private);
+        this.articleNavComponent.setIspublic(article.is_public);
         this.tinymceComponent.setContent(article.content);
         this.isShow = true;
         this.isEdit = true;
@@ -378,7 +378,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
     article.type = this.globalTypeId;
     article.desc = this.globalArticleDesc;
     article.title = this.globalArticleTitle;
-    article.isPrivate = this.globalArticleIsPrivate;
+    article.ispublic = this.globalArticleIspublic;
     article.id = this.globalArticleId;
     article.isManuscript = isManuscript;
     this.articleService.confirmEditArticle(article, this.pagingParams).subscribe(
@@ -464,7 +464,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
     this.articleNavComponent.changeCurrentShowType('选择文章类型');
     this.articleNavComponent.initDefaultData();
     this.tinymceComponent.clearContent();
-    this.globalArticleIsPrivate = false;
+    this.globalArticleIspublic = false;
   }
 
   /**

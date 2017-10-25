@@ -8,7 +8,7 @@ import "rxjs/add/operator/switchMap";
   templateUrl: "./hint.component.html"
 })
 export class HintComponent{
-  @Input() private title:string = "";
-  @Input() private content:string = "";
-  @Input() private uri:string = "";
+  @Input() public title:string = "";
+  @Input() public content:string = "";
+  @Input() public uri:string = "";
 }

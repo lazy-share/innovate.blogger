@@ -11,8 +11,8 @@ import {AppResponse} from "../../vo/app-response";
 export class LoginService {
 
   constructor(
-    private http: HttpClient,
-    private authorizationService:AuthorizationService
+    public http: HttpClient,
+    public authorizationService:AuthorizationService
   ){
 
   }

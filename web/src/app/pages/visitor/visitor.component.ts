@@ -15,14 +15,14 @@ import {AuthorizationService} from "../../core/authorization/authorization.servi
 })
 export class VisitorComponent extends BaseComponent implements OnInit{
 
-  private requestUsername:string;
-  private visitors: RelationShip[] = new Array<RelationShip>();
-  private headPortraits:RelationShip[] = new Array<RelationShip>();
+  public requestUsername:string;
+  public visitors: RelationShip[] = new Array<RelationShip>();
+  public headPortraits:RelationShip[] = new Array<RelationShip>();
 
   constructor(
-    private route:ActivatedRoute,
-    private visitorService:VisitorService,
-    private authorizationService: AuthorizationService
+    public route:ActivatedRoute,
+    public visitorService:VisitorService,
+    public authorizationService: AuthorizationService
   ){
     super();
     this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get("username")).subscribe();

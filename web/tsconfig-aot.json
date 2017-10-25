@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "es2015",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "lib": ["es2015", "dom"],
+    "noImplicitAny": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "typeRoots": [
+      "./node_modules/@types/"
+    ]
+  },
+
+  "files": [
+    "src/app/app.module.ts",
+    "src/app/pages/article/article.module.ts",
+    "src/app/pages/attention/attention.module.ts",
+    "src/app/pages/fans/fans.module.ts",
+    "src/app/pages/forget/forget.module.ts",
+    "src/app/pages/home/home.module.ts",
+    "src/app/pages/info/info.module.ts",
+    "src/app/pages/login/login.module.ts",
+    "src/app/pages/media/media.module.ts",
+    "src/app/pages/note/note.module.ts",
+    "src/app/pages/register/register.module.ts",
+    "src/app/pages/visitor/visitor.module.ts",
+    "src/main-aot.ts"
+  ],
+
+  "angularCompilerOptions": {
+    "genDir": "aot",
+    "skipMetadataEmit" : true
+  }
+}

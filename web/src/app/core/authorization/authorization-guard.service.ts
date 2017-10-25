@@ -9,9 +9,9 @@ import {SearchService} from "../search/search.service";
 export class AuthorizationGuardService implements CanActivate, CanActivateChild{
 
   constructor(
-    private authorizationService:AuthorizationService,
-    private searchService:SearchService,
-    private router:Router
+    public authorizationService:AuthorizationService,
+    public searchService:SearchService,
+    public router:Router
   ){}
 
   canActivateChild(childRoute: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {

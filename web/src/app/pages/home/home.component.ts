@@ -14,14 +14,14 @@ import {Paging, PagingParams} from "../../vo/paging";
 })
 export class HomeComponent extends BaseComponent implements OnInit{
 
-  private newsTypes:any[] = new Array<any>();
-  private news: any[] = new Array<any>();
-  private paging: Paging = Paging.instantiation6();
-  private pagingParams = PagingParams.instantiation6();
-  private globalType:string;
+  public newsTypes:any[] = new Array<any>();
+  public news: any[] = new Array<any>();
+  public paging: Paging = Paging.instantiation6();
+  public pagingParams = PagingParams.instantiation6();
+  public globalType:string;
 
   constructor(
-    private http:HttpClient
+    public http:HttpClient
   ) {
     super();
   }

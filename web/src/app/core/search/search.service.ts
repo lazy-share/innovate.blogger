@@ -7,8 +7,8 @@ import {Subject} from "rxjs";
 export class SearchService {
 
   // Observable string sources
-  private missionAnnouncedSource = new Subject<string>();
-  private missionConfirmedSource = new Subject<boolean>();
+  public missionAnnouncedSource = new Subject<string>();
+  public missionConfirmedSource = new Subject<boolean>();
 
 
   // Observable string streams

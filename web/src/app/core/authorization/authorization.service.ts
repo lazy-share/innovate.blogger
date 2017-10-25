@@ -4,18 +4,14 @@ import { StorageType, StorageService } from  '../storage';
 /**
  * Created by laizhiyuan on 2017/9/25.
  */
-const isBlank = (obj) => {
-    return obj === null || obj === undefined;
-};
-
 @Injectable()
 export class AuthorizationService {
-    private static STORAGE_POOL_KEY = "lzyblogger-authorization";
-    private static STORAGE_KEY = "current-user";
-    private storageType: StorageType;
-    private currentUser: any;
+    public static STORAGE_POOL_KEY = "lzyblogger-authorization";
+    public static STORAGE_KEY = "current-user";
+    public storageType: StorageType;
+    public currentUser: any;
 
-    constructor(private storageService: StorageService) {
+    constructor(public storageService: StorageService) {
         this.storageType = StorageType.localStorage;
     }
 
@@ -58,15 +54,4 @@ export class AuthorizationService {
         return !!this.getCurrentUser();
     }
 
-    hasRight(roles: any | any[]): Observable<boolean>| boolean {
-        if (!this.getCurrentUser()) {
-            return false;
-        }
-
-        if (!Array.isArray(roles)) {
-            roles = [roles];
-        }
-
-        return this.currentUser.roles && roles.some(role => this.currentUser.roles.indexOf(role) !== -1);
-    }
 }

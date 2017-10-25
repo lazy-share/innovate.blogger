@@ -16,13 +16,13 @@ import {RelationShip} from "../../vo/attention";
 })
 export class AttentionComponent extends BaseComponent {
 
-  private requestUsername: string;
-  private attentions: RelationShip[] = new Array<RelationShip>();
-  private headPortraits: RelationShip[] = new Array<RelationShip>();
+  public requestUsername: string;
+  public attentions: RelationShip[] = new Array<RelationShip>();
+  public headPortraits: RelationShip[] = new Array<RelationShip>();
 
-  constructor(private attentionService: AttentionService,
-              private route: ActivatedRoute,
-              private authorizationService: AuthorizationService,) {
+  constructor(public attentionService: AttentionService,
+              public route: ActivatedRoute,
+              public authorizationService: AuthorizationService,) {
     super();
     this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get("username")).subscribe();
     this.initAttention();

@@ -12,8 +12,8 @@ import {Router} from "@angular/router";
 export class InfoService {
 
   constructor(
-    private http: HttpClient,
-    private router:Router
+    public http: HttpClient,
+    public router:Router
   ){}
 
   addVisitor(subject: string, from:string):Observable<AppResponse> {

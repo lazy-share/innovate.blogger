@@ -10,7 +10,7 @@ import {Router} from "@angular/router";
 @Injectable()
 export class AttentionService {
 
-  constructor(private http: HttpClient, private router:Router) {
+  constructor(public http: HttpClient, public router:Router) {
   }
 
   attentions(username: string): Observable<any> {

@@ -13,11 +13,11 @@ export class ReplyComponent {
   @Input()
   public replies: Array<any> = new Array<any>();
   @Output()
-  private onReply = new EventEmitter<Reply>();
+  public onReply = new EventEmitter<Reply>();
   @Output()
-  private onRemoveReply = new EventEmitter<string>();
+  public onRemoveReply = new EventEmitter<string>();
 
-  constructor(private authorizationService: AuthorizationService){
+  constructor(public authorizationService: AuthorizationService){
   }
 
   reply(reply:Reply){

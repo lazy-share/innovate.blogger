@@ -10,7 +10,7 @@ import 'rxjs/add/operator/map';
  * 深拷贝
  * @param obj
  */
-function cloneDeep(obj) {
+function cloneDeep(obj:any):any {
     return JSON.parse(JSON.stringify(obj));
 }
 
@@ -38,8 +38,8 @@ export enum StorageType {
 interface IDataCacheStrategy {
     name(): string;
     match(data: any): boolean;
-    put(data: any, putStorage: (result: Object) => void): any;
-    get(data: any): Object;
+    put(data: any, putStorage: (result: any) => void): any;
+    get(data: any): any;
 }
 /**
  * rx缓存实现
@@ -53,14 +53,14 @@ class RxDataCacheStrategy implements IDataCacheStrategy {
         return result && result.subscribe;
     }
 
-    put(result: any, putStorage: (data: Object) => void): Observable<any> {
-        return result.map(data => {
+    put(result: any, putStorage: (data: any) => void): Observable<any> {
+        return result.map((data:any) => {
             setTimeout(() => putStorage(data));
             return data;
         });
     }
 
-    get(result: any): Object {
+    get(result: any): any {
         return fromPromise(Promise.resolve(result));
     }
 }
@@ -76,11 +76,11 @@ class PromiseDataCacheStrategy implements IDataCacheStrategy {
         return result && result.then;
     }
 
-    put(result: any, putStorage: (data: Object) => void): Promise<any> {
-        return result.then(data => setTimeout(() => putStorage(data)));
+    put(result: any, putStorage: (data: any) => void): Promise<any> {
+        return result.then((data:any) => setTimeout(() => putStorage(data)));
     }
 
-    get(result: any): Object {
+    get(result: any): any {
         return Promise.resolve(result);
     }
 }
@@ -94,18 +94,18 @@ class PromiseDataCacheStrategy implements IDataCacheStrategy {
  */
 export interface IStorage {
     getAll(pool: string): any;
-    get(options: { pool?: string, key: string }): Object;
-    put(options: { pool?: string, key: string }, value: Object): any;
-    remove(options: { pool?: string, key?: string });
-    removeAll();
+    get(options: { pool?: string, key: string }): any;
+    put(options: { pool?: string, key: string }, value: any): any;
+    remove(options: { pool?: string, key?: string }):void;
+    removeAll():void;
 }
 
 /**
  * 缓存工厂
  */
 class DataCacheStrategyFactory {
-    private static factory: DataCacheStrategyFactory = new DataCacheStrategyFactory();
-    private dataCacheStrategies: IDataCacheStrategy[];
+    public static factory: DataCacheStrategyFactory = new DataCacheStrategyFactory();
+    public dataCacheStrategies: IDataCacheStrategy[];
 
     static getInstance(): DataCacheStrategyFactory {
         return DataCacheStrategyFactory.factory;
@@ -124,7 +124,7 @@ class DataCacheStrategyFactory {
         return value;
     }
 
-    get(data: any): Object {
+    get(data: any): any {
         if (data && data.type) {
             let strategy = this.dataCacheStrategies.find(t => t.name() === data.type);
             if (strategy) {
@@ -136,7 +136,7 @@ class DataCacheStrategyFactory {
 }
 
 export class WebStorage implements IStorage {
-    constructor(private webStorage: Storage) {
+    constructor(public webStorage: Storage) {
     }
 
     getAll(pool: string) {
@@ -144,16 +144,16 @@ export class WebStorage implements IStorage {
         return json ? JSON.parse(json) : {};
     }
 
-    saveAll(pool: string, storage) {
+    saveAll(pool: string, storage:any) {
         this.webStorage.setItem(pool, JSON.stringify(storage));
     }
 
-    get({ pool = DEFAULT_STORAGE_POOL_KEY, key }: { pool?: string, key: string }): Object {
+    get({ pool = DEFAULT_STORAGE_POOL_KEY, key }: { pool?: string, key: string }): any {
         let storage = this.getAll(pool);
         return storage[key];
     }
 
-    put({ pool = DEFAULT_STORAGE_POOL_KEY, key }: { pool?: string, key: string }, value: Object): any {
+    put({ pool = DEFAULT_STORAGE_POOL_KEY, key }: { pool?: string, key: string }, value: any): any {
         let storage = this.getAll(pool);
         storage[key] = value;
         return this.saveAll(pool, storage);
@@ -174,24 +174,24 @@ export class WebStorage implements IStorage {
 }
 
 export class MemoryStorage implements IStorage {
-    private storage: Map<string, Map<string, Object>>;
+    public storage: Map<string, Map<string, any>>;
 
     constructor() {
-        this.storage = new Map<string, Map<string, Object>>();
+        this.storage = new Map<string, Map<string, any>>();
     }
 
     getAll(pool: string): any {
-        return this.storage.has(pool) ? this.storage.get(pool) : new Map<string, Object>();
+        return this.storage.has(pool) ? this.storage.get(pool) : new Map<string, any>();
     }
 
-    get({ pool = DEFAULT_STORAGE_POOL_KEY, key }: { pool?: string, key: string }): Object {
+    get({ pool = DEFAULT_STORAGE_POOL_KEY, key }: { pool?: string, key: string }): any {
         let storage = this.getAll(pool);
         return storage.has(key) ? cloneDeep(storage.get(key)) : null;
     }
 
-    put({ pool = DEFAULT_STORAGE_POOL_KEY, key }: { pool?: string, key: string }, value: Object) {
+    put({ pool = DEFAULT_STORAGE_POOL_KEY, key }: { pool?: string, key: string }, value: any) {
         if (!this.storage.has(pool)) {
-            this.storage.set(pool, new Map<string, Object>());
+            this.storage.set(pool, new Map<string, any>());
         }
         this.storage.get(pool).set(key, cloneDeep(value));
     }
@@ -209,7 +209,7 @@ export class MemoryStorage implements IStorage {
     }
 
     removeAll() {
-        this.storage = new Map<string, Map<string, Object>>();
+        this.storage = new Map<string, Map<string, any>>();
     }
 }
 
@@ -219,9 +219,9 @@ export class StorageService {
     sessionStorage: Storage;
     localStorage: Storage;
     memoryStorage: MemoryStorage;
-    storages: Map<Object, IStorage>;
+    storages: Map<any, IStorage>;
 
-    private defaultStorageType: StorageType = StorageType.memory;
+    public defaultStorageType: StorageType = StorageType.memory;
 
     constructor() {
         this.setupStorages();
@@ -236,12 +236,12 @@ export class StorageService {
         return storage.getAll(pool);
     }
 
-    get({ pool, key, storageType }: { pool?: string, key: string, storageType?: StorageType }): Object {
+    get({ pool, key, storageType }: { pool?: string, key: string, storageType?: StorageType }): any {
         let data = this.storages.get(storageType || this.defaultStorageType).get({ pool, key });
         return DataCacheStrategyFactory.getInstance().get(data);
     }
 
-    put({ pool, key, storageType }: { pool?: string, key: string, storageType?: StorageType }, value: Object): any {
+    put({ pool, key, storageType }: { pool?: string, key: string, storageType?: StorageType }, value: any): any {
         let storage = this.storages.get(storageType || this.defaultStorageType);
         return DataCacheStrategyFactory.getInstance().put({ pool, key }, value, storage);
     }
@@ -254,7 +254,7 @@ export class StorageService {
         return this.storages.get(storageType || this.defaultStorageType).removeAll();
     }
 
-    private setupStorages() {
+    public setupStorages() {
         this.storages = new Map<String, IStorage>();
         this.memoryStorage = new MemoryStorage();
 
@@ -274,7 +274,7 @@ export class StorageService {
 }
 
 export class StorageFactory {
-    private static storageService: StorageService = new StorageService();
+    public static storageService: StorageService = new StorageService();
 
     static getStorageService(): StorageService {
         return StorageFactory.storageService;
@@ -285,7 +285,7 @@ export function Cacheable({ pool = DEFAULT_STORAGE_POOL_KEY, key, storageType = 
                               { pool?: string, key?: string, storageType?: StorageType } = {}) {
 
     const storageService = StorageFactory.getStorageService();
-    let getKey = (target: any, method: string, args: Object[]) => {
+    let getKey = (target: any, method: string, args: any[]) => {
         // TODO: we can change this code or override object toString method;
         let prefix = key || `${target.constructor.name}.${method}`;
         return `${prefix}:${args.join('-')}`;
@@ -294,7 +294,7 @@ export function Cacheable({ pool = DEFAULT_STORAGE_POOL_KEY, key, storageType = 
     return function (target: any, name: string, methodInfo: any) {
         let method = methodInfo.value;
 
-        let proxy = function (...args) {
+        let proxy = function (args:any[]) {
             const key = getKey(target, name, args || []);
             let data = storageService.get({ pool, key, storageType });
             if (data) {

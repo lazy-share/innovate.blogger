@@ -12,11 +12,11 @@ import {AuthorizationService} from "../../core/authorization/authorization.servi
 })
 export class SubNavComponent {
 
-  @Input() private requestUsername:string;
-  @Input() private tab:string = "0";
+  @Input() public requestUsername:string;
+  @Input() public tab:string = "0";
 
   constructor(
-    private authorizationService:AuthorizationService
+    public authorizationService:AuthorizationService
   ){
 
   }

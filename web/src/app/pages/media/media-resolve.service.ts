@@ -9,7 +9,7 @@ import {PagingParams} from "../../vo/paging";
 @Injectable()
 export class MediaResolveService implements Resolve<any> {
 
-  constructor(private mediaService:MediaService){
+  constructor(public mediaService:MediaService){
 
   }
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {

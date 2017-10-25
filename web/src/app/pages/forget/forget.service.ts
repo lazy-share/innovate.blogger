@@ -9,7 +9,7 @@ import {AppResponse} from "../../vo/app-response";
 @Injectable()
 export class ForgetService {
 
-  constructor(private http: HttpClient) {
+  constructor(public http: HttpClient) {
   }
 
   validateEncrypted(encrypted: string, username: string): Observable<any> {

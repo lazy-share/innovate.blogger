@@ -11,8 +11,8 @@ import {AuthorizationService} from "../../core/authorization/authorization.servi
 export class ArticleResolveService implements Resolve<any>{
 
   constructor(
-    private articliService:ArticleService,
-    private authorizationService:AuthorizationService
+    public articliService:ArticleService,
+    public authorizationService:AuthorizationService
   ){}
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {

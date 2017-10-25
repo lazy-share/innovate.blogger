@@ -10,7 +10,7 @@ export class VisitorResolveService implements Resolve<any>{
 
 
   constructor(
-    private visitorService:VisitorService
+    public visitorService:VisitorService
   ){
 
   }

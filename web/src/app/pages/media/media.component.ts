@@ -28,22 +28,22 @@ export class MediaComponent extends BaseComponent implements OnInit, OnDestroy{
     })
   }
 
-  private requestUsername: string;
-  private paging: Paging = Paging.instantiation6();
-  private pagingParams = PagingParams.instantiation6();
-  private uploader: FileUploader = new FileUploader({});
-  private medias:Media[] = new Array<Media>();
-  private appModal:AppModal = new AppModal('确定删除', '确定永久删除该媒体吗？', 'confirmDelNoteModal', false);
-  private globalMediaId:string;
+  public requestUsername: string;
+  public paging: Paging = Paging.instantiation6();
+  public pagingParams = PagingParams.instantiation6();
+  public uploader: FileUploader = new FileUploader({});
+  public medias:Media[] = new Array<Media>();
+  public appModal:AppModal = new AppModal('确定删除', '确定永久删除该媒体吗？', 'confirmDelNoteModal', false);
+  public globalMediaId:string;
   public modalRef: BsModalRef;
   @ViewChild('appModalTemplate')
   public appModalTemplateDiv:TemplateRef<any>;
 
   constructor(
-    private authorizationService: AuthorizationService,
-    private mediaService:MediaService,
-    private route: ActivatedRoute,
-    private modalService: BsModalService,
+    public authorizationService: AuthorizationService,
+    public mediaService:MediaService,
+    public route: ActivatedRoute,
+    public modalService: BsModalService,
   ){
     super();
     this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get("username")).subscribe();

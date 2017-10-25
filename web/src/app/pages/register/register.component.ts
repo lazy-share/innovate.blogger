@@ -12,13 +12,13 @@ import {BaseComponent} from "../common/BaseComponent";
 })
 export class RegisterComponent extends BaseComponent implements OnInit{
 
-  private account: Account;
-  private isRepeatedAccount: boolean = false;
-  private validateMsg:string = "";
+  public account: Account;
+  public isRepeatedAccount: boolean = false;
+  public validateMsg:string = "";
 
   constructor(
-    private router: Router,
-    private registerService: RegisterService
+    public router: Router,
+    public registerService: RegisterService
   ){
     super();
   }

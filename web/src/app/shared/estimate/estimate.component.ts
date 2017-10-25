@@ -12,20 +12,20 @@ import {Reply} from "../../vo/comment";
 })
 export class EstimateComponent {
   @Input()
-  private doc: Doc = Doc.instantiation();
+  public doc: Doc = Doc.instantiation();
   @Output()
-  private onComment = new EventEmitter<Estimate>();
+  public onComment = new EventEmitter<Estimate>();
   @Output()
-  private onPraise = new EventEmitter<string>();
+  public onPraise = new EventEmitter<string>();
   @Output()
-  private onReply = new EventEmitter<Reply>();
+  public onReply = new EventEmitter<Reply>();
   @Output()
-  private onDeleteDocBefore = new EventEmitter<string>();
+  public onDeleteDocBefore = new EventEmitter<string>();
   @Output()
-  private onDeleteCommentBefore = new EventEmitter<Reply>();
+  public onDeleteCommentBefore = new EventEmitter<Reply>();
 
   constructor(
-    private authorizationService:AuthorizationService
+    public authorizationService:AuthorizationService
   ){}
 
   comment(doc_id:string, parent_id:string, subject: string){

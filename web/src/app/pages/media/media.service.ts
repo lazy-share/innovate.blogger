@@ -11,7 +11,7 @@ import {MY_MEDIA, MY_MEDIAS} from "../../constant/uri";
 export class MediaService {
 
   constructor(
-    private http: HttpClient
+    public http: HttpClient
   ){
 
   }

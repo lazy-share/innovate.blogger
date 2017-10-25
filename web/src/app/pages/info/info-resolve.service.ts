@@ -10,8 +10,8 @@ import {InfoService} from "./info.service";
 export class InfoResolveService implements Resolve<Account>{
 
   constructor(
-    private infoService: InfoService,
-    private router:Router
+    public infoService: InfoService,
+    public router:Router
   ){}
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Account>{

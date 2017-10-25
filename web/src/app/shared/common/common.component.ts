@@ -28,10 +28,10 @@ export class NotFoundComponent {
   template: `<hint title="500" content="系统错误: {{msg}}<br>返回首页" uri="/home"></hint>`
 })
 export class SystemErrorComponent {
-  private msg:string;
+  public msg:string;
 
   constructor(
-    private route:ActivatedRoute
+    public route:ActivatedRoute
   ){
     this.route.paramMap.switchMap((params: ParamMap) => this.msg = params.get("msg")).subscribe();
   }

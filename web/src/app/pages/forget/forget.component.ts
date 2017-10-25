@@ -10,14 +10,14 @@ import {Router} from "@angular/router";
   styleUrls: ["./forget.component.css"]
 })
 export class ForgetComponent extends BaseComponent{
-  private username:string;
-  private password:string;
-  private confirmPassword:string;
-  private encrypted:string;
+  public username:string;
+  public password:string;
+  public confirmPassword:string;
+  public encrypted:string;
 
   constructor(
-    private forgetService: ForgetService,
-    private router: Router
+    public forgetService: ForgetService,
+    public router: Router
   ){
     super();
   }

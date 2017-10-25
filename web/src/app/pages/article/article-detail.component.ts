@@ -15,27 +15,27 @@ import {AppModal} from "../../vo/app-modal";
 })
 export class ArticleDetailComponent extends BaseComponent implements OnInit{
 
-  private requestUsername: string;
-  private globalReplyId:string;
-  private article:Article = Article.instantiation();
-  private commentContent:string = '';
-  private initCommentMaxLength = 50;
-  private commentMaxLength = 50;
-  private replys:string[] = new Array<string>();
-  private hideSubmitComment = true;
+  public requestUsername: string;
+  public globalReplyId:string;
+  public article:Article = Article.instantiation();
+  public commentContent:string = '';
+  public initCommentMaxLength = 50;
+  public commentMaxLength = 50;
+  public replys:string[] = new Array<string>();
+  public hideSubmitComment = true;
   public nativeElement = this.elementRef.nativeElement;
-  private globalReply:Reply;
-  private appModal:AppModal = new AppModal('确定删除', '确定删除吗？', 'confirmDelNoteModal', false);
+  public globalReply:Reply;
+  public appModal:AppModal = new AppModal('确定删除', '确定删除吗？', 'confirmDelNoteModal', false);
   public modalRef: BsModalRef;
   @ViewChild('appModalTemplate')
   public appModalTemplateDiv:TemplateRef<any>;
 
-  constructor(private authorizationService: AuthorizationService,
-              private articleService: ArticleService,
-              private modalService: BsModalService,
-              private elementRef:ElementRef,
-              private renderer2:Renderer2,
-              private route: ActivatedRoute) {
+  constructor(public authorizationService: AuthorizationService,
+              public articleService: ArticleService,
+              public modalService: BsModalService,
+              public elementRef:ElementRef,
+              public renderer2:Renderer2,
+              public route: ActivatedRoute) {
     super();
     this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get('username')).subscribe();
     this.route.paramMap.switchMap((params: ParamMap) => this.globalReplyId = params.get('id')).subscribe();

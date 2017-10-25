@@ -20,7 +20,7 @@ export class HomeComponent extends BaseComponent implements OnInit{
   public paging: Paging = Paging.instantiation6();
   public pagingParams = PagingParams.instantiation6();
   public globalType:string;
-  public thisDomain = environments.api.host;
+  public thisDomain = environment.api.host;
 
   constructor(
     public http:HttpClient

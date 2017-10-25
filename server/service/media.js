@@ -41,7 +41,7 @@ exports.delMedia = function (req, res) {
         }
         var startIndex = media.media_url.lastIndexOf('/');
         var mediaFileName = media.media_url.slice(startIndex + 1, media.media_url.length);
-        var uploadMediaDir = process.cwd() + sysConnfig[env].server_project_name + sysConnfig[env].upload_media_dir;
+        var uploadMediaDir = sysConnfig[env].upload_root_dir + sysConnfig[env].upload_media_dir;
         var mediaFilePath = uploadMediaDir + '/' + mediaFileName;
         if (mediaFilePath.indexOf('\\') > -1){
             mediaFilePath = mediaFilePath.replace(/\\/g, '/');

@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --disable-host-check",
-    "build": "ng build --env=prod",
+    "build": "ngc -p tsconfig-aot.json && ng build --prod --env=prod --aot",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

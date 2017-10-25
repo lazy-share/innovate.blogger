@@ -3,10 +3,10 @@
  */
 export class BaseComponent {
 
-  protected showMsg:boolean = false;
-  protected sysMsg:string = "";
-  protected isShow:boolean = false;
-  protected showSuccess:boolean = false;
-  protected successMsg:string = '';
+  public showMsg:boolean = false;
+  public sysMsg:string = "";
+  public isShow:boolean = false;
+  public showSuccess:boolean = false;
+  public successMsg:string = '';
   constructor(){}
 }

@@ -31,7 +31,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
   public globalArticleContent: string = "";
   public globalArticleTitle:string = "";
   public globalArticleDesc:string = '';
-  public globalArticleIspublic:boolean = false;
+  public globalArticleIsPrivate:boolean = false;
   public articleTypes: ArticleType[] = new Array<ArticleType>();
   public sysDefaultTypes: ArticleType[] = new Array<ArticleType>();
   public definedTypes: ArticleType[] = new Array<ArticleType>();
@@ -146,10 +146,10 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
 
   /**
    * 文章是否不公开
-   * @param ispublic
+   * @param isPrivate
    */
-  onChangeIspublic(ispublic:boolean){
-    this.globalArticleIspublic = ispublic;
+  onChangeIsPrivate(isPrivate:boolean){
+    this.globalArticleIsPrivate = isPrivate;
   }
 
   /**
@@ -296,7 +296,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
     article.type = this.globalTypeId;
     article.desc = this.globalArticleDesc;
     article.title = this.globalArticleTitle;
-    article.ispublic = this.globalArticleIspublic;
+    article.isPrivate = this.globalArticleIsPrivate;
     article.isManuscript = isManuscript;
     this.articleService.submitArticle(article, this.pagingParams).subscribe(
       data => {
@@ -331,13 +331,13 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
         }
         let article = data.data.article;
         this.globalArticleDesc = article.desc;
-        this.globalArticleIspublic = article.is_public;
+        this.globalArticleIsPrivate = article.is_public;
         this.globalTypeId = article.type;
         this.globalArticleId = article._id;
         this.globalArticleContent = article.content;
         this.globalArticleTitle = article.title;
         this.articleNavComponent.changeCurrentShowType(data.data.type_name);
-        this.articleNavComponent.setIspublic(article.is_public);
+        this.articleNavComponent.setIsPrivate(article.is_public);
         this.tinymceComponent.setContent(article.content);
         this.isShow = true;
         this.isEdit = true;
@@ -378,7 +378,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
     article.type = this.globalTypeId;
     article.desc = this.globalArticleDesc;
     article.title = this.globalArticleTitle;
-    article.ispublic = this.globalArticleIspublic;
+    article.isPrivate = this.globalArticleIsPrivate;
     article.id = this.globalArticleId;
     article.isManuscript = isManuscript;
     this.articleService.confirmEditArticle(article, this.pagingParams).subscribe(
@@ -464,7 +464,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
     this.articleNavComponent.changeCurrentShowType('选择文章类型');
     this.articleNavComponent.initDefaultData();
     this.tinymceComponent.clearContent();
-    this.globalArticleIspublic = false;
+    this.globalArticleIsPrivate = false;
   }
 
   /**

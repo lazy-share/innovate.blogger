@@ -7,12 +7,13 @@ export class Article {
   public type:string;
   public title:string;
   public desc:string;
-  public ispublic:boolean;
+  public isPrivate:boolean;
   public id:string;
   public comment:string;
   public praise:string[] = new Array<string>();
   public isManuscript:boolean = false;
   public is_anuscript:boolean = false;
+  public is_manuscript:boolean = false;
 
   static instantiation() {
     let article = new Article();
@@ -20,7 +21,7 @@ export class Article {
     article.type = '';
     article.username = '';
     article.title = '';
-    article.ispublic = false;
+    article.isPrivate = false;
     article.desc = '';
     article.praise =  new Array<string>();
     article.comment = '';

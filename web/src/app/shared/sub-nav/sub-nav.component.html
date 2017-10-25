@@ -20,30 +20,30 @@
   <div class="row clearfix">
     <div class="col-md-12 column">
       <ul class="nav nav-tabs">
-        <li [class.active]="tab == 0">
+        <li [class.active]="tab == '0'">
           <a routerLink="/private/info/{{requestUsername}}">基本信息</a>
         </li>
-        <li [class.active]="tab == 1">
+        <li [class.active]="tab == '1'">
           <a *ngIf="authorizationService.getCurrentUser().username == requestUsername" routerLink="/private/article/{{requestUsername}}">我的文章</a>
           <a *ngIf="authorizationService.currentUser.username != requestUsername" routerLink="/private/article/{{requestUsername}}">TA 的文章</a>
         </li>
-        <li [class.active]="tab == 2">
+        <li [class.active]="tab == '2'">
           <a *ngIf="authorizationService.currentUser.username == requestUsername" routerLink="/private/note/{{requestUsername}}">我的日记</a>
           <a *ngIf="authorizationService.currentUser.username != requestUsername" routerLink="/private/note/{{requestUsername}}">TA 的日记</a>
         </li>
-        <li [class.active]="tab == 3">
+        <li [class.active]="tab == '3'">
           <a *ngIf="authorizationService.currentUser.username == requestUsername" routerLink="/private/media/{{requestUsername}}">我的媒体</a>
           <a *ngIf="authorizationService.currentUser.username != requestUsername" routerLink="/private/media/{{requestUsername}}">TA 的媒体</a>
         </li>
-        <li [class.active]="tab == 4">
+        <li [class.active]="tab == '4'">
           <a *ngIf="authorizationService.currentUser.username == requestUsername" routerLink="/private/attention/{{requestUsername}}">我的关注</a>
           <a *ngIf="authorizationService.currentUser.username != requestUsername" routerLink="/private/attention/{{requestUsername}}">TA 的关注</a>
         </li>
-        <li [class.active]="tab == 5">
+        <li [class.active]="tab == '5'">
           <a *ngIf="authorizationService.currentUser.username == requestUsername" routerLink="/private/fans/{{requestUsername}}">关注我的</a>
           <a *ngIf="authorizationService.currentUser.username != requestUsername" routerLink="/private/fans/{{requestUsername}}">关注 TA的</a>
         </li>
-        <li [class.active]="tab == 6">
+        <li [class.active]="tab == '6'">
           <a *ngIf="authorizationService.currentUser.username == requestUsername" routerLink="/private/visitor/{{requestUsername}}">我的访客</a>
           <a *ngIf="authorizationService.currentUser.username != requestUsername" routerLink="/private/visitor/{{requestUsername}}">TA 的访客</a>
         </li>

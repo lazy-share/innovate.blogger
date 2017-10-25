@@ -21,11 +21,11 @@ export class ArticleNavComponent {
   @Output()
   public onCreateType = new EventEmitter<ArticleType>();
   @Output()
-  public onChangeIspublic = new EventEmitter<boolean>();
+  public onChangeIsPrivate = new EventEmitter<boolean>();
   @Output()
   public onDrafts = new EventEmitter();
   public newTypeName:string;
-  public ispublic:boolean = false;
+  public isPrivate:boolean = false;
 
 
   selectType(type_id: string, type_name:string) {
@@ -52,15 +52,15 @@ export class ArticleNavComponent {
     this.currentShowType = name;
   }
 
-  setIspublic(ispublic:boolean){
-    this.ispublic = ispublic;
+  setIsPrivate(isPrivate:boolean){
+    this.isPrivate = isPrivate;
   }
 
   initDefaultData(){
-    this.ispublic = false;
+    this.isPrivate = false;
   }
 
-  changeIspublic(){
-    this.onChangeIspublic.emit(this.ispublic);
+  changeIsPrivate(){
+    this.onChangeIsPrivate.emit(this.isPrivate);
   }
 }

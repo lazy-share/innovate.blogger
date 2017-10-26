@@ -39,3 +39,5 @@ export const MY_ARTICLE_COMMENT = root + "/private/my/article/comment";
 export const MY_MEDIAS = root + "/private/my/medias";
 export const MY_MEDIA = root + "/private/my/media";
 export const MY_MEDIA_UPLOAD = root + "/private/my/media/upload";
+export const HOME_ARTICLES = root + "/home/articles";
+export const HOME_NOTES = root + "/home/notes";

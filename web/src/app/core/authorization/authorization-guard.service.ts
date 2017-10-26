@@ -19,6 +19,7 @@ export class AuthorizationGuardService implements CanActivate, CanActivateChild{
     if (!this.authorizationService.getCurrentUser()){
       this.authorizationService.currentUser = null;
       this.authorizationService.logout();
+      this.router.navigate(['login']);
     }
     return true;
   }

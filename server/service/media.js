@@ -144,6 +144,11 @@ exports.upload = function (req, res) {
                 var inputFile = files.uploadfile[0];
                 log.info(username + " 成功上传媒体：" + inputFile.path);
                 var oldFilePath = inputFile.path;
+                var arr = oldFilePath.split('\.');
+                if (!(arr instanceof Array) || arr.length != 2 || arr[i] != 'mp4'){
+                    res.json(result.json(response.C610.status, response.C610.code, response.C610.msg, null));
+                    return;
+                }
                 if (oldFilePath.indexOf('\\') > -1) {
                     oldFilePath = oldFilePath.replace(/\\/g, '/');
                 }

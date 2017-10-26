@@ -15,5 +15,6 @@ module.exports = {
     C606: {code: 606, msg: '新增后查询出错', status: false},
     C607: {code: 607, msg: '该文章/日记不存在', status: false},
     C608: {code: 608, msg: '创建失败, 该文章类型已经存在', status: false},
-    C609: {code: 609, msg: '文件不存在', status: false}
+    C609: {code: 609, msg: '文件不存在', status: false},
+    C610: {code: 610, msg: '只能上传MP4格式', status: false}
 };

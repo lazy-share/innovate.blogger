@@ -63,7 +63,6 @@ export class APPResponseInterceptor implements HttpInterceptor {
    */
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(req).map(event => {
-      console.log('Response map', event);
       if (event instanceof HttpResponse) {
         if (!environment.production) {
           console.log("global response: " + JSON.stringify(event));

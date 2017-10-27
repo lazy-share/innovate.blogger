@@ -91,6 +91,9 @@ function saveToDatabase(data, obj) {
     var currentObj = {};
     for (var i in newsArr){
         currentObj = newsArr[i];
+        if (!currentObj.url){
+            continue;
+        }
         currentObj.newsTypeName = obj.name;
         currentObj.newsTypeNo = obj.no;
         (function (obj) {

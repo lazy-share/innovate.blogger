@@ -11,13 +11,13 @@ var response = require('../common/response');
 exports.articles = function (req, res) {
     var paging = req.query.paging;
     paging = JSON.parse(paging);
-    ArticlesModel.find().sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, articles) {
+    ArticlesModel.find({is_private: false}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, articles) {
         if (err){
             log.error("home articles error:" + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-        ArticlesModel.find().count(function (err, count) {
+        ArticlesModel.find({is_private: false}).count(function (err, count) {
             if (err){
                 log.error("home articles error:" + err);
                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));

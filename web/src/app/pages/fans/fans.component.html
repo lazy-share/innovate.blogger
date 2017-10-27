@@ -11,7 +11,7 @@
           <p *ngIf="authorizationService.currentUser.username != requestUsername" class="text-danger">关注 TA的</p>
         </div>
         <hr class="hr">
-        <div *ngIf="(fans.length <= 0)" class="col-md-offset-4 col-xs-offset-4 col-lg-offset-4 col-lg-4 col-md-4 col-xs-4" >
+        <div *ngIf="(fans.length <= 0)" class="col-md-offset-4 col-lg-offset-4 col-lg-4 col-md-4" >
           <h4 *ngIf="authorizationService.currentUser.username == requestUsername" class="text-danger">还没有人关注您</h4>
           <h4 *ngIf="authorizationService.currentUser.username != requestUsername" class="text-danger">还没有人关注TA</h4>
         </div>

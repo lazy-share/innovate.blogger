@@ -60,8 +60,22 @@ export class MediaComponent extends BaseComponent implements OnInit, OnDestroy{
       autoUpload: true
     });
     this.uploader.onSuccessItem = this.successItem.bind(this);
+    //this.uploader.onBeforeUploadItem = this.beforeUploadItem.bind(this);
   }
 
+  beforeUploadItem(fileItem: FileItem): any {
+    let fileName:string = fileItem.file.name;
+    let arr = fileName.split('\.');
+    if (!(arr instanceof Array)){
+      fileItem.cancel();
+      fileItem.remove();
+    }
+    if (arr[1] != 'mp4' || arr[1] != 'flv' || arr[1] != 'webm' || arr[1] != 'ogv' || arr[1] != 'mpg'){
+      fileItem.cancel();
+      fileItem.remove();
+    }
+    return true;
+  }
 
   successItem(item: FileItem, response: string, status: number, headers: ParsedResponseHeaders): any {
     // 上传媒体成功
@@ -74,12 +88,14 @@ export class MediaComponent extends BaseComponent implements OnInit, OnDestroy{
         this.isShow = false;
       } else {
         this.showMsg = true;
-        this.sysMsg = '上传失败';
+        this.sysMsg = tempRes.msg;
+        setTimeout(() => {this.showMsg = false}, 2000);
       }
     } else {
       // 上传媒体后获取服务器返回的数据错误
       this.showMsg = true;
       this.sysMsg = '上传失败';
+      setTimeout(() => {this.showMsg = false}, 2000);
     }
   }
 

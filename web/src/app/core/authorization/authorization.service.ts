@@ -12,7 +12,7 @@ export class AuthorizationService {
     public currentUser: any;
 
     constructor(public storageService: StorageService) {
-        this.storageType = StorageType.sessionStorage;
+        this.storageType = StorageType.localStorage;
     }
 
     setStorageType(storageType: StorageType) {

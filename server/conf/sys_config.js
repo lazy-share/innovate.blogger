@@ -36,7 +36,7 @@ var sysConfig = {
         dbDbAdminUsername: 'dbadmin',
         dbDbAdminPwd: '123456',
         jwtSecret:'laizhiyuan666',
-        jwtValidity: 60 * 30, // 开发设置为30分钟 没有时间单位以秒为准 其它格式"2 days" "3h" "1y"
+        jwtValidity: 60 * 60 * 24 * 7, // 生产设置为一个礼拜 没有时间单位以秒为准 其它格式"2 days" "3h" "1y"
         redisOpts:{},
         webRootUri: '/v1/api/web',
         thisDoman: 'http://47.94.226.67',

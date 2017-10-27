@@ -57,7 +57,8 @@ export class MediaComponent extends BaseComponent implements OnInit, OnDestroy{
         {name: "LzyAuthorization", value: this.authorizationService.getCurrentUser().token}
       ],
       removeAfterUpload: true,
-      autoUpload: true
+      autoUpload: true,
+      allowedFileType: ['video']
     });
     this.uploader.onSuccessItem = this.successItem.bind(this);
     //this.uploader.onBeforeUploadItem = this.beforeUploadItem.bind(this);

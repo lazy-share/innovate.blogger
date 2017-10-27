@@ -94,7 +94,8 @@ export class InfoComponent extends BaseComponent implements OnInit, OnDestroy {
         {name: "LzyAuthorization", value: this.authorizationService.getCurrentUser().token}
       ],
       removeAfterUpload: true,
-      autoUpload: true
+      autoUpload: true,
+      allowedFileType: ['image']
     });
     this.uploader.onSuccessItem = this.successItem.bind(this);
   }

@@ -24,7 +24,6 @@ export class HomeComponent extends BaseComponent implements OnInit{
   public paging: Paging = Paging.instantiation6();
   public pagingParams = PagingParams.instantiation6();
   public globalType:string;
-  public thisDomain = environment.api.host;
   public articles: Article[] = new Array<Article>();
   public notes: Note[] = new Array<Note>();
   public articlesPaging = Paging.instantiation10();

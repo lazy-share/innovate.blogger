@@ -178,27 +178,27 @@
                   </div>
                 </div>
               </div>
-            </div>
-            <div *ngIf="(paging.bigTotalItems > 0)"
-                 class="visible-lg visible-md visible-sm col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-lg-6 col-md-6 col-sm-8 col-xs-12">
-              <pagination [firstText]="paging.firstText" [previousText]="paging.previousText"
-                          [lastText]="paging.lastText"
-                          [nextText]="paging.nextText" [totalItems]="paging.bigTotalItems"
-                          [(ngModel)]="paging.bigCurrentPage"
-                          [maxSize]="paging.maxSize" class="pagination-sm" [boundaryLinks]="true" [rotate]="false"
-                          [itemsPerPage]="paging.limit"
-                          (numPages)="paging.numPages = $event" (pageChanged)="pageChanged($event)"></pagination>
-            </div>
-            <div *ngIf="(paging.bigTotalItems > 0)" class="visible-xs col-xs-12">
-              <pagination [previousText]="paging.previousText"
-                          [nextText]="paging.nextText"
-                          [totalItems]="paging.bigTotalItems"
-                          [(ngModel)]="paging.bigCurrentPage"
-                          [maxSize]="paging.xsV" class="pagination-sm"
-                          [boundaryLinks]="false" [rotate]="false"
-                          [itemsPerPage]="paging.limit"
-                          (numPages)="paging.numPages = $event"
-                          (pageChanged)="pageChanged($event)"></pagination>
+              <div *ngIf="(paging.bigTotalItems > 0)"
+                   class="visible-lg visible-md visible-sm col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-lg-6 col-md-6 col-sm-8 col-xs-12">
+                <pagination [firstText]="paging.firstText" [previousText]="paging.previousText"
+                            [lastText]="paging.lastText"
+                            [nextText]="paging.nextText" [totalItems]="paging.bigTotalItems"
+                            [(ngModel)]="paging.bigCurrentPage"
+                            [maxSize]="paging.maxSize" class="pagination-sm" [boundaryLinks]="true" [rotate]="false"
+                            [itemsPerPage]="paging.limit"
+                            (numPages)="paging.numPages = $event" (pageChanged)="pageChanged($event)"></pagination>
+              </div>
+              <div *ngIf="(paging.bigTotalItems > 0)" class="visible-xs col-xs-12">
+                <pagination [previousText]="paging.previousText"
+                            [nextText]="paging.nextText"
+                            [totalItems]="paging.bigTotalItems"
+                            [(ngModel)]="paging.bigCurrentPage"
+                            [maxSize]="paging.xsV" class="pagination-sm"
+                            [boundaryLinks]="false" [rotate]="false"
+                            [itemsPerPage]="paging.limit"
+                            (numPages)="paging.numPages = $event"
+                            (pageChanged)="pageChanged($event)"></pagination>
+              </div>
             </div>
           </div>
         </div>

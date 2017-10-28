@@ -15,7 +15,9 @@
       <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
       <div style="text-align: center;" class="alert alert-success alert-dismissable">
         <span class="fileinput-button">
-            <span style="font-size: 14px;">点击选择媒体(支持MP4格式)</span>
+            <span style="font-size: 14px;">点击选择媒体(支持MP4格式)</span><br>
+          <span style="font-size: 10px;">是否上传成功以跳转列表为准，进度条存在不准确性</span><br>
+            <span style="font-size: 10px;">手机上传存在部分兼容性问题，且比较慢，PC(电脑)支持较好</span>
             <input type="file" ng2FileSelect [uploader]="uploader"/>
         </span>
         <div class="progress" style="" *ngIf="uploader.progress > 0">
@@ -26,11 +28,6 @@
 
     <div *ngIf="!isShow" class="panel-body">
       <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
-     <!-- <div class="container">
-        <div class="row clearfix">
-
-        </div>
-      </div>-->
       <ng-container *ngFor="let media of medias; let i = index">
         <div class="col-md-6 col-lg-4 col-sm-6 col-xs-12 column">
           <video type="video/ogg; codecs=dirac, speex" class="video-js vjs-default-skin" controls preload="auto" data-setup="{}">

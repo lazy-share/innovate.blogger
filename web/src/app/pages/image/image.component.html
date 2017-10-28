@@ -32,6 +32,7 @@
         <div [class.hidden]="paging.bigTotalItems < 0">
           <div *ngFor="let image of images; let i = index;" class="col-md-3 column">
             <p><img style="width:90%; height: 200px;" class="img-responsive" src="{{image.image_url}}"/></p>
+            <p><span>上传时间：{{image.update_time | date: "yyyy-MM-dd HH:mm:ss"}}</span></p>
             <estimate [doc]="image" (onComment)="onComment($event)" (onPraise)="onPraise($event)" (onReply)="onReply($event)" (onDeleteDocBefore)="onDeleteDocBefore($event)" (onDeleteCommentBefore)="onDeleteCommentBefore($event)"></estimate>
             <div hidden="true" id="T{{image._id}}">
               <div style="margin-bottom: 5px;">

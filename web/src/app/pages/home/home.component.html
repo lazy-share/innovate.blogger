@@ -1,219 +1,204 @@
 <div class="container">
   <div class="row clearfix">
     <div class="col-md-12 column">
-      <div class="tabbable" id="tabs-261889">
-        <ul class="nav nav-tabs">
-          <li class="active" *ngIf="articles.length > 0">
-            <a (click)="changeTab1('1')" href="#panel-181684" data-toggle="tab">文章</a>
-          </li>
-          <li *ngIf="notes.length > 0">
-            <a (click)="changeTab1('2')" href="#panel-490329" data-toggle="tab">说说</a>
-          </li>
-        </ul>
-        <div class="tab-content">
-          <div class="tab-pane active" id="panel-181684">
-            <div class="panel panel-success">
-              <div class="panel-heading">
-                <h3 class="panel-title">文章动态</h3>
+      <ul class="nav nav-tabs">
+        <li class="active" *ngIf="articles.length > 0">
+          <a (click)="changeTab1('1')" href="#panel-181684" data-toggle="tab">文章</a>
+        </li>
+        <li *ngIf="notes.length > 0">
+          <a (click)="changeTab1('2')" href="#panel-490329" data-toggle="tab">说说</a>
+        </li>
+      </ul>
+      <div class="tab-content">
+        <div class="tab-pane active" *ngIf="articles.length > 0" id="panel-181684">
+          <div class="panel panel-success">
+            <div class="panel-heading">
+              <h3 class="panel-title">文章动态</h3>
+            </div>
+            <div class="panel-body">
+              <div class="col-md-6 column">
+                <ng-container *ngFor="let article of articles; let i = index;">
+                  <ng-container *ngIf="i < 5">
+                    <a style="text-decoration: none;"
+                       routerLink="/private/article/detail/{{article.username}}/{{article._id}}">
+                      <div class="well well-sm">
+                        <p>标题：<span style="color:black;">{{article.title}}</span></p>
+                        <p>描述：<span style="color:black;">{{article.desc}}</span></p>
+                        <small>—{{article.username}} 发表于:{{article.update_time | date:
+                          "yyyy-MM-dd HH:mm:ss"}}
+                        </small>
+                      </div>
+                    </a>
+                  </ng-container>
+                </ng-container>
               </div>
-              <div class="panel-body">
-                <div class="col-md-6 column">
-                  <ng-container *ngFor="let article of articles; let i = index;">
-                    <ng-container *ngIf="i < 5">
-                      <a style="text-decoration: none;"
-                         routerLink="/private/article/detail/{{article.username}}/{{article._id}}">
-                        <div class="alert alert-info">
-                          <p>{{article.title}}</p>
-                          <p>{{article.desc}}</p>
-                          <small style="color: black;">--{{article.username}} 发表于:{{article.update_time | date:
-                            "yyyy-MM-dd HH:mm:ss"}}
-                          </small>
-                        </div>
-                      </a>
-                    </ng-container>
-                  </ng-container>
-                </div>
 
-                <div class="col-md-6 column">
-                  <ng-container *ngFor="let article of articles; let i = index;">
-                    <ng-container *ngIf="i > 4">
-                      <a style="text-decoration: none;"
-                         routerLink="/private/article/detail/{{article.username}}/{{article._id}}">
-                        <div class="alert alert-info">
-                          <p>{{article.title}}</p>
-                          <p>{{article.desc}}</p>
-                          <small style="color: black;">--{{article.username}} 发表于:{{article.update_time | date:
-                            "yyyy-MM-dd HH:mm:ss"}}
-                          </small>
-                        </div>
-                      </a>
-                    </ng-container>
+              <div class="col-md-6 column">
+                <ng-container *ngFor="let article of articles; let i = index;">
+                  <ng-container *ngIf="i > 4">
+                    <a style="text-decoration: none;"
+                       routerLink="/private/article/detail/{{article.username}}/{{article._id}}">
+                      <div class="well well-sm">
+                        <p>标题：<span style="color:black;">{{article.title}}</span></p>
+                        <p>描述：<span style="color:black;">{{article.desc}}</span></p>
+                        <small>—{{article.username}} 发表于:{{article.update_time | date:
+                          "yyyy-MM-dd HH:mm:ss"}}
+                        </small>
+                      </div>
+                    </a>
                   </ng-container>
-                </div>
+                </ng-container>
+              </div>
 
-                <div *ngIf="(articlesPaging.bigTotalItems > 0)"
-                     class="visible-lg visible-md visible-sm col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-lg-6 col-md-6 col-sm-8 col-xs-12">
-                  <pagination [firstText]="articlesPaging.firstText" [previousText]="articlesPaging.previousText"
-                              [lastText]="articlesPaging.lastText"
-                              [nextText]="articlesPaging.nextText" [totalItems]="articlesPaging.bigTotalItems"
-                              [(ngModel)]="articlesPaging.bigCurrentPage"
-                              [maxSize]="articlesPaging.maxSize" class="pagination-sm" [boundaryLinks]="true"
-                              [rotate]="false"
-                              [itemsPerPage]="articlesPaging.limit"
-                              (numPages)="articlesPaging.numPages = $event"
-                              (pageChanged)="articlesPageChanged($event)"></pagination>
-                </div>
-                <div *ngIf="(articlesPaging.bigTotalItems > 0)" class="visible-xs col-xs-12">
-                  <pagination [previousText]="articlesPaging.previousText"
-                              [nextText]="articlesPaging.nextText"
-                              [totalItems]="articlesPaging.bigTotalItems"
-                              [(ngModel)]="articlesPaging.bigCurrentPage"
-                              [maxSize]="articlesPaging.xsV" class="pagination-sm"
-                              [boundaryLinks]="false" [rotate]="false"
-                              [itemsPerPage]="articlesPaging.limit"
-                              (numPages)="articlesPaging.numPages = $event"
-                              (pageChanged)="articlesPageChanged($event)"></pagination>
-                </div>
+              <div *ngIf="(articlesPaging.bigTotalItems > 0)"
+                   class="visible-lg visible-md visible-sm col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-lg-6 col-md-6 col-sm-8 col-xs-12">
+                <pagination [firstText]="articlesPaging.firstText" [previousText]="articlesPaging.previousText"
+                            [lastText]="articlesPaging.lastText"
+                            [nextText]="articlesPaging.nextText" [totalItems]="articlesPaging.bigTotalItems"
+                            [(ngModel)]="articlesPaging.bigCurrentPage"
+                            [maxSize]="articlesPaging.maxSize" class="pagination-sm" [boundaryLinks]="true"
+                            [rotate]="false"
+                            [itemsPerPage]="articlesPaging.limit"
+                            (numPages)="articlesPaging.numPages = $event"
+                            (pageChanged)="articlesPageChanged($event)"></pagination>
+              </div>
+              <div *ngIf="(articlesPaging.bigTotalItems > 0)" class="visible-xs col-xs-12">
+                <pagination [previousText]="articlesPaging.previousText"
+                            [nextText]="articlesPaging.nextText"
+                            [totalItems]="articlesPaging.bigTotalItems"
+                            [(ngModel)]="articlesPaging.bigCurrentPage"
+                            [maxSize]="articlesPaging.xsV" class="pagination-sm"
+                            [boundaryLinks]="false" [rotate]="false"
+                            [itemsPerPage]="articlesPaging.limit"
+                            (numPages)="articlesPaging.numPages = $event"
+                            (pageChanged)="articlesPageChanged($event)"></pagination>
               </div>
             </div>
           </div>
-          <div class="tab-pane" id="panel-490329">
-            <div class="panel panel-success">
-              <div class="panel-heading">
-                <h3 class="panel-title">说说动态</h3>
+        </div>
+        <div class="tab-pane" *ngIf="notes.length > 0" id="panel-490329">
+          <div class="panel panel-success">
+            <div class="panel-heading">
+              <h3 class="panel-title">说说动态</h3>
+            </div>
+            <div class="panel-body">
+              <div class="col-md-6 column">
+                <ng-container *ngFor="let note of notes; let i = index;">
+                  <ng-container *ngIf="i < 5">
+                    <a style="text-decoration: none;" routerLink="/private/info/{{note.username}}">
+                      <div class="well well-sm">
+                        <p>说说：<span style="color:black;">{{note.content}}</span></p>
+                        <small>—{{note.username}} 发表于:{{note.update_time | date: "yyyy-MM-dd
+                          HH:mm:ss"}}
+                        </small>
+                      </div>
+                    </a>
+                  </ng-container>
+                </ng-container>
               </div>
-              <div class="panel-body">
-                <div class="col-md-6 column">
-                  <ng-container *ngFor="let note of notes; let i = index;">
-                    <ng-container *ngIf="i < 5">
-                      <a style="text-decoration: none;" routerLink="/private/info/{{note.username}}">
-                        <div class="alert alert-info">
-                          <p>{{note.content}}</p>
-                          <small style="color: black;">--{{note.username}} 发表于:{{note.update_time | date: "yyyy-MM-dd
-                            HH:mm:ss"}}
-                          </small>
-                        </div>
-                      </a>
-                    </ng-container>
-                  </ng-container>
-                </div>
 
-                <div class="col-md-6 column">
-                  <ng-container *ngFor="let note of notes; let i = index;">
-                    <ng-container *ngIf="i > 4">
-                      <a style="text-decoration: none;" routerLink="/private/info/{{note.username}}">
-                        <div class="alert alert-info">
-                          <p>{{note.content}}</p>
-                          <small style="color: black;">--{{note.username}} 发表于:{{note.update_time | date: "yyyy-MM-dd
-                            HH:mm:ss"}}
-                          </small>
-                        </div>
-                      </a>
-                    </ng-container>
+              <div class="col-md-6 column">
+                <ng-container *ngFor="let note of notes; let i = index;">
+                  <ng-container *ngIf="i > 4">
+                    <a style="text-decoration: none;" routerLink="/private/info/{{note.username}}">
+                      <div class="well well-sm">
+                        <p>{{note.content}}</p>
+                        <small style="color: black;">--{{note.username}} 发表于:{{note.update_time | date: "yyyy-MM-dd
+                          HH:mm:ss"}}
+                        </small>
+                      </div>
+                    </a>
                   </ng-container>
-                </div>
-                <div *ngIf="(notesPaging.bigTotalItems > 0)"
-                     class="visible-lg visible-md visible-sm col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-lg-6 col-md-6 col-sm-8 col-xs-12">
-                  <pagination [firstText]="notesPaging.firstText" [previousText]="notesPaging.previousText"
-                              [lastText]="notesPaging.lastText"
-                              [nextText]="notesPaging.nextText" [totalItems]="notesPaging.bigTotalItems"
-                              [(ngModel)]="notesPaging.bigCurrentPage"
-                              [maxSize]="notesPaging.maxSize" class="pagination-sm" [boundaryLinks]="true"
-                              [rotate]="false"
-                              [itemsPerPage]="notesPaging.limit"
-                              (numPages)="notesPaging.numPages = $event"
-                              (pageChanged)="notesPageChanged($event)"></pagination>
-                </div>
-                <div *ngIf="(notesPaging.bigTotalItems > 0)" class="visible-xs col-xs-12">
-                  <pagination [previousText]="notesPaging.previousText"
-                              [nextText]="notesPaging.nextText"
-                              [totalItems]="notesPaging.bigTotalItems"
-                              [(ngModel)]="notesPaging.bigCurrentPage"
-                              [maxSize]="notesPaging.xsV" class="pagination-sm"
-                              [boundaryLinks]="false" [rotate]="false"
-                              [itemsPerPage]="notesPaging.limit"
-                              (numPages)="notesPaging.numPages = $event"
-                              (pageChanged)="notesPageChanged($event)"></pagination>
-                </div>
+                </ng-container>
+              </div>
+              <div *ngIf="(notesPaging.bigTotalItems > 0)"
+                   class="visible-lg visible-md visible-sm col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-lg-6 col-md-6 col-sm-8 col-xs-12">
+                <pagination [firstText]="notesPaging.firstText" [previousText]="notesPaging.previousText"
+                            [lastText]="notesPaging.lastText"
+                            [nextText]="notesPaging.nextText" [totalItems]="notesPaging.bigTotalItems"
+                            [(ngModel)]="notesPaging.bigCurrentPage"
+                            [maxSize]="notesPaging.maxSize" class="pagination-sm" [boundaryLinks]="true"
+                            [rotate]="false"
+                            [itemsPerPage]="notesPaging.limit"
+                            (numPages)="notesPaging.numPages = $event"
+                            (pageChanged)="notesPageChanged($event)"></pagination>
+              </div>
+              <div *ngIf="(notesPaging.bigTotalItems > 0)" class="visible-xs col-xs-12">
+                <pagination [previousText]="notesPaging.previousText"
+                            [nextText]="notesPaging.nextText"
+                            [totalItems]="notesPaging.bigTotalItems"
+                            [(ngModel)]="notesPaging.bigCurrentPage"
+                            [maxSize]="notesPaging.xsV" class="pagination-sm"
+                            [boundaryLinks]="false" [rotate]="false"
+                            [itemsPerPage]="notesPaging.limit"
+                            (numPages)="notesPaging.numPages = $event"
+                            (pageChanged)="notesPageChanged($event)"></pagination>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-
-  <div class="container">
-    <div class="row clearfix">
-      <div class="span12">
-        <div>
-          <ul id="myTab" class="nav nav-tabs">
-            <ng-container *ngFor="let type of newsTypes; let i = index;">
-              <ng-container *ngIf="i == 0">
-                <li class="active"><a (click)="changeTab(type.no)" data-toggle="tab">{{type.name}}</a></li>
+      <ul id="myTab" class="nav nav-tabs">
+        <ng-container *ngFor="let type of newsTypes; let i = index;">
+          <ng-container *ngIf="i == 0">
+            <li class="active"><a (click)="changeTab(type.no)" data-toggle="tab">{{type.name}}</a></li>
+          </ng-container>
+          <ng-container *ngIf="i > 0 && i < 11">
+            <li><a (click)="changeTab(type.no)" data-toggle="tab">{{type.name}}</a></li>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="newsTypes.length > 10">
+          <li class="dropdown">
+            <a href="#" id="myTabDrop1" class="dropdown-toggle" data-toggle="dropdown">更多<b class="caret"></b></a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+              <ng-container *ngFor="let type of newsTypes; let i = index;">
+                <ng-container *ngIf="i > 10">
+                  <li><a (click)="changeTab(type.no)" data-toggle="tab">{{type.name}}</a></li>
+                </ng-container>
               </ng-container>
-              <ng-container *ngIf="i > 0 && i < 11">
-                <li><a (click)="changeTab(type.no)" data-toggle="tab">{{type.name}}</a></li>
-              </ng-container>
-            </ng-container>
-            <ng-container *ngIf="newsTypes.length > 10">
-              <li class="dropdown">
-                <a href="#" id="myTabDrop1" class="dropdown-toggle" data-toggle="dropdown">更多<b class="caret"></b></a>
-                <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
-                  <ng-container *ngFor="let type of newsTypes; let i = index;">
-                    <ng-container *ngIf="i > 10">
-                      <li><a (click)="changeTab(type.no)" data-toggle="tab">{{type.name}}</a></li>
-                    </ng-container>
-                  </ng-container>
-                </ul>
-              </li>
-            </ng-container>
-          </ul>
-        </div>
-        <div id="myTabContent" class="tab-content">
-          <div class="tab-pane fade in active" id="home">
-            <div class="col-md-12 col-log-12 col-sm-12 col-xs-12 column">
-              <div class="panel panel-warning">
-                <div class="panel-heading">
-                  <h3 class="panel-title">最新新闻</h3>
-                </div>
-                <div class="panel-body">
-                  <ng-container *ngFor="let new of news; let i = index;">
-                    <div class="col-md-4 col-log-4 col-sm-6 col-xs-12">
-                      <div class="thumbnail">
-                        <img style="width:90%; height: 200px;" class="img-responsive" src="{{new.imgsrc}}"/>
-                        <div class="caption">
-                          <h3>{{new.title}}</h3>
-                          <p>{{new.digest}}</p>
-                          <p><a>发布于 {{new.ptime}}</a></p>
-                          <p><a target="_blank" href="{{new.url}}">查看全文 »</a></p>
-                        </div>
-                      </div>
-                    </div>
-                  </ng-container>
-                </div>
-                <div *ngIf="(paging.bigTotalItems > 0)"
-                     class="visible-lg visible-md visible-sm col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-lg-6 col-md-6 col-sm-8 col-xs-12">
-                  <pagination [firstText]="paging.firstText" [previousText]="paging.previousText"
-                              [lastText]="paging.lastText"
-                              [nextText]="paging.nextText" [totalItems]="paging.bigTotalItems"
-                              [(ngModel)]="paging.bigCurrentPage"
-                              [maxSize]="paging.maxSize" class="pagination-sm" [boundaryLinks]="true" [rotate]="false"
-                              [itemsPerPage]="paging.limit"
-                              (numPages)="paging.numPages = $event" (pageChanged)="pageChanged($event)"></pagination>
-                </div>
-                <div *ngIf="(paging.bigTotalItems > 0)" class="visible-xs col-xs-12">
-                  <pagination [previousText]="paging.previousText"
-                              [nextText]="paging.nextText"
-                              [totalItems]="paging.bigTotalItems"
-                              [(ngModel)]="paging.bigCurrentPage"
-                              [maxSize]="paging.xsV" class="pagination-sm"
-                              [boundaryLinks]="false" [rotate]="false"
-                              [itemsPerPage]="paging.limit"
-                              (numPages)="paging.numPages = $event"
-                              (pageChanged)="pageChanged($event)"></pagination>
+            </ul>
+          </li>
+        </ng-container>
+      </ul>
+      <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade in active" id="home">
+          <div class="panel panel-warning">
+            <div class="panel-heading">
+              <h3 class="panel-title">最新新闻</h3>
+            </div>
+            <div class="panel-body">
+              <div *ngFor="let new of news;" class="col-md-4 col-log-4 col-sm-6 col-xs-12">
+                <div class="thumbnail">
+                  <img style="width:90%; height: 200px;" class="img-responsive" src="{{new.imgsrc}}"/>
+                  <div class="caption">
+                    <h3>{{new.title}}</h3>
+                    <p>{{new.digest}}</p>
+                    <p><a>发布于 {{new.ptime}}</a></p>
+                    <p><a target="_blank" href="{{new.url}}">查看全文 »</a></p>
+                  </div>
                 </div>
               </div>
+            </div>
+            <div *ngIf="(paging.bigTotalItems > 0)"
+                 class="visible-lg visible-md visible-sm col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-lg-6 col-md-6 col-sm-8 col-xs-12">
+              <pagination [firstText]="paging.firstText" [previousText]="paging.previousText"
+                          [lastText]="paging.lastText"
+                          [nextText]="paging.nextText" [totalItems]="paging.bigTotalItems"
+                          [(ngModel)]="paging.bigCurrentPage"
+                          [maxSize]="paging.maxSize" class="pagination-sm" [boundaryLinks]="true" [rotate]="false"
+                          [itemsPerPage]="paging.limit"
+                          (numPages)="paging.numPages = $event" (pageChanged)="pageChanged($event)"></pagination>
+            </div>
+            <div *ngIf="(paging.bigTotalItems > 0)" class="visible-xs col-xs-12">
+              <pagination [previousText]="paging.previousText"
+                          [nextText]="paging.nextText"
+                          [totalItems]="paging.bigTotalItems"
+                          [(ngModel)]="paging.bigCurrentPage"
+                          [maxSize]="paging.xsV" class="pagination-sm"
+                          [boundaryLinks]="false" [rotate]="false"
+                          [itemsPerPage]="paging.limit"
+                          (numPages)="paging.numPages = $event"
+                          (pageChanged)="pageChanged($event)"></pagination>
             </div>
           </div>
         </div>

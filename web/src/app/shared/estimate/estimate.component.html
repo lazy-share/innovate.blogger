@@ -1,10 +1,10 @@
 <div class="div-to-hide-hr"></div>
 <p>
   <a style="margin-right: 50px;cursor:default;text-decoration:none;"><span class="glyphicon glyphicon-eye-open"></span>&nbsp;浏览{{doc.visitor}}次</a>
-  <a (click)="comment(doc._id, '', '')" style="margin-right: 16px;" tooltip='分享一下你的想法'><span class="glyphicon glyphicon-comment"></span></a>
-  <a (click)="praise(doc._id)" style="margin-right: 16px; color: black;" tooltip='交朋友就从赞开始吧' *ngIf="(doc.praise | isExistsArr: authorizationService.currentUser.username)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
-  <a (click)="praise(doc._id)" style="margin-right: 16px;" tooltip='交朋友就从赞开始吧' *ngIf="!(doc.praise | isExistsArr: authorizationService.currentUser.username)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
-  <a (click)="deleteDocBefore(doc._id)" tooltip='永久删除该记录？' *ngIf="authorizationService.currentUser.username == doc.username"><span class="glyphicon glyphicon-trash"></span></a>
+  <a (click)="comment(doc._id, '', '')" style="margin-right: 16px;" ><span class="glyphicon glyphicon-comment"></span></a>
+  <a (click)="praise(doc._id)" style="margin-right: 16px; color: black;"  *ngIf="(doc.praise | isExistsArr: authorizationService.currentUser.username)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
+  <a (click)="praise(doc._id)" style="margin-right: 16px;" *ngIf="!(doc.praise | isExistsArr: authorizationService.currentUser.username)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
+  <a (click)="deleteDocBefore(doc._id)" *ngIf="authorizationService.currentUser.username == doc.username"><span class="glyphicon glyphicon-trash"></span></a>
 </p>
 <ng-container *ngIf="doc.praise.length >0 || doc.comment.replies.length > 0">
   <div class="div-to-hr-1"></div>

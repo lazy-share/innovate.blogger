@@ -1,0 +1,78 @@
+<sub-nav [requestUsername]="requestUsername" [tab]="7"></sub-nav>
+
+<div class="container">
+  <div class="row clearfix">
+    <div class="panel panel-info">
+      <div class="panel-heading">
+        <a *ngIf="!isShow" (click)="changeUpload()" class="btn btn-default">上传图片</a>
+        <a *ngIf="isShow" (click)="changeUpload()" class="btn btn-default">取消</a>
+      </div>
+      <div [class.hidden]="!isShow" class="panel-body">
+        <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
+        <div *ngIf="showSuccess" class="alert alert-success">{{successMsg}}</div>
+        <div style="text-align: center;" class="alert alert-success alert-dismissable">
+        <span class="fileinput-button">
+            <span style="font-size: 14px;">点击选择图片</span><br>
+            <input type="file" ng2FileSelect [uploader]="uploader"/>
+        </span>
+          <div class="progress" style="" *ngIf="uploader.progress > 0">
+            <div class="progress-bar" role="progressbar" [ngStyle]="{ 'width': uploader.progress + '%' }"></div>
+          </div>
+        </div>
+      </div>
+
+      <div [class.hidden]="isShow" class="panel-body">
+        <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
+        <div *ngIf="showSuccess" class="alert alert-success">{{successMsg}}</div>
+        <div [class.hidden]="paging.bigTotalItems > 0">
+          <p>
+            暂无图片........
+          </p>
+        </div>
+        <div [class.hidden]="paging.bigTotalItems < 0">
+          <div *ngFor="let image of images; let i = index;" class="col-md-3 column">
+            <p><img style="width:90%; height: 200px;" class="img-responsive" src="{{image.image_url}}"/></p>
+            <estimate [doc]="image" (onComment)="onComment($event)" (onPraise)="onPraise($event)" (onReply)="onReply($event)" (onDeleteDocBefore)="onDeleteDocBefore($event)" (onDeleteCommentBefore)="onDeleteCommentBefore($event)"></estimate>
+            <div hidden="true" id="T{{image._id}}">
+              <div style="margin-bottom: 5px;">
+                <input (keyup)="keyupComment()" (mousemove)="keyupComment()" maxlength="{{initCommentMaxLength}}" name="commentContent" [(ngModel)]="commentContent" type="text" class="form-control T{{image._id}}" placeholder="">
+                <span>你还可以输入{{commentMaxLength}}个字</span>
+              </div>
+              <a (click)="cancleCommen(image._id)" class="comment-a-cancle" style="text-decoration: none;">取消评论</a>
+              <a (click)="submitComment(image._id)" *ngIf="!hideSubmitComment" style="text-decoration: none;">提交评论</a>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="(paging.bigTotalItems > 0)"
+             class="visible-lg visible-md visible-sm col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-lg-6 col-md-6 col-sm-8 col-xs-12">
+          <pagination [firstText]="paging.firstText" [previousText]="paging.previousText" [lastText]="paging.lastText"
+                      [nextText]="paging.nextText" [totalItems]="paging.bigTotalItems"
+                      [(ngModel)]="paging.bigCurrentPage"
+                      [maxSize]="paging.maxSize" class="pagination-sm" [boundaryLinks]="true" [rotate]="false"
+                      [itemsPerPage]="paging.limit"
+                      (numPages)="paging.numPages = $event" (pageChanged)="pageChanged($event)"></pagination>
+        </div>
+        <div *ngIf="(paging.bigTotalItems > 0)" class="visible-xs col-xs-12">
+          <pagination [previousText]="paging.previousText"
+                      [nextText]="paging.nextText"
+                      [totalItems]="paging.bigTotalItems"
+                      [(ngModel)]="paging.bigCurrentPage"
+                      [maxSize]="paging.xsV" class="pagination-sm"
+                      [boundaryLinks]="false" [rotate]="false"
+                      [itemsPerPage]="paging.limit"
+                      (numPages)="paging.numPages = $event"
+                      (pageChanged)="pageChanged($event)"></pagination>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<template #appModalTemplate>
+  <div class="modal-body">
+    {{appModal.content}}
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="cancleModal()">取消</button>
+    <button type="button" class="btn btn-default" (click)="excuteDel()">确定</button>
+  </div>
+</template>

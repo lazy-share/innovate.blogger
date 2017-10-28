@@ -52,12 +52,14 @@ exports.notes = function (req, res) {
                 if (currentUsername != username) { //异步添加浏览次数
                     for (var i in docs){
                         docs[i].visitor = docs[i].visitor + 1;
-                        NotesModel.update({username: username, _id: docs[i]._id}, {$inc: {visitor: 1}}).exec(function (err) {
-                            if (err) {
-                                console.log('notes err! msg:' + err);
-                                log.error('add ' + docs[i]._id + ' notes visitor err! msg:' + err);
-                            }
-                        });
+                        (function (doc) {
+                            NotesModel.update({username: username, _id: doc._id}, {$inc: {visitor: 1}}).exec(function (err) {
+                                if (err) {
+                                    console.log('notes err! msg:' + err);
+                                    log.error('add ' + docs[i]._id + ' notes visitor err! msg:' + err);
+                                }
+                            });
+                        })(docs[i])
                     }
                 }
                 var obj = {notes: docs, count: count, head_portrait: doc.head_portrait};

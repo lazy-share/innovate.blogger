@@ -18,13 +18,10 @@ import {Reply} from "../../vo/comment";
 import {Estimate} from "../../vo/estimate";
 import {SearchService} from "../../core/search/search.service";
 import {Subscription} from "rxjs/Subscription";
+import {ModalExcuteDeleteType} from "../../constant/modal";
 /**
  * Created by lzy on 2017/10/6.
  */
-enum ModalExcuteDeleteType {
-  DELETE_NOTE = 1,
-  DELETE_COMMENT = 2
-}
 @Component({
   templateUrl: './note.component.html',
   styleUrls: ['./note.component.css']

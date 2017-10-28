@@ -24,7 +24,8 @@ const APP_ROUTES: Routes = [
       {path: 'visitor', loadChildren: 'app/pages/visitor/visitor.module#VisitorModule'},
       {path: 'note', loadChildren: 'app/pages/note/note.module#NoteModule'},
       {path: 'article', loadChildren: 'app/pages/article/article.module#ArticleModule'},
-      {path: 'media', loadChildren: 'app/pages/media/media.module#MediaModule'}
+      {path: 'media', loadChildren: 'app/pages/media/media.module#MediaModule'},
+      {path: 'image', loadChildren: 'app/pages/image/image.module#ImageModule'}
     ],
     canActivateChild: [AuthorizationGuardService],
   },

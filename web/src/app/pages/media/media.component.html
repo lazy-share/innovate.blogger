@@ -38,7 +38,7 @@
           </video>
           <div class="div-to-hide-hr"></div>
           <p>
-            <a style="text-decoration: none;"><span>更新时间：{{media.update_time}}</span></a>
+            <a style="text-decoration: none;"><span>更新时间：{{media.update_time | date: "yyyy-MM-dd HH:mm:ss"}}</span></a>
             &nbsp;&nbsp;&nbsp;
             <a (click)="toDeleteMedia(media._id)" style="text-decoration: none; color: red;"><span>删除</span></a>
           </p>

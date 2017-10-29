@@ -88,7 +88,7 @@
               <div class="col-md-6 column">
                 <ng-container *ngFor="let note of notes; let i = index;">
                   <ng-container *ngIf="i % 2 == 0">
-                    <a style="text-decoration: none;" routerLink="/private/info/{{note.username}}">
+                    <a style="text-decoration: none;" routerLink="/private/note/{{note.username}}">
                       <div class="well well-sm">
                         <p>说说：<span style="color:black;">{{note.content}}</span></p>
                         <small>—{{note.username}} 发表于:{{note.update_time | date: "yyyy-MM-dd
@@ -103,7 +103,7 @@
               <div class="col-md-6 column">
                 <ng-container *ngFor="let note of notes; let i = index;">
                   <ng-container *ngIf="i % 2 != 0">
-                    <a style="text-decoration: none;" routerLink="/private/info/{{note.username}}">
+                    <a style="text-decoration: none;" routerLink="/private/note/{{note.username}}">
                       <div class="well well-sm">
                         <p>说说：<span style="color:black;">{{note.content}}</span></p>
                         <small>—{{note.username}} 发表于:{{note.update_time | date: "yyyy-MM-dd
@@ -146,7 +146,26 @@
             <div class="panel-heading">
               <h3 class="panel-title">图片动态</h3>
             </div>
-            <div class="panel-body">
+            <div class="panel-body visible-xs visible-sm">
+              <div class="col-md-6 column">
+                <carousel>
+                  <ng-container *ngFor="let image of images; let i = index;">
+                    <slide>
+                      <a routerLink="/private/image/{{image.username}}">
+                        <div>
+                          <img style="width:100%; height: 200px;" class="img-responsive" src="{{image.image_url}}">
+                          <div class="carousel-caption">
+                            <h4>{{image.username}}</h4>
+                            <p>发表于：{{image.update_time | date: "yyyy-MM-dd HH:mm:ss"}}</p>
+                          </div>
+                        </div>
+                      </a>
+                    </slide>
+                  </ng-container>
+                </carousel>
+              </div>
+            </div>
+            <div class="panel-body visible-lg visible-md">
               <div class="col-md-6 column">
                 <carousel>
                   <ng-container *ngFor="let image of images; let i = index;">

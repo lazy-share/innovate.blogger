@@ -52,7 +52,7 @@
           <a *ngIf="authorizationService.currentUser.username != requestUsername" routerLink="/private/visitor/{{requestUsername}}">TA 的访客</a>
         </li>
         <li [class.active]="tab == '8'" *ngIf="authorizationService.currentUser.username == requestUsername">
-          <a *ngIf="authorizationService.currentUser.username == requestUsername" routerLink="/private/relation/{{requestUsername}}">与我相关<span *ngIf="authorizationService.relationCount > 0" style="color: red;">({{authorizationService.relationCount}})</span></a>
+          <a *ngIf="authorizationService.currentUser.username == requestUsername" routerLink="/private/relation/{{requestUsername}}">与我相关<span *ngIf="authorizationService.relationCount > 0" style="color: red;">(+{{authorizationService.relationCount}})</span></a>
         </li>
       </ul>
     </div>

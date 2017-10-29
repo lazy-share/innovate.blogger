@@ -11,7 +11,7 @@ import {
   IllegalRequestComponent,
   NotFoundComponent,
   NotFoundAccountComponent,
-  SystemErrorComponent
+  SystemErrorComponent, NotUltraViresComponent
 } from "./common/common.component";
 import {SelectGenderComponent} from "./form-component/select-gender/select-gender.component";
 import {SelectEducationComponent} from "./form-component/select-education/select-education.component";
@@ -54,6 +54,7 @@ import {ArticleNavComponent} from "./article-nav/article-nav.component";
     NotFoundAccountComponent,
     SystemErrorComponent,
     SubNavComponent,
+    NotUltraViresComponent,
     IllegalRequestComponent,
     SelectGenderComponent,
     SelectEducationComponent,
@@ -81,6 +82,7 @@ import {ArticleNavComponent} from "./article-nav/article-nav.component";
     FooterComponent,
     HintComponent,
     NotFoundComponent,
+    NotUltraViresComponent,
     NotFoundAccountComponent,
     SubNavComponent,
     IllegalRequestComponent,

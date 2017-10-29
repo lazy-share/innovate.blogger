@@ -21,6 +21,7 @@ export const ADDRESS_CITYS = root + "/private/address/citys";
 export const ADDRESS_COUNTYS = root + "/private/address/countys";
 export const ADDRESS_STREETS = root + "/private/address/streets";
 export const ACCOUNT_INFO_HEADER = root + "/private/account/info/head";
+
 export const MY_ATTENTIONS = root + "/private/my/attentions";
 export const MY_FANS = root + "/private/my/fans";
 export const MY_ATTENTION = root + "/private/my/attention";
@@ -43,6 +44,10 @@ export const MY_IMAGES = root + "/private/my/images";
 export const MY_IMAGE = root + "/private/my/image";
 export const MY_IMAGE_PRAISE = root + "/private/my/image/praise";
 export const MY_IMAGE_COMMENT = root + "/private/my/image/comment";
+export const MY_RELATIONS = root + "/private/my/relations";
+export const MY_RELATION = root + "/private/my/relation";
+export const MY_RELATION_COUNT = root + "/private/my/relation/count";
+
 export const HOME_ARTICLES = root + "/home/articles";
 export const HOME_NOTES = root + "/home/notes";
 export const HOME_IMAGES = root + "/home/images";

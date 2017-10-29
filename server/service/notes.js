@@ -12,6 +12,8 @@ var AccountInfoModel = mongoose.model('AccountInfoModel');
 var result = require('../common/result');
 var response = require('../common/response');
 var log = require('log4js').getLogger('note');
+var relationService = require('./relationship');
+var RELATION = require('../common/relation_enum');
 
 
 //我的、TA的日记
@@ -146,6 +148,7 @@ exports.delNote = function (req, res) {
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
+        relationService.deletePraiseAndCommentByDeleteDoc(note.id, RELATION.docType.NOTE);
         queryByPaging(res, note.username, paging, '删除日记后');
     })
 };
@@ -176,6 +179,9 @@ exports.praise = function (req, res) {
             }
         }
         if (isExists) {
+            if (doc.username != from) { //如果不是自己赞自己，则删除一条动态相关数据
+                relationService.deletePraiseRelation(doc.username, from, doc._id, RELATION.docType.NOTE);
+            }
             NotesModel.update({username: username, _id: id}, {$pull: {praise: from}}).exec(function (err) {
                 if (err) {
                     log.error('note praise error:' + err);
@@ -196,6 +202,9 @@ exports.praise = function (req, res) {
                 }
             });
         }else {
+            if (doc.username != from) { //如果不是自己赞自己，则添加一条动态相关数据
+                relationService.addPraiseRelation(doc.username, from, doc._id, RELATION.docType.NOTE);
+            }
             NotesModel.update({username: username, _id: id}, {$push: {praise: from}}).exec(function (err) {
                 if (err) {
                     log.error('note praise error:' + err);
@@ -242,6 +251,9 @@ exports.comment = function (req, res) {
             subject_name: reply.subject_name,
             parent_id: reply.parent_id
         });
+        if (doc.username != reply.from_name) {
+            relationService.addCommentRelation(doc.username, reply.from_name, doc._id, RELATION.docType.NOTE);
+        }
         if (!reply.parent_id) { //顶级评论发起者
             doc.comment.replies.push(newReply);
             updateComment(req, res, doc, reply.username, req.body.paging);
@@ -340,6 +352,11 @@ function recursionSpliceChild(rootReply, currentReply, reply) {
             break;
         }else {
             if (currentReply[i]._id == reply.id) {
+                (function (obj, reply) {
+                    if (obj.from_name != reply.username){
+                        relationService.deleteCommentRelation(reply.username, obj.from_name, reply.doc_id, RELATION.docType.NOTE);
+                    }
+                })(currentReply[i], reply);
                 currentReply.splice(i, 1);
                 isFindDelete = true;
                 break;

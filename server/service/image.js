@@ -11,6 +11,8 @@ var sysConnfig = require('../conf/sys_config');
 var env = require("../conf/environments");
 var log = require('log4js').getLogger('image');
 var fs = require("fs");
+var relationService = require('./relationship');
+var RELATION = require('../common/relation_enum');
 
 /**
  * 获取图片列表
@@ -81,6 +83,9 @@ exports.comment = function (req, res) {
             subject_name: reply.subject_name,
             parent_id: reply.parent_id
         });
+        if (doc.username != reply.from_name) {
+            relationService.addCommentRelation(doc.username, reply.from_name, doc._id, RELATION.docType.IMAGE);
+        }
         if (!reply.parent_id) { //顶级评论发起者
             doc.comment.replies.push(newReply);
             updateComment(req, res, doc, reply.username, req.body.paging);
@@ -178,6 +183,11 @@ function recursionSpliceChild(rootReply, currentReply, reply) {
             break;
         }else {
             if (currentReply[i]._id == reply.id) {
+                (function (obj, reply) {
+                    if (obj.from_name != reply.username){
+                        relationService.deleteCommentRelation(reply.username, obj.from_name, reply.doc_id, RELATION.docType.IMAGE);
+                    }
+                })(currentReply[i], reply);
                 currentReply.splice(i, 1);
                 isFindDelete = true;
                 break;
@@ -215,6 +225,9 @@ exports.praise = function (req, res) {
             }
         }
         if (isExists) {
+            if (doc.username != from) { //如果不是自己赞自己，则删除一条动态相关数据
+                relationService.deletePraiseRelation(doc.username, from, doc._id, RELATION.docType.IMAGE);
+            }
             ImageModel.update({username: username, _id: id}, {$pull: {praise: from}}).exec(function (err) {
                 if (err) {
                     log.error('image praise error:' + err);
@@ -235,6 +248,9 @@ exports.praise = function (req, res) {
                 }
             });
         }else {
+            if (doc.username != from) { //如果不是自己赞自己，则添加一条动态相关数据
+                relationService.addPraiseRelation(doc.username, from, doc._id, RELATION.docType.IMAGE);
+            }
             ImageModel.update({username: username, _id: id}, {$push: {praise: from}}).exec(function (err) {
                 if (err) {
                     log.error('image praise error:' + err);
@@ -376,6 +392,7 @@ exports.delImage = function (req, res) {
                         res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                         return;
                     }
+                    relationService.deletePraiseAndCommentByDeleteDoc(image._id, RELATION.docType.IMAGE);
                     paging = JSON.parse(paging);
                     ImageModel.find({username: image.username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, images) {
                         if (err) {

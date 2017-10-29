@@ -1,0 +1,116 @@
+<sub-nav [requestUsername]="requestUsername" [tab]="8"></sub-nav>
+<div class="container">
+  <div class="tab-pane" id="panel-6">
+    <div class="panel panel-danger">
+      <div class="panel-heading">
+        <h3 class="panel-title">与我相关</h3>
+      </div>
+      <div class="panel-body">
+        <div *ngIf="relations.length > 0">
+          <p *ngIf="authorizationService.currentUser.username == requestUsername" class="text-danger">与我相关</p>
+        </div>
+        <hr class="hr">
+        <div *ngIf="(relations.length <= 0)" class="col-md-offset-4 col-lg-offset-4 col-lg-4 col-md-4">
+          <h4 *ngIf="authorizationService.currentUser.username == requestUsername" class="text-danger">暂时没有与您相关信息</h4>
+        </div>
+        <div *ngIf="(relations.length > 0)" class="col-lg-12 col-md-12 col-sm-12">
+          <div style="margin-right: 2.5px;margin-left:2.5px;text-align:center;" *ngFor="let relation of relations"
+               class="well well-sm">
+
+            <ng-container *ngIf="relation.doc_type == 1">
+              <a (click)="view(relation._id, relation.type)" style="text-decoration: none;"
+                 routerLink="/private/article/detail/{{relation.subject}}/{{relation.doc_id}}">
+                <div>
+                  {{relation.from}}
+                  <span *ngIf="relation.type == 3">赞了你的</span>
+                  <span *ngIf="relation.type == 4">评论/回复了你的</span>
+                  <span *ngIf="relation.type == 1">关注了你的</span>
+                  <span *ngIf="relation.type == 2">访问了你的</span>
+                  <span *ngIf="relation.doc_type == 2">说说</span>
+                  <span *ngIf="relation.doc_type == 1">文章</span>
+                  <span *ngIf="relation.doc_type == 3">图片</span>
+                  <div style="color: palevioletred;">
+                    时间：{{relation.update_time | date:"yyyy-MM-dd HH:mm:ss"}}
+                  </div>
+                </div>
+              </a>
+            </ng-container>
+
+            <ng-container *ngIf="relation.doc_type == 2">
+              <a (click)="view(relation._id, relation.type)" style="text-decoration: none;" routerLink="/private/note/{{relation.subject}}">
+                <div>
+                  {{relation.from}}
+                  <span *ngIf="relation.type == 3">赞了你的</span>
+                  <span *ngIf="relation.type == 4">评论/回复了你的</span>
+                  <span *ngIf="relation.type == 1">关注了你的</span>
+                  <span *ngIf="relation.type == 2">访问了你的</span>
+                  <span *ngIf="relation.doc_type == 2">说说</span>
+                  <span *ngIf="relation.doc_type == 1">文章</span>
+                  <span *ngIf="relation.doc_type == 3">图片</span>
+                  <div style="color: palevioletred;">
+                    时间：{{relation.update_time | date:"yyyy-MM-dd HH:mm:ss"}}
+                  </div>
+                </div>
+              </a>
+            </ng-container>
+
+            <ng-container *ngIf="!relation.doc_type && relation.type == 1">
+              <a (click)="view(relation._id, relation.type)" style="text-decoration: none;" routerLink="/private/fans/{{relation.subject}}">
+                <div>
+                  {{relation.from}}
+                  <span *ngIf="relation.type == 3">赞了你的</span>
+                  <span *ngIf="relation.type == 4">评论/回复了你的</span>
+                  <span *ngIf="relation.type == 1">关注了你的</span>
+                  <span *ngIf="relation.type == 2">访问了你的</span>
+                  <span *ngIf="relation.doc_type == 2">说说</span>
+                  <span *ngIf="relation.doc_type == 1">文章</span>
+                  <span *ngIf="relation.doc_type == 3">图片</span>
+                  <div style="color: palevioletred;">
+                    时间：{{relation.update_time | date:"yyyy-MM-dd HH:mm:ss"}}
+                  </div>
+                </div>
+              </a>
+            </ng-container>
+
+            <ng-container *ngIf="!relation.doc_type && relation.type == 2">
+              <a (click)="view(relation._id, relation.type)" style="text-decoration: none;" routerLink="/private/visitor/{{relation.subject}}">
+                <div>
+                  {{relation.from}}
+                  <span *ngIf="relation.type == 3">赞了你的</span>
+                  <span *ngIf="relation.type == 4">评论/回复了你的</span>
+                  <span *ngIf="relation.type == 1">关注了你的</span>
+                  <span *ngIf="relation.type == 2">访问了你的</span>
+                  <span *ngIf="relation.doc_type == 2">说说</span>
+                  <span *ngIf="relation.doc_type == 1">文章</span>
+                  <span *ngIf="relation.doc_type == 3">图片</span>
+                  <div style="color: palevioletred;">
+                    时间：{{relation.update_time | date:"yyyy-MM-dd HH:mm:ss"}}
+                  </div>
+                </div>
+              </a>
+            </ng-container>
+
+            <ng-container *ngIf="relation.doc_type == 3">
+              <a (click)="view(relation._id, relation.type)" style="text-decoration: none;" routerLink="/private/image/{{relation.subject}}">
+                <div>
+                  {{relation.from}}
+                  <span *ngIf="relation.type == 3">赞了你的</span>
+                  <span *ngIf="relation.type == 4">评论/回复了你的</span>
+                  <span *ngIf="relation.type == 1">关注了你的</span>
+                  <span *ngIf="relation.type == 2">访问了你的</span>
+                  <span *ngIf="relation.doc_type == 2">说说</span>
+                  <span *ngIf="relation.doc_type == 1">文章</span>
+                  <span *ngIf="relation.doc_type == 3">图片</span>
+                  <div style="color: palevioletred;">
+                    时间：{{relation.update_time | date:"yyyy-MM-dd HH:mm:ss"}}
+                  </div>
+                </div>
+              </a>
+            </ng-container>
+          </div>
+        </div>
+        <hr class="hr">
+      </div>
+    </div>
+  </div>
+</div>

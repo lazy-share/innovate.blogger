@@ -2,7 +2,7 @@ import {NgModule} from "@angular/core";
 import {RouterModule, Routes} from "@angular/router";
 import {
   IllegalRequestComponent, NotFoundComponent, NotFoundAccountComponent,
-  SystemErrorComponent
+  SystemErrorComponent, NotUltraViresComponent
 } from "./shared/common/common.component";
 import {AuthorizationGuardService} from "./core/authorization/authorization-guard.service";
 import {environment} from "../environments/environment";
@@ -25,12 +25,14 @@ const APP_ROUTES: Routes = [
       {path: 'note', loadChildren: 'app/pages/note/note.module#NoteModule'},
       {path: 'article', loadChildren: 'app/pages/article/article.module#ArticleModule'},
       {path: 'media', loadChildren: 'app/pages/media/media.module#MediaModule'},
-      {path: 'image', loadChildren: 'app/pages/image/image.module#ImageModule'}
+      {path: 'image', loadChildren: 'app/pages/image/image.module#ImageModule'},
+      {path: 'relation', loadChildren: 'app/pages/relation/relation.module#RelationModule'}
     ],
     canActivateChild: [AuthorizationGuardService],
   },
   {path: 'illegal', component: IllegalRequestComponent},
   {path: 'not-found', component: NotFoundComponent},
+  {path: 'not-ultra-vires', component: NotUltraViresComponent},
   {path: 'not-account', component: NotFoundAccountComponent},
   {path: 'system-error', component: SystemErrorComponent},
   {path: '', redirectTo: '/home', pathMatch: 'full'},

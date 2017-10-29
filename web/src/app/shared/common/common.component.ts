@@ -25,6 +25,13 @@ export class NotFoundComponent {
 }
 
 @Component({
+  template: `<hint title="WARING" content="请不要越权，去首页" uri="/home"></hint>`
+})
+export class NotUltraViresComponent {
+
+}
+
+@Component({
   template: `<hint title="500" content="系统错误: {{msg}}<br>返回首页" uri="/home"></hint>`
 })
 export class SystemErrorComponent {

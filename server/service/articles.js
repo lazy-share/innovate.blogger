@@ -16,6 +16,8 @@ var response = require('../common/response');
 var log = require('log4js').getLogger('article');
 var sysConnfig = require('../conf/sys_config');
 var env = require("../conf/environments");
+var relationService = require('./relationship');
+var RELATION = require('../common/relation_enum');
 
 /**
  * 文章列表
@@ -212,6 +214,7 @@ exports.delArticle = function (req, res) {
                     res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                     return;
                 }
+                relationService.deletePraiseAndCommentByDeleteDoc(article._id, RELATION.docType.ARTICLE);
                 var paging = req.query.paging;
                 article.isManuscript = article.is_manuscript;
                 queryByPaging(res, article, JSON.parse(paging), '删除文章后');
@@ -338,8 +341,15 @@ exports.praise = function (req, res) {
                 break;
             }
         }
-        if (!isExists){
+        if (!isExists){ //添加赞
             article.praise.push(from);
+            if (from != article.username){ //不是自己给自己点赞
+                relationService.addPraiseRelation(article.username, from, article._id, RELATION.docType.ARTICLE); //异步插入一条赞动态相关
+            }
+        }else { //删除赞
+            if (from != article.username){ //不是自己给自己点赞
+                relationService.deletePraiseRelation(article.username, from, article._id, RELATION.docType.ARTICLE); //异步删除一条赞动态相关
+            }
         }
         article.save(function (err) {
             if (err){
@@ -375,6 +385,16 @@ exports.comment = function (req, res) {
             subject_name: reply.subject_name,
             parent_id: reply.parent_id
         });
+        (function (obj) {
+            ArticlesModel.findOne({comment: obj.id}).exec(function (err, article) {
+                if (err) {
+                    log.error('article post comment addCommentRelation error:' + err);
+                }
+                if (obj && article && obj.from_name != article.username){ //如果不是自己评论或回复则插入一条动态相关数据
+                    relationService.addCommentRelation(article.username, reply.from_name, article._id, RELATION.docType.ARTICLE);
+                }
+            });
+        })(reply)
         if (!reply.parent_id) { //顶级评论发起者
             doc.replies.push(newReply);
             updateComment(res, doc);
@@ -438,7 +458,6 @@ exports.delComment = function (req, res) {
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-
         var allComment = doc.replies;
         var newAllComment = recursionSpliceChild(allComment, allComment, reply);
         doc.replies = newAllComment;
@@ -457,6 +476,17 @@ function recursionSpliceChild(rootReply, currentReply, reply) {
             break;
         }else {
             if (currentReply[i]._id == reply.id) {
+                //如果本次删除不是自己的评论或回复，则删除一条动态相关数据
+                (function (id, from_name) {
+                    ArticlesModel.findOne({comment: id}).exec(function (err, article) {
+                        if (err) {
+                            log.error('article delete comment addCommentRelation error:' + err);
+                        }
+                        if (from_name != article.username){ //如果不是自己评论或回复删除一条动态相关数据
+                            relationService.deleteCommentRelation(article.username, from_name, article._id, RELATION.docType.ARTICLE);
+                        }
+                    });
+                })(reply.root_id, currentReply[i].from_name);
                 currentReply.splice(i, 1);
                 isFindDelete = true;
                 break;

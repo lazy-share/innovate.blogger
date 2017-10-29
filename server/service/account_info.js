@@ -12,6 +12,7 @@ var response = require('../common/response');
 var log = require('log4js').getLogger('account');
 var sysConnfig = require('../conf/sys_config');
 var env = require("../conf/environments");
+var fs = require("fs");
 
 //基本信息
 exports.details = function (req, res) {
@@ -83,8 +84,16 @@ exports.uploadHead = function (req, res) {
                 var startIndex = oldFilePath.indexOf(sysConnfig[env].upload_header_dir);
                 var filePath = oldFilePath.substring(startIndex, oldFilePath.length);
                 filePath = sysConnfig[env].thisDoman + filePath;
-                AccountInfoModel.update({username: username}, {$set: {head_portrait: filePath, update_time: new Date()}})
-                    .exec(function (err) {
+                AccountInfoModel.findOne({username: username}).exec(function (err, info) {
+                    if (err) {
+                        console.log("uploadHead error: errMsg:" + err);
+                        log.error("uploadPic error: " + err);
+                        res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                        return;
+                    }
+                    var oldHeadPortrait = info.head_portrait;
+                    deleteHeader(oldHeadPortrait);
+                    AccountInfoModel.update({username: username}, {$set: {head_portrait: filePath, update_time: new Date()}}).exec(function (err) {
                         if (err) {
                             console.log("uploadHead error: errMsg:" + err);
                             log.error("uploadPic error: " + err);
@@ -93,6 +102,7 @@ exports.uploadHead = function (req, res) {
                         }
                         res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, filePath));
                     });
+                });
             }
         });
     } else {
@@ -100,6 +110,35 @@ exports.uploadHead = function (req, res) {
         return;
     }
 };
+
+function deleteHeader(path) {
+    if (!path){
+        log.error('deleteHeader params error , path is empty or null');
+        return;
+    }
+    var startIndex = path.lastIndexOf('/');
+    var imageFileName = path.slice(startIndex + 1, path.length);
+    log.info('=================imageFileName:' + imageFileName);
+    if (imageFileName == 'initHead.jpg'){
+        log.info('==============第一次更换头像');
+        return;
+    }
+    var uploadHeadDir = sysConnfig[env].upload_root_dir + sysConnfig[env].upload_header_dir;
+    var imageFilePath = uploadHeadDir + '/' + imageFileName;
+    if (imageFilePath.indexOf('\\') > -1){
+        imageFilePath = imageFilePath.replace(/\\/g, '/');
+    }
+    if(fs.existsSync(imageFilePath)) {
+        fs.unlink(imageFilePath, function (err) {
+            if (err){
+                log.error('del header error, 删除图片错误' + err);
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                return;
+            }
+            log.info('成功删除旧头像');
+        });
+    }
+}
 
 //我的关注
 exports.attentions = function (req, res) {

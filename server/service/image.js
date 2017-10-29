@@ -379,7 +379,7 @@ exports.delImage = function (req, res) {
         if (imageFilePath.indexOf('\\') > -1){
             imageFilePath = imageFilePath.replace(/\\/g, '/');
         }
-        if( fs.existsSync(imageFilePath) ) {
+        if(fs.existsSync(imageFilePath) ) {
             fs.unlink(imageFilePath, function (err) {
                 if (err){
                     log.error('del image error, 删除图片错误' + err);

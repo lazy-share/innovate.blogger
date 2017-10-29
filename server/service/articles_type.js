@@ -7,6 +7,7 @@
 var mongoose = require('mongoose');
 require('../models/articles_type');
 var ArticlesTypeModel = mongoose.model('ArticlesTypeModel');
+var ArticlesModel = mongoose.model('ArticlesModel');
 var result = require('../common/result');
 var response = require('../common/response');
 var log = require('log4js').getLogger('article');
@@ -63,19 +64,26 @@ exports.delArticleType = function (req, res) {
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-        doc.remove(function (err) {
+        ArticlesModel.remove({username: doc.username, type: doc._id}).exec(function (err) {
             if (err){
-                log.error('delArticleType error, errMsg:' + err);
+                log.error('delArticleType to del article error, errMsg:' + err);
                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                 return;
             }
-            ArticlesTypeModel.find({$or: [{username: doc.username},{username: 'sys'}]}).exec(function (err, types) {
+            doc.remove(function (err) {
                 if (err){
                     log.error('delArticleType error, errMsg:' + err);
                     res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                     return;
                 }
-                res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, types));
+                ArticlesTypeModel.find({$or: [{username: doc.username},{username: 'sys'}]}).exec(function (err, types) {
+                    if (err){
+                        log.error('delArticleType error, errMsg:' + err);
+                        res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                        return;
+                    }
+                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, types));
+                });
             });
         });
     });

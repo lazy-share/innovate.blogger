@@ -2,13 +2,14 @@ import {Component, OnInit} from "@angular/core";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {AppResponse} from "../../vo/app-response";
 import {
-  NEWS_TYPES, NEWS, HOME_ARTICLES, HOME_NOTES
+  NEWS_TYPES, NEWS, HOME_ARTICLES, HOME_NOTES, HOME_IMAGES
 } from "../../constant/uri";
 import {BaseComponent} from "../common/BaseComponent";
 import {Paging, PagingParams} from "../../vo/paging";
 import {environment} from '../../../environments/environment';
 import {Article} from "../../vo/article";
 import {Note} from "../../vo/note";
+import {Image} from "../../vo/image";
 /**
  * Created by laizhiyuan on 2017/9/25.
  */
@@ -21,8 +22,8 @@ export class HomeComponent extends BaseComponent implements OnInit{
 
   public newsTypes:any[] = new Array<any>();
   public news: any[] = new Array<any>();
-  public paging: Paging = Paging.instantiation6();
-  public pagingParams = PagingParams.instantiation6();
+  public paging: Paging = Paging.instantiation3();
+  public pagingParams = PagingParams.instantiation3();
   public globalType:string;
   public articles: Article[] = new Array<Article>();
   public notes: Note[] = new Array<Note>();
@@ -30,6 +31,7 @@ export class HomeComponent extends BaseComponent implements OnInit{
   public notesPaging = Paging.instantiation6();
   public articlesPagingParam = PagingParams.instantiation10();
   public notesPagingParam = PagingParams.instantiation6();
+  public images: Image[] = new Array<Image>();
 
   constructor(
     public http:HttpClient) {
@@ -37,10 +39,10 @@ export class HomeComponent extends BaseComponent implements OnInit{
   }
 
   changeTab(type:string){
-    this.pagingParams = PagingParams.instantiation6();
+    this.pagingParams = PagingParams.instantiation3();
     this.globalType = type;
     if (this.paging.bigCurrentPage > 1){
-      this.paging = Paging.instantiation6();
+      this.paging = Paging.instantiation3();
       this.loadNews(type);
     }else {
       this.loadNews(type);
@@ -51,6 +53,20 @@ export class HomeComponent extends BaseComponent implements OnInit{
     this.loadNewsTypes();
     this.loadArticles();
     this.loadNotes();
+    this.loadImages();
+  }
+
+  loadImages(){
+    this.http.get<AppResponse>(
+      HOME_IMAGES,
+      {
+        params: new HttpParams().set('paging', JSON.stringify(PagingParams.instantiation10()))
+      }
+    ).subscribe(
+      data => {
+        this.images = data.data;
+      }
+    );
   }
 
   loadArticles(){

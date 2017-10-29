@@ -31,6 +31,10 @@
           <a *ngIf="authorizationService.currentUser.username == requestUsername" routerLink="/private/note/{{requestUsername}}">我的日记</a>
           <a *ngIf="authorizationService.currentUser.username != requestUsername" routerLink="/private/note/{{requestUsername}}">TA 的日记</a>
         </li>
+        <li [class.active]="tab == '7'">
+          <a *ngIf="authorizationService.currentUser.username == requestUsername" routerLink="/private/image/{{requestUsername}}">我的图片</a>
+          <a *ngIf="authorizationService.currentUser.username != requestUsername" routerLink="/private/image/{{requestUsername}}">TA 的图片</a>
+        </li>
         <li [class.active]="tab == '3'">
           <a *ngIf="authorizationService.currentUser.username == requestUsername" routerLink="/private/media/{{requestUsername}}">我的媒体</a>
           <a *ngIf="authorizationService.currentUser.username != requestUsername" routerLink="/private/media/{{requestUsername}}">TA 的媒体</a>
@@ -46,10 +50,6 @@
         <li [class.active]="tab == '6'">
           <a *ngIf="authorizationService.currentUser.username == requestUsername" routerLink="/private/visitor/{{requestUsername}}">我的访客</a>
           <a *ngIf="authorizationService.currentUser.username != requestUsername" routerLink="/private/visitor/{{requestUsername}}">TA 的访客</a>
-        </li>
-        <li class="visible-xs" [class.active]="tab == '7'">
-          <a *ngIf="authorizationService.currentUser.username == requestUsername" routerLink="/private/image/{{requestUsername}}">我的图片</a>
-          <a *ngIf="authorizationService.currentUser.username != requestUsername" routerLink="/private/image/{{requestUsername}}">TA 的图片</a>
         </li>
       </ul>
     </div>

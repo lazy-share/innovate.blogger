@@ -8,4 +8,5 @@ var homeService = require('../service/home');
 module.exports = function (router) {
     router.get(webRootApi + '/home/articles', homeService.articles);
     router.get(webRootApi + '/home/notes', homeService.notes);
+    router.get(webRootApi + '/home/images', homeService.images);
 };

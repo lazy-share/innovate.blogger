@@ -15,7 +15,7 @@ import {
 } from "./common/common.component";
 import {SelectGenderComponent} from "./form-component/select-gender/select-gender.component";
 import {SelectEducationComponent} from "./form-component/select-education/select-education.component";
-import {PaginationModule, TooltipModule, PopoverModule, ModalModule} from "ngx-bootstrap";
+import {PaginationModule, TooltipModule, PopoverModule, ModalModule, CarouselModule} from "ngx-bootstrap";
 import {SelectAddressComponent} from "./form-component/select-address/select-address.component";
 import {EmailDirective} from "./form-validate/email.directive";
 import {MobileDirective} from "./form-validate/mobile.directive";
@@ -35,6 +35,7 @@ import {ArticleNavComponent} from "./article-nav/article-nav.component";
     RouterModule,
     FormsModule,
     PaginationModule.forRoot(),
+    CarouselModule.forRoot(),
     TooltipModule.forRoot(),
     PopoverModule.forRoot(),
     ModalModule.forRoot(),
@@ -88,6 +89,7 @@ import {ArticleNavComponent} from "./article-nav/article-nav.component";
     SelectEducationComponent,
     SelectAddressComponent,
     FileUploadModule,
+    CarouselModule,
     TinymceEditorComponent,
     IsExistsArrPipe,
     JoinArrPipe,

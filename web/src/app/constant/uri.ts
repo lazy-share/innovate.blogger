@@ -45,3 +45,4 @@ export const MY_IMAGE_PRAISE = root + "/private/my/image/praise";
 export const MY_IMAGE_COMMENT = root + "/private/my/image/comment";
 export const HOME_ARTICLES = root + "/home/articles";
 export const HOME_NOTES = root + "/home/notes";
+export const HOME_IMAGES = root + "/home/images";

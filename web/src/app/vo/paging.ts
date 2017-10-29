@@ -28,7 +28,7 @@ export class Paging {
     return vo;
   }
 
-  static instantiation8(): Paging{
+  static instantiation4(): Paging{
     let vo: Paging = new Paging();
     vo.bigCurrentPage = 1;
     vo.numPages = 0;
@@ -39,7 +39,7 @@ export class Paging {
     vo.bigTotalItems = 0;
     vo.maxSize = 5;
     vo.xsV = 0;
-    vo.limit = 8;
+    vo.limit = 4;
     return vo;
   }
 
@@ -55,6 +55,21 @@ export class Paging {
     vo.maxSize = 5;
     vo.xsV = 0;
     vo.limit = 6;
+    return vo;
+  }
+
+  static instantiation3(): Paging{
+    let vo: Paging = new Paging();
+    vo.bigCurrentPage = 1;
+    vo.numPages = 0;
+    vo.firstText = '第一页';
+    vo.previousText = '上一页';
+    vo.nextText = '下一页';
+    vo.lastText = '最后一页';
+    vo.bigTotalItems = 0;
+    vo.maxSize = 5;
+    vo.xsV = 0;
+    vo.limit = 3;
     return vo;
   }
 
@@ -107,13 +122,13 @@ export class PagingParams {
     return vo;
   }
 
-  static instantiation8(): PagingParams{
+  static instantiation4(): PagingParams{
     let vo = new PagingParams();
-    vo.limit = 8;
+    vo.limit = 4;
     vo.keyword = '';
     vo.currentPage = 1;
     vo.skip = vo.getSkip();
-    vo.pageSize = 8;
+    vo.pageSize = 4;
     return vo;
   }
 
@@ -124,6 +139,16 @@ export class PagingParams {
     vo.currentPage = 1;
     vo.skip = vo.getSkip();
     vo.pageSize = 6;
+    return vo;
+  }
+
+  static instantiation3(): PagingParams{
+    let vo = new PagingParams();
+    vo.limit = 3;
+    vo.keyword = '';
+    vo.currentPage = 1;
+    vo.skip = vo.getSkip();
+    vo.pageSize = 3;
     return vo;
   }
 }

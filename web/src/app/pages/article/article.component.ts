@@ -12,6 +12,7 @@ import {BsModalService, BsModalRef} from "ngx-bootstrap";
 import {AppModal} from "../../vo/app-modal";
 import {SearchService} from "../../core/search/search.service";
 import {Subscription} from "rxjs";
+import {ModalExcuteDeleteType} from "../../constant/modal";
 /**
  * Created by lzy on 2017/10/12.
  *
@@ -32,6 +33,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
   public globalArticleTitle:string = "";
   public globalArticleDesc:string = '';
   public globalArticleIsPrivate:boolean = false;
+  public globalArticleTypeId:string;
   public articleTypes: ArticleType[] = new Array<ArticleType>();
   public sysDefaultTypes: ArticleType[] = new Array<ArticleType>();
   public definedTypes: ArticleType[] = new Array<ArticleType>();
@@ -45,7 +47,8 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
   public appModalTemplateDiv:TemplateRef<any>;
   public isEdit:boolean = false;
   public isManuscript:boolean = false; //草稿箱/文章
-  subscription: Subscription;
+  public subscription: Subscription;
+  public modalExcuteDeleteType:ModalExcuteDeleteType;
 
   constructor(public authorizationService: AuthorizationService,
               public articleService: ArticleService,
@@ -165,7 +168,14 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
    * @param type_id
    */
   onDeleteType(type_id: string) {
-    this.articleService.deleteArticleType(type_id).subscribe(
+    this.globalArticleTypeId = type_id;
+    this.modalExcuteDeleteType = ModalExcuteDeleteType.DELETE_ARTICLE_TYPE;
+    this.appModal.content = "确定永久删除该类型和该类型相关的所有文章吗?";
+    this.modalRef = this.modalService.show(this.appModalTemplateDiv);
+  }
+
+  deleteType(){
+    this.articleService.deleteArticleType(this.globalArticleTypeId).subscribe(
       data => {
         if (!data.status) {
           this.showMsg = true;
@@ -175,6 +185,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
           }, 3000);
           return;
         }
+        this.listForDrafts(this.isManuscript);
         this.showMsg = false;
         this.articleTypes = data.data;
         this.classfiyArticleType();
@@ -407,6 +418,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
   toDeleteArticle(articleId:string) {
     this.globalArticleId = articleId;
     this.appModal.content = "确定永久删除该文章吗?";
+    this.modalExcuteDeleteType = ModalExcuteDeleteType.DELETE_ARTICLE;
     this.modalRef = this.modalService.show(this.appModalTemplateDiv);
   }
 
@@ -414,7 +426,11 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
    * 执行模态框的删除
    */
   excuteDel(){
-    this.deleteArticle();
+    if (this.modalExcuteDeleteType == ModalExcuteDeleteType.DELETE_ARTICLE){
+      this.deleteArticle();
+    }else {
+      this.deleteType();
+    }
     this.modalRef.hide();
 }
 

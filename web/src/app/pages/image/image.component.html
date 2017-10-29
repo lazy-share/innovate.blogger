@@ -4,7 +4,10 @@
   <div class="row clearfix">
     <div class="panel panel-info">
       <div class="panel-heading">
-        <a *ngIf="!isShow" (click)="changeUpload()" class="btn btn-default">上传图片</a>
+        <div *ngIf="authorizationService.currentUser.username != requestUsername">
+          <h3 class="panel-title">图片</h3>
+        </div>
+        <a *ngIf="!isShow && authorizationService.currentUser.username == requestUsername" (click)="changeUpload()" class="btn btn-default">上传图片</a>
         <a *ngIf="isShow" (click)="changeUpload()" class="btn btn-default">取消</a>
       </div>
       <div [class.hidden]="!isShow" class="panel-body">
@@ -44,6 +47,7 @@
             </div>
           </div>
         </div>
+        <div class="div-to-hide-hr"></div>
         <div *ngIf="(paging.bigTotalItems > 0)"
              class="visible-lg visible-md visible-sm col-lg-offset-3 col-md-offset-3 col-sm-offset-2 col-lg-6 col-md-6 col-sm-8 col-xs-12">
           <pagination [firstText]="paging.firstText" [previousText]="paging.previousText" [lastText]="paging.lastText"

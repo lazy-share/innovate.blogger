@@ -11,34 +11,41 @@
           <p *ngIf="authorizationService.currentUser.username != requestUsername" class="text-danger">关注 TA的</p>
         </div>
         <hr class="hr">
-        <div *ngIf="(fans.length <= 0)" class="col-md-offset-4 col-lg-offset-4 col-lg-4 col-md-4" >
+        <div *ngIf="(fans.length <= 0)" class="col-md-offset-4 col-lg-offset-4 col-lg-4 col-md-4">
           <h4 *ngIf="authorizationService.currentUser.username == requestUsername" class="text-danger">还没有人关注您</h4>
           <h4 *ngIf="authorizationService.currentUser.username != requestUsername" class="text-danger">还没有人关注TA</h4>
         </div>
-        <div *ngIf="(fans.length > 0)" class="col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-lg-12 col-md-12 col-sm-12">
-          <div style="margin-right: 2.5px;margin-left:2.5px;text-align:center; " *ngFor="let fan of fans" class="well well-sm col-lg-2 col-md-2 col-sm-3">
-            <div>
-              <a  routerLink="/private/info/{{fan.from}}">
+        <div *ngIf="(fans.length > 0)" class="col-lg-12 col-md-12 col-sm-12">
+          <div style="margin-right: 2.5px;margin-left:2.5px;text-align:center; " *ngFor="let fan of fans"
+               class="well well-sm">
+            <a style="text-decoration: none;" routerLink="/private/info/{{fan.from}}">
+              <div>
                 <img alt="" style="width:50px; height: 50px;" class="img-circle" src="{{fan.head_portrait}}"/>
-              </a>
-            </div>
-            <div *ngIf="authorizationService.currentUser.username == fan.from">
-              {{fan.from}}<span style="color:red;">(您自己)</span>
-            </div>
-            <div *ngIf="authorizationService.currentUser.username != fan.from">
-              {{fan.from}}
-            </div>
-            <div style="color: palevioletred;">
-              {{fan.update_time | date:"yyyy-MM-dd HH:mm:ss"}}
-            </div>
+              </div>
+              <div *ngIf="authorizationService.currentUser.username == fan.from">
+                {{fan.from}}<span style="color:red;">(您自己)</span>
+              </div>
+              <div *ngIf="authorizationService.currentUser.username != fan.from">
+                {{fan.from}}
+              </div>
+              <div style="color: palevioletred;">
+                关注时间：{{fan.update_time | date:"yyyy-MM-dd HH:mm:ss"}}
+              </div>
+            </a>
           </div>
         </div>
         <hr class="hr">
-        <div *ngIf="authorizationService.currentUser.username != requestUsername" class="col-md-offset-4 col-lg-offset-4 col-lg-2 col-md-2">
-          <button (click)="attention()" *ngIf="isShowAttention" type="button" class="btn btn-info"><span class="glyphicon glyphicon-plus"></span> 关注他</button>
-          <button (click)="cancleAttention()" *ngIf="!isShowAttention" type="button" class="btn btn-info"><span class="glyphicon glyphicon-minus"></span> 取消关注</button>
+        <div *ngIf="authorizationService.currentUser.username != requestUsername"
+             class="col-md-offset-5 col-lg-offset-5 col-lg-2 col-md-2">
+          <button (click)="attention()" *ngIf="isShowAttention" type="button" class="btn btn-info"><span
+            class="glyphicon glyphicon-plus"></span> 关注他
+          </button>
+          <button (click)="cancleAttention()" *ngIf="!isShowAttention" type="button" class="btn btn-info"><span
+            class="glyphicon glyphicon-minus"></span> 取消关注
+          </button>
         </div>
-        <div class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-8 col-xs-offset-3">
+        <div
+          class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-8 col-xs-offset-3">
           <br>
           <p *ngIf="showMsg" style="color:red;">{{sysMsg}}</p>
         </div>

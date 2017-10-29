@@ -25,8 +25,8 @@ export class ImageComponent extends BaseComponent implements OnInit{
 
   public requestUsername:string;
   public images:Image[] = new Array<Image>();
-  public paging:Paging = Paging.instantiation8();
-  public pagingParams:PagingParams = PagingParams.instantiation8();
+  public paging:Paging = Paging.instantiation4();
+  public pagingParams:PagingParams = PagingParams.instantiation4();
   public uploader: FileUploader = new FileUploader({});
   public commentMaxLength = 50;
   public initCommentMaxLength = 50;

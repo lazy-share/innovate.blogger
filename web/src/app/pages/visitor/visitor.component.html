@@ -15,26 +15,28 @@
           <h4 *ngIf="authorizationService.currentUser.username == requestUsername" class="text-danger">暂时没有人访问您</h4>
           <h4 *ngIf="authorizationService.currentUser.username != requestUsername" class="text-danger">暂时没有人访问TA</h4>
         </div>
-        <div *ngIf="(visitors.length > 0)" class="col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-lg-12 col-md-12 col-sm-12">
-          <div style="margin-right: 2.5px;margin-left:2.5px;text-align:center;" *ngFor="let visitor of visitors" class="well well-sm col-lg-2 col-md-2 col-sm-3">
-            <div>
-              <a routerLink="/private/info/{{visitor.from}}">
+        <div *ngIf="(visitors.length > 0)" class="col-lg-12 col-md-12 col-sm-12">
+          <div style="margin-right: 2.5px;margin-left:2.5px;text-align:center;" *ngFor="let visitor of visitors"
+               class="well well-sm">
+            <a style="text-decoration: none;" routerLink="/private/info/{{visitor.from}}">
+              <div>
                 <img alt="" style="width:50px; height: 50px;" class="img-circle" src="{{visitor.head_portrait}}"/>
-              </a>
-            </div>
-            <div *ngIf="authorizationService.currentUser.username == visitor.from">
-              {{visitor.from}}<span style="color:red;">(您自己)</span>
-            </div>
-            <div *ngIf="authorizationService.currentUser.username != visitor.from">
-              {{visitor.from}}
-            </div>
-            <div style="color: palevioletred;">
-              {{visitor.update_time | date:"yyyy-MM-dd HH:mm:ss"}}
-            </div>
+              </div>
+              <div *ngIf="authorizationService.currentUser.username == visitor.from">
+                {{visitor.from}}<span style="color:red;">(您自己)</span>
+              </div>
+              <div *ngIf="authorizationService.currentUser.username != visitor.from">
+                {{visitor.from}}
+              </div>
+              <div style="color: palevioletred;">
+                访问时间：{{visitor.update_time | date:"yyyy-MM-dd HH:mm:ss"}}
+              </div>
+            </a>
           </div>
         </div>
         <hr class="hr">
-        <div class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-8 col-xs-offset-3">
+        <div
+          class="col-lg-2 col-lg-offset-5 col-md-2 col-md-offset-5 col-sm-2 col-sm-offset-5 col-xs-8 col-xs-offset-3">
           <br>
           <p *ngIf="showMsg" style="color:red;">{{sysMsg}}</p>
         </div>

@@ -472,6 +472,15 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
   }
 
   clearTinyMceEdit(){
+    this.articleService.calcleArticle(this.authorizationService.getCurrentUser().username).subscribe(
+      data => {
+        if (!data.status){
+          this.showMsg = true;
+          this.sysMsg = data.msg;
+          setTimeout(() => {this.showMsg = false}, 2000);
+        }
+      }
+    );
     this.globalArticleDesc = '';
     this.globalArticleTitle = '';
     this.globalArticleContent = '';

@@ -18,6 +18,7 @@ var sysConnfig = require('../conf/sys_config');
 var env = require("../conf/environments");
 var relationService = require('./relationship');
 var RELATION = require('../common/relation_enum');
+var artilceImageService = require('../service/article_image');
 
 /**
  * 文章列表
@@ -131,6 +132,7 @@ exports.editArticle = function (req, res) {
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
+        artilceImageService.setDocId(username, article.id);
         var paging = req.body.paging;
         ArticlesModel.find({username: username, is_manuscript: article.isManuscript}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, articles) {
             if (err) {
@@ -181,10 +183,29 @@ exports.addArticle = function (req, res) {
                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                 return;
             }
-            var paging = req.body.paging;
-            queryByPaging(res, article, paging, '新增文章后');
+            ArticlesModel.findOne({username: newArticle.username, comment: newArticle.comment}).exec(function (err, articleDoc) {
+                if (err){
+                    log.error('addArticle select after error, errMsg:' + err);
+                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                    return;
+                }
+                artilceImageService.setDocId(articleDoc.username, articleDoc._id);
+                var paging = req.body.paging;
+                queryByPaging(res, article, paging, '新增文章后');
+            });
         });
     });
+};
+
+exports.cancle = function (req, res) {
+    var username = req.query.username;
+    if (!username){
+        log.error('article cancle params error');
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+        return;
+    }
+    artilceImageService.deleteTempImagePath(username);
+    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
 };
 
 //删除文章
@@ -214,6 +235,7 @@ exports.delArticle = function (req, res) {
                     res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                     return;
                 }
+                artilceImageService.delByDocId(article._id, article.username);
                 relationService.deletePraiseAndCommentByDeleteDoc(article._id, RELATION.docType.ARTICLE);
                 var paging = req.query.paging;
                 article.isManuscript = article.is_manuscript;
@@ -248,6 +270,12 @@ function queryByPaging(res, article, paging, logMsg) {
 
 //上传图片
 exports.uploadImages = function (req, res) {
+    var username = req.params.username;
+    if (!username){
+        log.error("article uploadImages param error");
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+        return;
+    }
     var multiparty = require('multiparty');
     var util = require('util');
     //生成multiparty对象，并配置上传目标路径
@@ -263,6 +291,7 @@ exports.uploadImages = function (req, res) {
             var inputFile = files.thumbnail[0];
             log.info(" 成功上传图片：" + inputFile.path);
             var oldFilePath = inputFile.path;
+            artilceImageService.addTempImagePath(username, oldFilePath);
             if (oldFilePath.indexOf('\\') > -1) {
                 oldFilePath = oldFilePath.replace(/\\/g, '/');
             }

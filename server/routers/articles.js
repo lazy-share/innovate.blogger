@@ -20,5 +20,6 @@ module.exports = function (router) {
     router.delete(webRootApi + '/private/my/article/comment', articlesService.delComment);
     router.put(webRootApi + '/private/my/article', articlesService.editArticle);
     router.delete(webRootApi + '/private/my/article', articlesService.delArticle);
-    router.post(webRootApi + '/private/my/article/upload/images', articlesService.uploadImages);
+    router.delete(webRootApi + '/private/my/article/cancle', articlesService.cancle);
+    router.post(webRootApi + '/private/my/article/upload/images/:username', articlesService.uploadImages);
 };

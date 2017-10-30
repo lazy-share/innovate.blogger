@@ -5,7 +5,7 @@ import {Article, ArticleType} from "../../vo/article";
 import {HttpClient, HttpParams, HttpErrorResponse} from "@angular/common/http";
 import {
   MY_ARTICLE, MY_ARTICLES, MY_ARTICLE_TYPE, MY_ARTICLE_DETAIL, MY_ARTICLE_PRAISE,
-  MY_ARTICLE_COMMENT
+  MY_ARTICLE_COMMENT, MY_ARTICLE_CANCLE
 } from "../../constant/uri";
 import {PagingParams} from "../../vo/paging";
 import {Router} from "@angular/router";
@@ -22,6 +22,23 @@ export class ArticleService {
     public router:Router,
     public authorizationService:AuthorizationService
   ){}
+
+  /**
+   * 取消文章
+   * @returns {Observable<R>}
+   */
+  calcleArticle(username:string):Observable<AppResponse>{
+      return this.http.delete<AppResponse>(
+        MY_ARTICLE_CANCLE,
+        {
+          params: new HttpParams().set('username', username)
+        }
+      ).map(
+        data => {
+          return data;
+        }
+      );
+  }
 
   /**
    * 删除评论

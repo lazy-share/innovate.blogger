@@ -27,11 +27,11 @@ export class InfoService {
     );
   }
 
-  initAccountInfo(username: string): Observable<any> {
+  initAccountInfo(account_id: string): Observable<any> {
     return this.http.get<AppResponse>(
       ACCOUNT_INFO,
       {
-        params: new HttpParams().set("username", username)
+        params: new HttpParams().set("account_id", account_id)
       }
     ).map(
       data => {

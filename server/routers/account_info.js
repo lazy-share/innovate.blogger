@@ -15,8 +15,6 @@ module.exports = function (router) {
     router.get(webRootApi + '/private/account/info', accountInfoService.details);
     //修改基本信息
     router.put(webRootApi + '/private/account/info', accountInfoService.update);
-    //修改头像
-    router.post(webRootApi + '/private/account/info/head/:username', accountInfoService.uploadHead);
     //我、TA的关注
     router.get(webRootApi + '/private/my/attentions', accountInfoService.attentions);
     //关注我、TA的

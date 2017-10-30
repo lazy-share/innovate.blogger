@@ -19,17 +19,17 @@ const mongoose = require('mongoose');
 exports.isExistsAccount = function (req, res, next) {
     const method = req.method;
     if (method == 'GET') {
-        var username = req.query.username;
-        if(!username) {
-            username = req.body.username;
+        var account_id = req.query.account_id;
+        if(!account_id) {
+            account_id = req.body.account_id;
         }
-        if (!username) {
-            username = req.params['username'];
+        if (!account_id) {
+            account_id = req.params['account_id'];
         }
-        log.debug('===================enter isExistsAccount filter username: ' + username);
-        if (username) {
-            const AccountInfoModel = mongoose.model('AccountInfoModel');
-            AccountInfoModel.findOne({username: username}, function (err, doc) {
+        log.debug('===================enter isExistsAccount filter account_id: ' + account_id);
+        if (account_id) {
+            const AccountModel = mongoose.model('AccountModel');
+            AccountModel.findOne({_id: account_id}, function (err, doc) {
                 if (err) {
                     log.error('isExistsAccount err! msg:' + err);
                     res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
@@ -61,17 +61,6 @@ exports.security = function (req, res, next) {
                 return;
             } else {
                 next();
-                /*log.info("===============security filter decode: "  + JSON.stringify(decode));
-                jwt.sign({username: decode.username, password: decode.password}, sysConf.jwtSecret, { expiresIn : sysConf.jwtValidity}, function (err, token) {
-                    if (err){
-                        console.log(err);
-                        log.error('security filter error: errMsg:' + err);
-                        res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
-                        return;
-                    }else {
-                        next();
-                    }
-                });*/
             }
         });
     }else {

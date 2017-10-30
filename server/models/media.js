@@ -9,7 +9,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var mediaSchema = new Schema({
-    username: {type: String, required: true},
+    account_id: {type: Schema.ObjectId, required: true},
     media_url: {type: String, required: true},
     create_time: {type:Date, required: true, default: Date.now()},
     update_time: {type: Date, required: true, default: Date.now()}

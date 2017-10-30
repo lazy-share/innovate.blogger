@@ -1,14 +1,13 @@
-import {Component, OnInit, ViewChild, OnDestroy} from "@angular/core";
+import {Component, OnDestroy, OnInit, ViewChild} from "@angular/core";
 import {BaseComponent} from "../common/BaseComponent";
 import {Account} from "../../vo/account";
 import {AuthorizationService} from "../../core/authorization/authorization.service";
 import {ActivatedRoute, ParamMap} from "@angular/router";
 import {InfoService} from "./info.service";
 import {environment} from "../../../environments/environment";
-import {BsDatepickerConfig} from "ngx-bootstrap/datepicker";
 import {AppResponse} from "../../vo/app-response";
-import {FileUploader, FileItem, ParsedResponseHeaders} from "ng2-file-upload";
-import {ACCOUNT_INFO_HEADER} from "../../constant/uri";
+import {FileItem, FileUploader, ParsedResponseHeaders} from "ng2-file-upload";
+import {ACCOUNT_HEADER} from "../../constant/uri";
 import {SelectAddressComponent} from "../../shared/form-component/select-address/select-address.component";
 import {IMyDpOptions} from "mydatepicker";
 import {MyDatePicker} from "../../vo/my-date-picker";
@@ -26,8 +25,12 @@ export class InfoComponent extends BaseComponent implements OnInit, OnDestroy {
     this.uploader.destroy();
   }
 
-  public requestUsername: string = "";
-  public storageUsername: string = "";
+  /**
+   * 初始化变量
+   * @type {string}
+   */
+  public requestAccountId: string = "";
+  public storageAccountId: string = "";
   public accountInfo: Account = Account.instantiation();
   @ViewChild(SelectAddressComponent)
   public selectAddressComponentChild: SelectAddressComponent;
@@ -49,17 +52,25 @@ export class InfoComponent extends BaseComponent implements OnInit, OnDestroy {
   public birthdayPlusInitDate = {date: {year: 1993, month: 1, day: 1}};
   public birthdayPlusLocale = 'zh-cn';
 
+  /**
+   * 构造器
+   * @param authorizationService
+   * @param route
+   * @param infoService
+   */
   constructor(public authorizationService: AuthorizationService,
               public route: ActivatedRoute,
               public infoService: InfoService) {
     super();
   }
 
+  /**
+   * 构造器后调用
+   */
   ngOnInit(): void {
     this.initField();
     this.initUploadFileConfig();
-    this.route.data
-      .subscribe((data: { accountInfo: Account }) => {
+    this.route.data.subscribe((data: { accountInfo: Account }) => {
         this.accountInfo = data.accountInfo;
         this.initAccountInfo();
         this.selectAddressComponentChild.loadAllProvinces();
@@ -69,8 +80,8 @@ export class InfoComponent extends BaseComponent implements OnInit, OnDestroy {
 
 
   addVisitor(){
-    if (this.requestUsername != this.authorizationService.getCurrentUser().username) {
-      this.infoService.addVisitor(this.requestUsername, this.authorizationService.getCurrentUser().username).subscribe(
+    if (this.requestAccountId != this.storageAccountId) {
+      this.infoService.addVisitor(this.requestAccountId, this.storageAccountId).subscribe(
         data => {
           //todo 处理添加访客成功
         },
@@ -82,13 +93,13 @@ export class InfoComponent extends BaseComponent implements OnInit, OnDestroy {
   }
 
   initField(){
-    this.storageUsername = this.authorizationService.getCurrentUser() && this.authorizationService.getCurrentUser().username;
-    this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get("username")).subscribe();
+    this.storageAccountId = this.authorizationService.getCurrentUser() && this.authorizationService.getCurrentUser()._id;
+    this.route.paramMap.switchMap((params: ParamMap) => this.requestAccountId = params.get("account_id")).subscribe();
   }
 
   initUploadFileConfig(){
     this.uploader = new FileUploader({
-      url: environment.api.uri + ACCOUNT_INFO_HEADER + '/' + this.requestUsername,
+      url: environment.api.uri + ACCOUNT_HEADER + '/' + this.requestAccountId,
       itemAlias: "uploadfile",
       headers: [
         {name: "LzyAuthorization", value: this.authorizationService.getCurrentUser().token}

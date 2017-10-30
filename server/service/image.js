@@ -21,32 +21,32 @@ var RELATION = require('../common/relation_enum');
  */
 exports.images = function (req, res) {
     log.info('===============enter images================');
-    var username = req.query.username;
+    var account_id = req.query.account_id;
     var current = req.query.currentUsername;
     var paging = req.query.paging;
-    if (!username || !current || !paging){
-        log.error('images params error, ' + username + '|' + current + '|' + paging);
+    if (!account_id || !current || !paging){
+        log.error('images params error, ' + account_id + '|' + current + '|' + paging);
         res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
         return;
     }
     paging = JSON.parse(paging);
-    ImageModel.find({is_private: false, username: username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, images) {
+    ImageModel.find({is_private: false, account_id: account_id}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, images) {
         if (err) {
             log.error('images error: errMsg:' + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-        ImageModel.find({is_private: false, username: username}).count(function (err, count) {
+        ImageModel.find({is_private: false, account_id: account_id}).count(function (err, count) {
             if (err) {
                 log.error('images error: errMsg:' + err);
                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                 return;
             }
-            if (username != current){ //添加访问量
+            if (account_id != current){ //添加访问量
                 for (var i in images){
                     images[i].visitor = images[i].visitor + 1;
                     (function (image) {
-                        ImageModel.update({username: username, _id: image._id}, {$inc: {visitor: 1}}).exec(function (err) {
+                        ImageModel.update({account_id: account_id, _id: image._id}, {$inc: {visitor: 1}}).exec(function (err) {
                             if (err) {
                                 log.error(image._id + 'add visitor err:' + err);
                             }
@@ -68,7 +68,7 @@ exports.comment = function (req, res) {
         res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
         return;
     }
-    ImageModel.findOne({username: reply.username, _id: reply.doc_id}).exec(function (err, doc) {
+    ImageModel.findOne({account_id: reply.account_id, _id: reply.doc_id}).exec(function (err, doc) {
         if (err) {
             log.error('image post comment error:' + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
@@ -83,19 +83,19 @@ exports.comment = function (req, res) {
             subject_name: reply.subject_name,
             parent_id: reply.parent_id
         });
-        if (doc.username != reply.from_name) {
-            relationService.addCommentRelation(doc.username, reply.from_name, doc._id, RELATION.docType.IMAGE);
+        if (doc.account_id != reply.from_name) {
+            relationService.addCommentRelation(doc.account_id, reply.from_name, doc._id, RELATION.docType.IMAGE);
         }
         if (!reply.parent_id) { //顶级评论发起者
             doc.comment.replies.push(newReply);
-            updateComment(req, res, doc, reply.username, req.body.paging);
+            updateComment(req, res, doc, reply.account_id, req.body.paging);
             return;
         }else {
             var allComment = doc.comment.replies;
             var newAllComent = recursionAppendChild(newReply, allComment, allComment);
             doc.comment.replies = newAllComent;
             doc.toObject();
-            updateComment(req, res, doc, reply.username, req.body.paging);
+            updateComment(req, res, doc, reply.account_id, req.body.paging);
         }
     });
 };
@@ -123,15 +123,15 @@ function recursionAppendChild(reply, rootReplies, currentReplies) {
     return rootReplies;
 }
 
-function updateComment(req, res, doc, username, paging) {
-    ImageModel.update({username: username, _id: doc._id},{$set: {comment: doc.comment}}, function (err) {
+function updateComment(req, res, doc, account_id, paging) {
+    ImageModel.update({account_id: account_id, _id: doc._id},{$set: {comment: doc.comment}}, function (err) {
         if (err){
             log.error('image addComment error:' + err);
             res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
             return;
         }
         if (paging) {
-            ImageModel.find({username: username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
+            ImageModel.find({account_id: account_id}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
                 if (err) {
                     log.error('addComment后查询出错，error:' + err);
                     res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
@@ -154,7 +154,7 @@ exports.delComment = function (req, res) {
         res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
         return;
     }
-    ImageModel.findOne({username: reply.username, _id: reply.doc_id}).exec(function (err, doc) {
+    ImageModel.findOne({account_id: reply.account_id, _id: reply.doc_id}).exec(function (err, doc) {
         if (err) {
             log.error('delComment error:' + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
@@ -168,7 +168,7 @@ exports.delComment = function (req, res) {
         var allComment = doc.comment.replies;
         var newAllComment = recursionSpliceChild(allComment, allComment, reply);
         doc.comment.replies = newAllComment;
-        updateComment(req, res, doc, reply.username, JSON.parse(req.query.paging));
+        updateComment(req, res, doc, reply.account_id, JSON.parse(req.query.paging));
     });
 };
 
@@ -184,8 +184,8 @@ function recursionSpliceChild(rootReply, currentReply, reply) {
         }else {
             if (currentReply[i]._id == reply.id) {
                 (function (obj, reply) {
-                    if (obj.from_name != reply.username){
-                        relationService.deleteCommentRelation(reply.username, obj.from_name, reply.doc_id, RELATION.docType.IMAGE);
+                    if (obj.from_name != reply.account_id){
+                        relationService.deleteCommentRelation(reply.account_id, obj.from_name, reply.doc_id, RELATION.docType.IMAGE);
                     }
                 })(currentReply[i], reply);
                 currentReply.splice(i, 1);
@@ -201,16 +201,16 @@ function recursionSpliceChild(rootReply, currentReply, reply) {
 
 //赞
 exports.praise = function (req, res) {
-    var username = req.body.username;
+    var account_id = req.body.account_id;
     var from = req.body.from;
     var id = req.body.id;
     var paging = req.body.paging;
-    if (!username || !from ||!id){
-        log.error('image praise error: params error :' + username + '|' + from + '|' + id);
+    if (!account_id || !from ||!id){
+        log.error('image praise error: params error :' + account_id + '|' + from + '|' + id);
         res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
         return;
     }
-    ImageModel.findOne({username: username, _id: id}).exec(function (err, doc) {
+    ImageModel.findOne({account_id: account_id, _id: id}).exec(function (err, doc) {
         if (err) {
             log.error('image praise error:' + err);
             res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
@@ -225,17 +225,17 @@ exports.praise = function (req, res) {
             }
         }
         if (isExists) {
-            if (doc.username != from) { //如果不是自己赞自己，则删除一条动态相关数据
-                relationService.deletePraiseRelation(doc.username, from, doc._id, RELATION.docType.IMAGE);
+            if (doc.account_id != from) { //如果不是自己赞自己，则删除一条动态相关数据
+                relationService.deletePraiseRelation(doc.account_id, from, doc._id, RELATION.docType.IMAGE);
             }
-            ImageModel.update({username: username, _id: id}, {$pull: {praise: from}}).exec(function (err) {
+            ImageModel.update({account_id: account_id, _id: id}, {$pull: {praise: from}}).exec(function (err) {
                 if (err) {
                     log.error('image praise error:' + err);
                     res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
                     return;
                 }
                 if (paging) {
-                    ImageModel.find({username: username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
+                    ImageModel.find({account_id: account_id}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
                         if (err) {
                             log.error('删除赞后查询出错，error:' + err);
                             res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
@@ -248,17 +248,17 @@ exports.praise = function (req, res) {
                 }
             });
         }else {
-            if (doc.username != from) { //如果不是自己赞自己，则添加一条动态相关数据
-                relationService.addPraiseRelation(doc.username, from, doc._id, RELATION.docType.IMAGE);
+            if (doc.account_id != from) { //如果不是自己赞自己，则添加一条动态相关数据
+                relationService.addPraiseRelation(doc.account_id, from, doc._id, RELATION.docType.IMAGE);
             }
-            ImageModel.update({username: username, _id: id}, {$push: {praise: from}}).exec(function (err) {
+            ImageModel.update({account_id: account_id, _id: id}, {$push: {praise: from}}).exec(function (err) {
                 if (err) {
                     log.error('image praise error:' + err);
                     res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
                     return;
                 }
                 if (paging) {
-                    ImageModel.find({username: username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
+                    ImageModel.find({account_id: account_id}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
                         if (err) {
                             log.error('删除赞后查询出错，error:' + err);
                             res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
@@ -281,11 +281,11 @@ exports.praise = function (req, res) {
  */
 exports.upload = function (req, res) {
     log.info('==========enter image upload');
-    var username = req.params.username;
+    var account_id = req.params.account_id;
     var skip = req.params.skip;
     var limit = req.params.limit;
-    if (!username || !skip || !limit){
-        log.error('images upload param error:' + username + '|' + skip + '|' + limit);
+    if (!account_id || !skip || !limit){
+        log.error('images upload param error:' + account_id + '|' + skip + '|' + limit);
         res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
         return;
     }
@@ -302,7 +302,7 @@ exports.upload = function (req, res) {
             return;
         }
         var inputFile = files.uploadfile[0];
-        log.info(username + " 成功上传图片：" + inputFile.path);
+        log.info(account_id + " 成功上传图片：" + inputFile.path);
         var oldFilePath = inputFile.path;
         if (oldFilePath.indexOf('\\') > -1) {
             oldFilePath = oldFilePath.replace(/\\/g, '/');
@@ -318,7 +318,7 @@ exports.upload = function (req, res) {
         var newImage = new ImageModel({
             visitor: 0,
             praise: [],
-            username: username,
+            account_id: account_id,
             comment: comment,
             image_url: filePath,
             update_time: nowTime,
@@ -332,13 +332,13 @@ exports.upload = function (req, res) {
             }
             skip = parseInt(skip);
             limit = parseInt(limit);
-            ImageModel.find({username: username}).sort({update_time: -1}).skip(skip).limit(limit).exec(function (err, images) {
+            ImageModel.find({account_id: account_id}).sort({update_time: -1}).skip(skip).limit(limit).exec(function (err, images) {
                 if (err){
                     log.error("upload photo and save photo success, query error: " + err);
                     res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                     return;
                 }
-                ImageModel.find({username: username}).count(function (err, count) {
+                ImageModel.find({account_id: account_id}).count(function (err, count) {
                     if (err){
                         log.error("upload photo and save photo success, query error: " + err);
                         res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
@@ -394,13 +394,13 @@ exports.delImage = function (req, res) {
                     }
                     relationService.deletePraiseAndCommentByDeleteDoc(image._id, RELATION.docType.IMAGE);
                     paging = JSON.parse(paging);
-                    ImageModel.find({username: image.username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, images) {
+                    ImageModel.find({account_id: image.account_id}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, images) {
                         if (err) {
                             log.error('del image error, errMsg:' + err);
                             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                             return;
                         }
-                        ImageModel.find({username: image.username}).count(function (err, count) {
+                        ImageModel.find({account_id: image.account_id}).count(function (err, count) {
                             if (err) {
                                 log.error('del images error, errMsg:' + err);
                                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));

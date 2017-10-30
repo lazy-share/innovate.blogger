@@ -22,9 +22,9 @@ var fs = require("fs");
  */
 exports.delMedia = function (req, res) {
     var id = req.query.id;
-    var username = req.query.username;
-    if (!id || !username){
-        log.error('delMedia error, params is null or empty' + username + id);
+    var account_id = req.query.account_id;
+    if (!id || !account_id){
+        log.error('delMedia error, params is null or empty' + account_id + id);
         res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
         return;
     }
@@ -61,13 +61,13 @@ exports.delMedia = function (req, res) {
                     }
                     var paging = req.query.paging;
                     paging = JSON.parse(paging);
-                    MediaModel.find({username: username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, medias) {
+                    MediaModel.find({account_id: account_id}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, medias) {
                         if (err) {
                             log.error('delMedia error, errMsg:' + err);
                             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                             return;
                         }
-                        MediaModel.find({username: username}).count(function (err, count) {
+                        MediaModel.find({account_id: account_id}).count(function (err, count) {
                             if (err) {
                                 log.error('delMedia error, errMsg:' + err);
                                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
@@ -92,21 +92,21 @@ exports.delMedia = function (req, res) {
  * @param res
  */
 exports.medias = function (req, res) {
-    var username = req.query.username;
-    if (!username){
-        log.error('medias error, params is null or empty' + username);
+    var account_id = req.query.account_id;
+    if (!account_id){
+        log.error('medias error, params is null or empty' + account_id);
         res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
         return;
     }
     var paging = req.query.paging;
     paging = JSON.parse(paging);
-    MediaModel.find({username: username}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, medias) {
+    MediaModel.find({account_id: account_id}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, medias) {
         if (err) {
             log.error('medias error, errMsg:' + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-        MediaModel.find({username: username}).count(function (err, count) {
+        MediaModel.find({account_id: account_id}).count(function (err, count) {
             if (err) {
                 log.error('medias error, errMsg:' + err);
                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
@@ -124,11 +124,11 @@ exports.medias = function (req, res) {
  * @param res
  */
 exports.upload = function (req, res) {
-    var username = req.params.username;
+    var account_id = req.params.account_id;
     var skip = req.params.skip;
     var limit = req.params.limit;
-    log.info("====================enter upload media, params: " + username + '|' + skip + '|' + limit);
-    if (username) {
+    log.info("====================enter upload media, params: " + account_id + '|' + skip + '|' + limit);
+    if (account_id) {
         var multiparty = require('multiparty');
         var util = require('util');
         //生成multiparty对象，并配置上传目标路径
@@ -142,7 +142,7 @@ exports.upload = function (req, res) {
                 return;
             } else {
                 var inputFile = files.uploadfile[0];
-                log.info(username + " 成功上传媒体：" + inputFile.path);
+                log.info(account_id + " 成功上传媒体：" + inputFile.path);
                 var oldFilePath = inputFile.path;
                /* var arr = oldFilePath.split('\.');
                 if (!(arr instanceof Array) || arr.length != 2 || arr[i] != 'mp4'){
@@ -157,7 +157,7 @@ exports.upload = function (req, res) {
                 filePath = sysConnfig[env].thisDoman + filePath;
                 var nowTime = new Date();
                 var mediaModel = new MediaModel({
-                    username: username,
+                    account_id: account_id,
                     media_url: filePath,
                     create_time: nowTime,
                     update_time: nowTime
@@ -170,14 +170,14 @@ exports.upload = function (req, res) {
                         return;
                     }
 
-                        MediaModel.find({username: username}).sort({update_time: -1}).skip(parseInt(skip)).limit(parseInt(limit)).exec(function (err, medias) {
+                        MediaModel.find({account_id: account_id}).sort({update_time: -1}).skip(parseInt(skip)).limit(parseInt(limit)).exec(function (err, medias) {
                             if (err) {
                                 console.log("upload media after select error: errMsg:" + err);
                                 log.error("upload media after select error: " + err);
                                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                                 return;
                             }
-                            MediaModel.find({username: username}).count(function (err, count) {
+                            MediaModel.find({account_id: account_id}).count(function (err, count) {
                                 if (err) {
                                     log.error('upload media after select error, errMsg:' + err);
                                     res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));

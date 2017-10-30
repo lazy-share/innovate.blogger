@@ -15,6 +15,7 @@ var sysConnfig = require('../conf/sys_config');
 var jwtSecret = sysConnfig[env].jwtSecret;
 var jwtValidity = sysConnfig[env].jwtValidity;
 var jwt = require('jsonwebtoken');
+var fs = require("fs");
 
 //注册验证
 exports.registerValidate = function (req, res) {
@@ -51,35 +52,42 @@ exports.register = function (req, res) {
     account.set('password', hashPwd(req.body.account.password));
     account.set('update_time', nowTime);
     account.set('create_time', nowTime);
-    var accoutInfo = new AccountInfoModel();
-    accoutInfo.set('username', account.username);
-    accoutInfo.set('create_time', nowTime);
-    accoutInfo.set('update_time', nowTime);
-    var AddressModel = mongoose.model('AddressModel');
-    accoutInfo.set('address', new AddressModel({details: ''}));
+    account.set('head_portrait', sysConnfig[env].thisDoman + sysConnfig[env].upload_header_dir + '/initHead.jpg');
 
-    accoutInfo.set('head_portrait',sysConnfig[env].thisDoman + sysConnfig[env].upload_header_dir + '/initHead.jpg');
-    accoutInfo.save(function (err) {
+    account.save(function (err) {
         if (err){
-            res.statusCode = 500;
-            console.log('save accountInfo error! errMsg: ' + err);
-            log.error('save accountInfo! errMsg: ' + err);
+            console.log('save account! errMsg: ' + err);
+            log.error('save account! errMsg: ' + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }else {
-            account.save(function (err) {
+            log.info('注册成功，账号为:' + account.username);
+            AccountModel.findOne({username: account.username, password: account.password}).exec(function (err, newAcc) {
                 if (err){
-                    console.log('save account! errMsg: ' + err);
-                    log.error('save account! errMsg: ' + err);
+                    log.error('save account after select! errMsg: ' + err);
                     res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                     return;
-                }else {
-                    log.info('注册成功，账号为:' + account.username);
-                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
                 }
+                var accoutInfo = new AccountInfoModel();
+                accoutInfo.set('account_id', newAcc._id);
+                accoutInfo.set('create_time', nowTime);
+                accoutInfo.set('update_time', nowTime);
+                var AddressModel = mongoose.model('AddressModel');
+                accoutInfo.set('address', new AddressModel({details: ''}));
+                accoutInfo.save(function (err) {
+                    if (err){
+                        res.statusCode = 500;
+                        console.log('save accountInfo error! errMsg: ' + err);
+                        log.error('save accountInfo! errMsg: ' + err);
+                        res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                        return;
+                    }
+                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
+                });
             });
         }
     });
+
 };
 
 function hashPwd(pwd){
@@ -185,47 +193,85 @@ exports.login = function (req, res) {
         });
 };
 
-//todo 待完善  注销账号
-exports.deleteOne = function (req, res) {
-    var current = req.session.current;
-    if (!current){
-        res.redirect('/account/login');
-        return;
-    }
-    var username = current.username;
-    if (!username){
-        console.log('param username is null or empty');
-        res.json({code: false, msg: 'Session失效'});
-        return;
-    }else {
-        AccountModel.findOne({username: username}, function (err, doc) {
-            if (!doc){
-                res.json({code: false, msg: '不存在该账号'});
+//上传头像
+exports.uploadHead = function (req, res) {
+    var id = req.params.id;
+    log.info("====================enter uploadHead, params: " + id);
+    if (id) {
+        var multiparty = require('multiparty');
+        var util = require('util');
+        //生成multiparty对象，并配置上传目标路径
+        var form = new multiparty.Form({uploadDir: sysConnfig[env].upload_root_dir + sysConnfig[env].upload_header_dir});
+        //上传完成后处理
+        form.parse(req, function (err, fields, files) {
+            if (err) {
+                console.log('uploadPic error: ' + err);
+                log.error("uploadPic error: " + err);
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                 return;
-            }
-            try {
-                require('./account_info').deleteOne(username);
-                require('./articles_type').deleteByAccount(username);
-                require('./articles').deleteByAccount(username);
-                require('./notes').deleteByAccount(username);
-                doc.remove(function (err) {
-                    if (!err){
-                        res.json({code: true, msg: '删除成功!'});
-                        req.session.destroy();
+            } else {
+                var inputFile = files.uploadfile[0];
+                var oldFilePath = inputFile.path;
+                if (oldFilePath.indexOf('\\') > -1) {
+                    oldFilePath = oldFilePath.replace(/\\/g, '/');
+                }
+                var startIndex = oldFilePath.indexOf(sysConnfig[env].upload_header_dir);
+                var filePath = oldFilePath.substring(startIndex, oldFilePath.length);
+                filePath = sysConnfig[env].thisDoman + filePath;
+                AccountModel.findOne({_id: id}).exec(function (err, account) {
+                    if (err) {
+                        console.log("uploadHead error: errMsg:" + err);
+                        log.error("uploadPic error: " + err);
+                        res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                         return;
-                    }else {
-                        console.log('delete faild! errMsg:' + err);
-                        res.json({code: false, msg: '删除失败!'});
                     }
+                    var oldHeadPortrait = account.head_portrait;
+                    deleteHeader(oldHeadPortrait);
+                    AccountModel.update({_id: id}, {$set: {head_portrait: filePath, update_time: new Date()}}).exec(function (err) {
+                        if (err) {
+                            console.log("uploadHead error: errMsg:" + err);
+                            log.error("uploadPic error: " + err);
+                            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                            return;
+                        }
+                        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, filePath));
+                    });
                 });
-            }catch (err){
-                console.log('deleteOne account err msg: ' + err);
-                res.json({code: false, msg: '删除失败!'});
             }
-        })
+        });
+    } else {
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+        return;
     }
 };
 
+function deleteHeader(path) {
+    if (!path){
+        log.error('deleteHeader params error , path is empty or null');
+        return;
+    }
+    var startIndex = path.lastIndexOf('/');
+    var imageFileName = path.slice(startIndex + 1, path.length);
+    log.info('=================imageFileName:' + imageFileName);
+    if (imageFileName == 'initHead.jpg'){
+        log.info('==============第一次更换头像');
+        return;
+    }
+    var uploadHeadDir = sysConnfig[env].upload_root_dir + sysConnfig[env].upload_header_dir;
+    var imageFilePath = uploadHeadDir + '/' + imageFileName;
+    if (imageFilePath.indexOf('\\') > -1){
+        imageFilePath = imageFilePath.replace(/\\/g, '/');
+    }
+    if(fs.existsSync(imageFilePath)) {
+        fs.unlink(imageFilePath, function (err) {
+            if (err){
+                log.error('del header error, 删除图片错误' + err);
+                return;
+            }
+            log.info('成功删除旧头像');
+        });
+    }
+}
 
 
 

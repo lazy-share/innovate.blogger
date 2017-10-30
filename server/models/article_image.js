@@ -9,7 +9,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var articleImageSchema = new Schema({
-    username: {type: String, required: true},
+    account_id: {type: Schema.ObjectId, required: true},
     image_path: {type: String, required: true},
     doc_id: {type: Schema.ObjectId, required: false},
     create_time: {type:Date, required: true, default: Date.now()},

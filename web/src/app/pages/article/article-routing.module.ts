@@ -8,8 +8,8 @@ import {ArticleDetailComponent} from "./article-detail.component";
  */
 const ARTICLES_ROUTERS: Routes = [
   {path : '', redirectTo: '/not-found', pathMatch: 'full'},
-  {path: 'detail/:username/:id', component: ArticleDetailComponent},
-  {path: ':username', component: ArticleComponent, resolve: {articles: ArticleResolveService}},
+  {path: 'detail/:account_id/:id', component: ArticleDetailComponent},
+  {path: ':account_id', component: ArticleComponent, resolve: {articles: ArticleResolveService}},
 ];
 @NgModule({
   imports: [

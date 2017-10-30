@@ -15,8 +15,8 @@ export class InfoResolveService implements Resolve<Account>{
   ){}
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Account>{
-    let username = route.paramMap.get("username");
-    return this.infoService.initAccountInfo(username);
+    let account_id = route.paramMap.get("account_id");
+    return this.infoService.initAccountInfo(account_id);
   }
 
 }

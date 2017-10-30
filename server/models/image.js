@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var commentSchema = require('./comment').commentSchema;
 var Schema = mongoose.Schema;
 var imageSchema = new Schema({
-    username: {type: String, required: true},
+    account_id: {type: Schema.ObjectId, required: true},
     image_url: {type: String, required: true},
     visitor:{type: Number, required: true, default: 0},
     content: {type: String, required: false},

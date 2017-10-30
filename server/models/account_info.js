@@ -12,12 +12,13 @@ var relationshipSchema = require('./relationship').relationshipSchema;
 var dateSchema = require('./date');
 
 var accountInfoSchema = new Schema({
-    username: {type: String, required: true, unique: true}, //关联账号
+    account_id: {type: Schema.ObjectId, required: true, unique: true}, //关联账号
     email:{type: String, required: false}, //邮箱
     birthday:{type: dateSchema, required: false}, //生日
     gender:{type: Number, required: false, enum:[1, 2]}, //性别 [男，女]
+    interspace_name: {type:String, required: false},
+    head_portrait: {type: String, required: false},
     address: {type: addressSchema}, //地址
-    head_portrait: {type: String}, //头像url
     job: {type: String}, //职业
     qq: {type: String}, //QQ
     mobile: {type: String}, //手机

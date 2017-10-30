@@ -38,7 +38,7 @@ exports.addArticleType = function (req, res) {
                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                 return;
             }
-            ArticlesTypeModel.find({$or: [{username: articleType.username},{username: 'sys'}]}).exec(function (err, types) {
+            ArticlesTypeModel.find({$or: [{account_id: articleType.account_id},{account_id: 'sys'}]}).exec(function (err, types) {
                 if (err){
                     log.error('addArticleType error, errMsg:' + err);
                     res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
@@ -50,7 +50,7 @@ exports.addArticleType = function (req, res) {
     });
 };
 
-//删除 可通过username 或 ObjectId
+//删除 可通过account_id 或 ObjectId
 exports.delArticleType = function (req, res) {
     var id = req.query.id;
     if (!id){
@@ -64,7 +64,7 @@ exports.delArticleType = function (req, res) {
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-        ArticlesModel.remove({username: doc.username, type: doc._id}).exec(function (err) {
+        ArticlesModel.remove({account_id: doc.account_id, type: doc._id}).exec(function (err) {
             if (err){
                 log.error('delArticleType to del article error, errMsg:' + err);
                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
@@ -76,7 +76,7 @@ exports.delArticleType = function (req, res) {
                     res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                     return;
                 }
-                ArticlesTypeModel.find({$or: [{username: doc.username},{username: 'sys'}]}).exec(function (err, types) {
+                ArticlesTypeModel.find({$or: [{account_id: doc.account_id},{account_id: 'sys'}]}).exec(function (err, types) {
                     if (err){
                         log.error('delArticleType error, errMsg:' + err);
                         res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
@@ -91,7 +91,7 @@ exports.delArticleType = function (req, res) {
 
 //查找所有的文章类型
 exports.findByDefault = function (req,res) {
-    ArticlesTypeModel.find({username: null}, function (err, docs) {
+    ArticlesTypeModel.find({account_id: null}, function (err, docs) {
         if (err){
             console.log('findByDefault err , msg:' + err);
             res.json({code: false, msg: '系统错误!'});
@@ -103,7 +103,7 @@ exports.findByDefault = function (req,res) {
 
 //查找某个用户的所有文章类型
 exports.findByAccount = function (req, res) {
-    ArticlesTypeModel.find({username: null, name: req.body.username})
+    ArticlesTypeModel.find({account_id: null, name: req.body.account_id})
         .exec(function (err, docs) {
             if (err){
                 console.log('findByAccount  err , msg:' + err);
@@ -114,8 +114,8 @@ exports.findByAccount = function (req, res) {
         });
 };
 
-exports.deleteByAccount = function (username) {
-    ArticlesTypeModel.remove({username: username})
+exports.deleteByAccount = function (account_id) {
+    ArticlesTypeModel.remove({account_id: account_id})
         .exec(function (err) {
             if (!err){
                 return true;

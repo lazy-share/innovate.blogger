@@ -8,7 +8,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var articlesSchema = new Schema({
-    username: {type: String, required: true},
+    account_id: {type: Schema.ObjectId, required: true},
     title: {type: String},
     type: {type: Schema.ObjectId, required: true},
     content: {type: String},

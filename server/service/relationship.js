@@ -129,8 +129,8 @@ exports.deletePraiseAndCommentByDeleteDoc = function(docId, docType){
 
 //与我相关列表(赞、评论、关注我的、访问我的)
 exports.praiseAndCommentRelations = function (req, res) {
-    var username = req.query.username;
-    RelationshipModel.find({subject: username, type: {$in: [RELATION.type.PRAISE, RELATION.type.COMMENT, RELATION.type.VISITOR, RELATION.type.ATTENTION]}, is_view: false}).exec(function (err, relations) {
+    var account_id = req.query.account_id;
+    RelationshipModel.find({subject: account_id, type: {$in: [RELATION.type.PRAISE, RELATION.type.COMMENT, RELATION.type.VISITOR, RELATION.type.ATTENTION]}, is_view: false}).exec(function (err, relations) {
         if (err) {
             log.error('praiseAndCommentRelations error, errMsg:' + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
@@ -142,8 +142,8 @@ exports.praiseAndCommentRelations = function (req, res) {
 
 //与我相关列表(赞、评论、关注我的、访问我的)
 exports.praiseAndCommentRelationCount = function (req, res) {
-    var username = req.query.username;
-    RelationshipModel.find({subject: username, type: {$in: [RELATION.type.PRAISE, RELATION.type.COMMENT, RELATION.type.VISITOR, RELATION.type.ATTENTION]}, is_view: false}).count(function (err, count) {
+    var account_id = req.query.account_id;
+    RelationshipModel.find({subject: account_id, type: {$in: [RELATION.type.PRAISE, RELATION.type.COMMENT, RELATION.type.VISITOR, RELATION.type.ATTENTION]}, is_view: false}).count(function (err, count) {
         if (err) {
             log.error('praiseAndCommentRelations error, errMsg:' + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));

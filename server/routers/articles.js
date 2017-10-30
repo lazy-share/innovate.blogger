@@ -21,5 +21,5 @@ module.exports = function (router) {
     router.put(webRootApi + '/private/my/article', articlesService.editArticle);
     router.delete(webRootApi + '/private/my/article', articlesService.delArticle);
     router.delete(webRootApi + '/private/my/article/cancle', articlesService.cancle);
-    router.post(webRootApi + '/private/my/article/upload/images/:username', articlesService.uploadImages);
+    router.post(webRootApi + '/private/my/article/upload/images/:accountId', articlesService.uploadImages);
 };

@@ -6,6 +6,7 @@ import {MyDatePicker} from "./my-date-picker";
  */
 export class Account {
   public id: string;
+  public interspace_name:string;
   public username: string;
   public password: string;
   public confirmPassword: string;
@@ -29,6 +30,7 @@ export class Account {
 
   static instantiation () {
     let vo: Account = new Account();
+    vo.interspace_name = "";
     vo.username = "";
     vo.password = "";
     vo.encrypted = "";

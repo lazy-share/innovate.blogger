@@ -50,6 +50,19 @@
             </div>
 
             <div class="form-group">
+              <label class="col-sm-4 control-label" for="interspace_name">博客空间名称：</label>
+              <div class="col-sm-5">
+                <input type="text" [(ngModel)]="account.interspace_name" class="form-control" id="interspace_name" name="interspace_name"
+                       #interspace_name="ngModel" placeholder="输入6位以上25以下字符串" required minlength="2" maxlength="15"/>
+                <div *ngIf="interspace_name.invalid && (interspace_name.dirty || interspace_name.touched)">
+                  <span *ngIf="interspace_name.errors.required" class="red-font">请输入2-15个字符</span>
+                  <span *ngIf="interspace_name.errors.minlength" class="red-font">不足2个字符</span>
+                  <span *ngIf="interspace_name.errors.maxlength" class="red-font">请不要超过15个字符</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
               <label class="col-sm-4 control-label" for="encrypted">密保码（用于找回密码，请牢记）：</label>
               <div class="col-sm-5">
                 <input type="text" [(ngModel)]="account.encrypted" class="form-control" id="encrypted" name="encrypted"

@@ -20,7 +20,7 @@ export const ADDRESS_PROVINCES = root + "/private/address/provinces";
 export const ADDRESS_CITYS = root + "/private/address/citys";
 export const ADDRESS_COUNTYS = root + "/private/address/countys";
 export const ADDRESS_STREETS = root + "/private/address/streets";
-export const ACCOUNT_INFO_HEADER = root + "/private/account/info/head";
+export const ACCOUNT_HEADER = root + "/private/account/head";
 
 export const MY_ATTENTIONS = root + "/private/my/attentions";
 export const MY_FANS = root + "/private/my/fans";

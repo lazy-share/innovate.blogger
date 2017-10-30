@@ -7,7 +7,7 @@ import {InfoResolveService} from "./info-resolve.service";
  */
 const INFO_ROUTES: Routes = [
   {path: '', redirectTo: '/not-found', pathMatch: 'full'},
-  {path:':username', component: InfoComponent, resolve: {accountInfo: InfoResolveService}}
+  {path:':account_id', component: InfoComponent, resolve: {accountInfo: InfoResolveService}}
 ];
 @NgModule({
   imports: [RouterModule.forChild(INFO_ROUTES)],

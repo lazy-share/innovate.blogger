@@ -20,6 +20,6 @@ module.exports = function (router) {
     router.put(webRootApi + '/forget', accountService.forget);
     //登录
     router.post(webRootApi + '/login', accountService.login);
-    //注销
-    router.delete('/account/delete', accountService.deleteOne);
+    //修改头像
+    router.post(webRootApi + '/private/account/head/:id', accountService.uploadHead);
 };

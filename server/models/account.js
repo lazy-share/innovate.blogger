@@ -10,8 +10,10 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var accountSchema = new Schema({
     username:{type: String, index: 1, unique: true, required: true},
+    interspace_name: {type:String, required: false},
+    head_portrait: {type: String},
     password:{type: String, required: true},
-    status:{type: Number, required: true, default: 1, enum:[1,2,3]},
+    status:{type: Number, required: true, default: 1, enum:[1,2,3]}, //状态
     encrypted: {type: String, required: true},
     token: {type: String, required: false},
     create_time:{type: Date, required: true, unique:false, default:Date.now()},

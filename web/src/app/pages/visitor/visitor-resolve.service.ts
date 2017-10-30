@@ -16,8 +16,8 @@ export class VisitorResolveService implements Resolve<any>{
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    let username = route.paramMap.get("username");
-    return this.visitorService.visitors(username);
+    let account_id = route.paramMap.get("account_id");
+    return this.visitorService.visitors(account_id);
   }
 
 }

@@ -1,12 +1,9 @@
 import {Component, OnInit} from "@angular/core";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {AppResponse} from "../../vo/app-response";
-import {
-  NEWS_TYPES, NEWS, HOME_ARTICLES, HOME_NOTES, HOME_IMAGES
-} from "../../constant/uri";
+import {HOME_ARTICLES, HOME_IMAGES, HOME_NOTES, NEWS, NEWS_TYPES} from "../../constant/uri";
 import {BaseComponent} from "../common/BaseComponent";
 import {Paging, PagingParams} from "../../vo/paging";
-import {environment} from '../../../environments/environment';
 import {Article} from "../../vo/article";
 import {Note} from "../../vo/note";
 import {Image} from "../../vo/image";

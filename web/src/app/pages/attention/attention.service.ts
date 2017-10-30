@@ -13,11 +13,11 @@ export class AttentionService {
   constructor(public http: HttpClient, public router:Router) {
   }
 
-  attentions(username: string): Observable<any> {
+  attentions(account_id: string): Observable<any> {
     return this.http.get<AppResponse>(
       MY_ATTENTIONS,
       {
-        params: new HttpParams().set("username", username)
+        params: new HttpParams().set("account_id", account_id)
       }
     ).map(
       data => {

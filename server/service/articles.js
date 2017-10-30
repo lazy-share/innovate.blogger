@@ -10,7 +10,7 @@ var ArticlesModel = mongoose.model('ArticlesModel');
 var ArticleTypeModel = mongoose.model('ArticlesTypeModel');
 var CommentModel = mongoose.model('CommentModel');
 var ReplyModel = mongoose.model('ReplyModel');
-var AccountInfoModel = mongoose.model('AccountInfoModel');
+var AccountModel = mongoose.model('AccountModel');
 var result = require('../common/result');
 var response = require('../common/response');
 var log = require('log4js').getLogger('article');
@@ -163,35 +163,44 @@ exports.addArticle = function (req, res) {
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-        var newArticle = new ArticlesModel({
-            account_id: article.account_id,
-            content: article.content,
-            praise: [],
-            visitor: 0,
-            comment: doc._id,
-            create_time: nowTime,
-            update_time: nowTime,
-            type: article.type,
-            title: article.title,
-            desc: article.desc,
-            is_private: article.isPrivate,
-            is_manuscript: article.isManuscript
-        });
-        newArticle.save(function (err) {
-            if (err){
-                log.error('addArticle error, errMsg:' + err);
+        AccountModel.findOne({_id: article.account_id}).exec(function (err, acc) {
+            if (err) {
+                log.error('addArticle error, params article is null or empty');
                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                 return;
             }
-            ArticlesModel.findOne({account_id: newArticle.account_id, comment: newArticle.comment}).exec(function (err, articleDoc) {
+            var newArticle = new ArticlesModel({
+                account_id: article.account_id,
+                content: article.content,
+                praise: [],
+                visitor: 0,
+                comment: doc._id,
+                create_time: nowTime,
+                update_time: nowTime,
+                type: article.type,
+                title: article.title,
+                desc: article.desc,
+                is_private: article.isPrivate,
+                is_manuscript: article.isManuscript,
+                interspace_name: acc.interspace_name,
+                head_portrait: acc.head_portrait
+            });
+            newArticle.save(function (err) {
                 if (err){
-                    log.error('addArticle select after error, errMsg:' + err);
+                    log.error('addArticle error, errMsg:' + err);
                     res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                     return;
                 }
-                artilceImageService.setDocId(articleDoc.account_id, articleDoc._id);
-                var paging = req.body.paging;
-                queryByPaging(res, article, paging, '新增文章后');
+                ArticlesModel.findOne({account_id: newArticle.account_id, comment: newArticle.comment}).exec(function (err, articleDoc) {
+                    if (err){
+                        log.error('addArticle select after error, errMsg:' + err);
+                        res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                        return;
+                    }
+                    artilceImageService.setDocId(articleDoc.account_id, articleDoc._id);
+                    var paging = req.body.paging;
+                    queryByPaging(res, article, paging, '新增文章后');
+                });
             });
         });
     });

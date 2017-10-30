@@ -18,16 +18,15 @@ export class FansComponent extends BaseComponent implements OnInit{
     this.initFans();
   }
 
-  public requestUsername: string;
+  public requestAccountId: string;
   public fans: RelationShip[] = new Array<RelationShip>();
-  public headPortraits: RelationShip[] = new Array<RelationShip>();
   public isShowAttention: boolean = true;
 
   constructor(public attentionService: FansService,
               public route: ActivatedRoute,
               public authorizationService: AuthorizationService,) {
     super();
-    this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get("username")).subscribe();
+    this.route.paramMap.switchMap((params: ParamMap) => this.requestAccountId = params.get("account_id")).subscribe();
   }
 
   initFans(){
@@ -43,22 +42,13 @@ export class FansComponent extends BaseComponent implements OnInit{
   }
 
   handleResult(data: any){
-    this.fans = data.data.fans;
-    this.headPortraits = data.data.headPortraits;
-    for (let i in this.headPortraits){
-      for (let j in this.fans){
-        if (this.headPortraits[i].username === this.fans[j].from){
-          this.fans[j].head_portrait = this.headPortraits[i].head_portrait;
-          break;
-        }
-      }
-    }
+    this.fans = data.data;
   }
 
   initComponent() {
     let flag = true;
     for (let fan in this.fans) {
-      if (this.fans[fan].from == this.authorizationService.getCurrentUser().username) {
+      if (this.fans[fan].from == this.authorizationService.getCurrentUser()._id) {
         flag = false;
         break;
       }
@@ -67,7 +57,7 @@ export class FansComponent extends BaseComponent implements OnInit{
   }
 
   attention() {
-    this.attentionService.attention(this.requestUsername, this.authorizationService.getCurrentUser().username).subscribe(
+    this.attentionService.attention(this.requestAccountId, this.authorizationService.getCurrentUser()._id).subscribe(
       data => {
         if (!data.status) {
           this.showMsg = true;
@@ -86,7 +76,7 @@ export class FansComponent extends BaseComponent implements OnInit{
   }
 
   cancleAttention() {
-    this.attentionService.cancleAttention(this.requestUsername, this.authorizationService.getCurrentUser().username).subscribe(
+    this.attentionService.cancleAttention(this.requestAccountId, this.authorizationService.getCurrentUser()._id).subscribe(
       data => {
         if (!data.status) {
           this.showMsg = true;

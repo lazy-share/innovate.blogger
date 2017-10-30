@@ -1,11 +1,11 @@
-<sub-nav [requestUsername]="requestUsername" [tab]="2"></sub-nav>
+<sub-nav [requestAccountId]="requestAccountId" [tab]="2"></sub-nav>
 <div class="container">
   <div class="panel panel-info">
     <div class="panel-heading">
-      <div *ngIf="authorizationService.currentUser.username != requestUsername">
+      <div *ngIf="authorizationService.currentUser._id != requestAccountId">
         <h3 class="panel-title">日记</h3>
       </div>
-      <div *ngIf="authorizationService.currentUser.username == requestUsername">
+      <div *ngIf="authorizationService.currentUser._id == requestAccountId">
         <button [class.hidden]="isShow" class="btn btn-default" (click)="changeBtn()" type="button">写日记</button>
         <button [class.hidden]="!isShow" class="btn btn-default" (click)="changeBtn()" type="button">取消</button>
       </div>

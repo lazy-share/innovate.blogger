@@ -22,7 +22,7 @@ import {ModalExcuteDeleteType} from "../../constant/modal";
 })
 export class ArticleComponent extends BaseComponent implements OnDestroy, AfterViewInit, OnInit {
 
-  public requestUsername: string;
+  public requestAccountId: string;
   public globalTypeId: string;
   public tinymceElementId: string = "tinymceElementId";
   public articles: Article[] = new Array<Article>();
@@ -56,7 +56,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
               public searchService:SearchService,
               public route: ActivatedRoute) {
     super();
-    this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get('username')).subscribe();
+    this.route.paramMap.switchMap((params: ParamMap) => this.requestAccountId = params.get('account_id')).subscribe();
     this.subscription = this.searchService.missionAnnounced$.subscribe(
       keyword => {
         this.doSearch(keyword);
@@ -76,8 +76,8 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
     let pag = PagingParams.instantiation();
     pag.keyword = keyword;
     this.articleService.articles(
-      this.requestUsername,
-      this.authorizationService.getCurrentUser().username,
+      this.requestAccountId,
+      this.authorizationService.getCurrentUser()._id,
       this.isManuscript,
       pag
     ).subscribe(
@@ -129,9 +129,9 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
   classfiyArticleType() {
     this.sysDefaultTypes = new Array<ArticleType>();
     this.definedTypes = new Array<ArticleType>();
-    let current = this.authorizationService.getCurrentUser().username;
+    let current = this.authorizationService.getCurrentUser()._id;
     for (let i in this.articleTypes) {
-      if (this.articleTypes[i].username == current) {
+      if (this.articleTypes[i].account_id == current) {
         this.definedTypes.push(this.articleTypes[i]);
       } else {
         this.sysDefaultTypes.push(this.articleTypes[i]);
@@ -207,7 +207,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
    * @param article
    */
   onCreateType(article: ArticleType) {
-    article.username = this.authorizationService.getCurrentUser().username;
+    article.account_id = this.authorizationService.getCurrentUser()._id;
     this.articleService.createArticleType(article).subscribe(
       data => {
         if (!data.status) {
@@ -263,8 +263,8 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
     this.paging = Paging.instantiation();
     this.isManuscript = isManuscript;
     this.articleService.articles(
-      this.requestUsername,
-      this.authorizationService.getCurrentUser().username,
+      this.requestAccountId,
+      this.authorizationService.getCurrentUser()._id,
       isManuscript,
       PagingParams.instantiation()
     ).subscribe(
@@ -303,7 +303,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
     }
     let article = new Article();
     article.content = this.globalArticleContent;
-    article.username = this.authorizationService.getCurrentUser().username;
+    article.account_id = this.authorizationService.getCurrentUser()._id;
     article.type = this.globalTypeId;
     article.desc = this.globalArticleDesc;
     article.title = this.globalArticleTitle;
@@ -385,7 +385,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
     }
     let article = new Article();
     article.content = this.globalArticleContent;
-    article.username = this.authorizationService.getCurrentUser().username;
+    article.account_id = this.authorizationService.getCurrentUser()._id;
     article.type = this.globalTypeId;
     article.desc = this.globalArticleDesc;
     article.title = this.globalArticleTitle;
@@ -472,7 +472,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
   }
 
   clearTinyMceEdit(){
-    this.articleService.calcleArticle(this.authorizationService.getCurrentUser().username).subscribe(
+    this.articleService.calcleArticle(this.authorizationService.getCurrentUser()._id).subscribe(
       data => {
         if (!data.status){
           this.showMsg = true;
@@ -505,8 +505,8 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
     this.pagingParams.skip = this.pagingParams.getSkip();
 
     this.articleService.articles(
-      this.requestUsername,
-      this.authorizationService.getCurrentUser().username,
+      this.requestAccountId,
+      this.authorizationService.getCurrentUser()._id,
       this.isManuscript,
       this.pagingParams).subscribe(
       data => {

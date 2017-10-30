@@ -28,7 +28,7 @@ export class MediaComponent extends BaseComponent implements OnInit, OnDestroy{
     })
   }
 
-  public requestUsername: string;
+  public requestAccountId: string;
   public paging: Paging = Paging.instantiation6();
   public pagingParams = PagingParams.instantiation6();
   public uploader: FileUploader = new FileUploader({});
@@ -46,11 +46,11 @@ export class MediaComponent extends BaseComponent implements OnInit, OnDestroy{
     public modalService: BsModalService,
   ){
     super();
-    this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get("username")).subscribe();
+    this.route.paramMap.switchMap((params: ParamMap) => this.requestAccountId = params.get("account_id")).subscribe();
   }
   initUploadFileConfig(){
     this.uploader = new FileUploader({
-      url: environment.api.uri + MY_MEDIA_UPLOAD + '/' + this.authorizationService.getCurrentUser().username
+      url: environment.api.uri + MY_MEDIA_UPLOAD + '/' + this.authorizationService.getCurrentUser()._id
       + '/' + this.pagingParams.skip + '/' + this.pagingParams.limit,
       itemAlias: "uploadfile",
       headers: [
@@ -118,7 +118,7 @@ export class MediaComponent extends BaseComponent implements OnInit, OnDestroy{
   }
 
   excuteDel(){
-    this.mediaService.deleteMedia(this.globalMediaId,this.authorizationService.getCurrentUser().username, this.pagingParams).subscribe(
+    this.mediaService.deleteMedia(this.globalMediaId,this.authorizationService.getCurrentUser()._id, this.pagingParams).subscribe(
       data => {
         this.modalRef.hide();
         if (!data.status) {
@@ -151,7 +151,7 @@ export class MediaComponent extends BaseComponent implements OnInit, OnDestroy{
     this.pagingParams.pageSize = event.itemsPerPage;
     this.pagingParams.skip = this.pagingParams.getSkip();
 
-    this.mediaService.medias(this.requestUsername, this.pagingParams).subscribe(
+    this.mediaService.medias(this.requestAccountId, this.pagingParams).subscribe(
       data => {
         if (!data.status) {
           this.showMsg = true;

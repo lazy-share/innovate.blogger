@@ -1,8 +1,8 @@
-<sub-nav [requestUsername]="requestUsername" [tab]="1"></sub-nav>
+<sub-nav [requestAccountId]="requestAccountId" [tab]="1"></sub-nav>
 <div class="container">
   <div class="panel panel-info">
     <div class="panel-heading">
-      <h3 class="panel-title">文章全文<a style="margin-left: 30px;text-decoration: none;" routerLink="/private/article/{{requestUsername}}" class="btn btn-default">文章列表</a></h3>
+      <h3 class="panel-title">文章全文<a style="margin-left: 30px;text-decoration: none;" routerLink="/private/article/{{requestAccountId}}" class="btn btn-default">文章列表</a></h3>
     </div>
     <div class="panel-body">
       <div *ngIf="showSuccess" class="alert alert-success">{{successMsg}}</div>

@@ -5,6 +5,7 @@ var mongoose = require('mongoose');
 var ArticlesModel = mongoose.model('ArticlesModel');
 var NotesModel = mongoose.model('NotesModel');
 var ImageModel = mongoose.model('ImageModel');
+var AccountModel = mongoose.model('AccountModel');
 var log = require('log4js').getLogger('home');
 var result = require('../common/result');
 var response = require('../common/response');
@@ -24,6 +25,7 @@ exports.articles = function (req, res) {
                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                 return;
             }
+
             var obj = {articles: articles, count: count};
             res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
         });

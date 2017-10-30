@@ -1,11 +1,11 @@
-<sub-nav [requestUsername]="requestUsername" [requestAccountId]="" [tab]="1"></sub-nav>
+<sub-nav [requestAccountId]="requestAccountId" [tab]="1"></sub-nav>
 <div class="container">
   <div class="panel panel-info">
     <div class="panel-heading">
-      <div *ngIf="authorizationService.currentUser.username != requestUsername">
+      <div *ngIf="authorizationService.currentUser._id != requestAccountId">
         <h3 class="panel-title">文章</h3>
       </div>
-      <div *ngIf="authorizationService.currentUser.username == requestUsername">
+      <div *ngIf="authorizationService.currentUser._id == requestAccountId">
         <button [class.hidden]="isShow" class="btn btn-default" (click)="changeBtn()" type="button">写文章</button>
         <button [class.hidden]="!isShow" class="btn btn-default" (click)="changeBtn()" type="button">取消</button>
         <button [class.hidden]="isShow" class="btn btn-default" (click)="listForDrafts(false)" type="button">文章列表</button>
@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <div [class.hidden]="!isShow" *ngIf="authorizationService.currentUser.username == requestUsername"
+    <div [class.hidden]="!isShow" *ngIf="authorizationService.currentUser._id == requestAccountId"
          class="panel-body">
 
       <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
@@ -94,16 +94,16 @@
             <div class="hidden-xs" style="float: left; margin-right: 50px;"><a
               style="text-decoration: none; cursor: default;color: burlywood;">发表于{{article.update_time | date:
               "yyyy-MM-dd HH:mm:ss"}}</a></div>
-            <div class="hidden-xs" *ngIf="authorizationService.currentUser.username == requestUsername"
+            <div class="hidden-xs" *ngIf="authorizationService.currentUser._id == requestAccountId"
                  style="float: left; margin-right: 10px;"><a (click)="toEditArticle(article._id)" style="text-decoration: none; cursor: pointer;">编辑</a>
             </div>
-            <div class="hidden-xs" *ngIf="authorizationService.currentUser.username == requestUsername"><a
+            <div class="hidden-xs" *ngIf="authorizationService.currentUser._id == requestAccountId"><a
               (click)="toDeleteArticle(article._id)" style="text-decoration: none; cursor: pointer; color: red;">删除</a>
             </div>
           </div>
           <div class="div-to-hr-2"></div>
           <p>
-            <a class="btn" routerLink="/private/article/detail/{{requestUsername}}/{{article._id}}">查看全文 »</a>
+            <a class="btn" routerLink="/private/article/detail/{{requestAccountId}}/{{article._id}}">查看全文 »</a>
           </p>
         </div>
       </div>

@@ -63,6 +63,16 @@
         </div>
 
         <div class="form-group">
+          <label class="col-sm-2 control-label">生日</label>
+          <div class="col-sm-3">
+            <input *ngIf="!isShow" class="form-control" type="text" [disabled]="!isShow" value="{{accountInfo.birthday | mydatepicker}}" placeholder="请输入您的生日">
+            <div *ngIf="isShow">
+              <my-date-picker name="birthday" [options]="birthdayDatePickerOptions"  [selDate]="birthdayPlusInitDate" [locale]="birthdayPlusLocale" [(ngModel)]="accountInfo.birthday"></my-date-picker>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
           <label for="email" class="col-sm-2 control-label">邮箱</label>
           <div class="col-sm-3">
             <input class="form-control" [disabled]="!isShow" #email="ngModel" maxlength="20" validEmail
@@ -115,16 +125,6 @@
                    name="motto" class="form-control" id="motto" placeholder="一句话概括你自己">
             <div *ngIf="motto.invalid && (motto.dirty || motto.touched)">
               <span *ngIf="motto.errors.maxlength" class="errorMsg">长度不能大于20</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="col-sm-2 control-label">生日</label>
-          <div class="col-sm-3">
-            <input *ngIf="!isShow" class="form-control" type="text" [disabled]="!isShow" value="{{accountInfo.birthday | mydatepicker}}" placeholder="请输入您的生日">
-            <div *ngIf="isShow">
-              <my-date-picker name="birthday" [options]="birthdayDatePickerOptions"  [selDate]="birthdayPlusInitDate" [locale]="birthdayPlusLocale" [(ngModel)]="accountInfo.birthday"></my-date-picker>
             </div>
           </div>
         </div>

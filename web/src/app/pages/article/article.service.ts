@@ -27,11 +27,11 @@ export class ArticleService {
    * 取消文章
    * @returns {Observable<R>}
    */
-  calcleArticle(username:string):Observable<AppResponse>{
+  calcleArticle(account_id:string):Observable<AppResponse>{
       return this.http.delete<AppResponse>(
         MY_ARTICLE_CANCLE,
         {
-          params: new HttpParams().set('username', username)
+          params: new HttpParams().set('account_id', account_id)
         }
       ).map(
         data => {
@@ -77,13 +77,13 @@ export class ArticleService {
   /**
    * 赞
    * @param id
-   * @param currentUsername
+   * @param current_account_id
    * @returns {Observable<R>}
    */
-  praise(id:string, currentUsername:string):Observable<AppResponse>{
+  praise(id:string, current_account_id:string):Observable<AppResponse>{
       return this.http.post<AppResponse>(
         MY_ARTICLE_PRAISE,
-        {id: id, currentUsername: currentUsername}
+        {id: id, current_account_id: current_account_id}
       ).map(
         data => {
           return data;
@@ -94,15 +94,15 @@ export class ArticleService {
   /**
    * 查看全文
    * @param id
-   * @param username
-   * @param currentUsername
+   * @param account_id
+   * @param current_account_id
    * @returns {Observable<R>}
    */
-  detail(id: string, username:string, currentUsername:string):Observable<AppResponse>{
+  detail(id: string, account_id:string, current_account_id:string):Observable<AppResponse>{
     return this.http.get<AppResponse>(
       MY_ARTICLE_DETAIL,
       {
-        params: new HttpParams().set('id', id).set('username', username).set('currentUsername', currentUsername)
+        params: new HttpParams().set('id', id).set('account_id', account_id).set('current_account_id', current_account_id)
       }
     ).map(
       data => {
@@ -130,17 +130,17 @@ export class ArticleService {
 
   /**
    * 文章列表
-   * @param username
-   * @param currentUsername
+   * @param account_id
+   * @param current_account_id
    * @param isManuscript 是否是草稿箱
    * @param paging
    * @returns {Observable<R>}
    */
-  articles(username:string, currentUsername:string, isManuscript:boolean, paging: PagingParams):Observable<AppResponse> {
+  articles(account_id:string, current_account_id:string, isManuscript:boolean, paging: PagingParams):Observable<AppResponse> {
     return this.http.get<AppResponse>(
       MY_ARTICLES,
       {
-        params: new HttpParams().set('username', username).set('paging', JSON.stringify(paging)).set('currentUsername', currentUsername).set('isManuscript', JSON.stringify(isManuscript))
+        params: new HttpParams().set('account_id', account_id).set('paging', JSON.stringify(paging)).set('current_account_id', current_account_id).set('isManuscript', JSON.stringify(isManuscript))
       }
     ).map(
       data => {
@@ -194,7 +194,7 @@ export class ArticleService {
     return this.http.delete<AppResponse>(
       MY_ARTICLE,
       {
-        params: new HttpParams().set('id', articleId).set('paging', JSON.stringify(paging)).set('username', this.authorizationService.getCurrentUser().username)
+        params: new HttpParams().set('id', articleId).set('paging', JSON.stringify(paging)).set('account_id', this.authorizationService.getCurrentUser()._id)
       }
     ).map(
       data => {
@@ -212,7 +212,7 @@ export class ArticleService {
     return this.http.get<AppResponse>(
       MY_ARTICLE,
       {
-        params: new HttpParams().set('id', id).set('username', this.authorizationService.getCurrentUser().username)
+        params: new HttpParams().set('id', id).set('account_id', this.authorizationService.getCurrentUser()._id)
       }
     ).map(
       data => {
@@ -230,7 +230,7 @@ export class ArticleService {
   confirmEditArticle(article:Article, paging: PagingParams):Observable<AppResponse>{
     return this.http.put(
       MY_ARTICLE,
-      {article: article, paging: paging, username: this.authorizationService.getCurrentUser().username}
+      {article: article, paging: paging, account_id: this.authorizationService.getCurrentUser()._id}
     ).map(
       data => {
         return data;

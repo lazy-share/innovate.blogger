@@ -7,7 +7,7 @@ import {NgModule} from "@angular/core";
  */
 const IMAGE_ROUTERS: Routes = [
   {path: '', redirectTo: '/not-found', pathMatch:'full'},
-  {path: ':username', component: ImageComponent, resolve: {images: ImageResolveService}}
+  {path: ':account_id', component: ImageComponent, resolve: {images: ImageResolveService}}
 ];
 
 @NgModule({

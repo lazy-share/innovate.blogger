@@ -1,12 +1,12 @@
-<sub-nav [requestUsername]="requestUsername" [tab]="3"></sub-nav>
+<sub-nav [requestAccountId]="requestAccountId" [tab]="3"></sub-nav>
 
 <div class="container">
   <div class="panel panel-info">
     <div class="panel-heading">
-      <div *ngIf="authorizationService.currentUser.username != requestUsername">
+      <div *ngIf="authorizationService.currentUser._id != requestAccountId">
         <h3 class="panel-title">媒体</h3>
       </div>
-      <div *ngIf="authorizationService.currentUser.username == requestUsername">
+      <div *ngIf="authorizationService.currentUser._id == requestAccountId">
         <button [class.hidden]="isShow" class="btn btn-default" (click)="changeBtn()" type="button">上传媒体</button>
         <button [class.hidden]="!isShow" class="btn btn-default" (click)="changeBtn()" type="button">取消</button>
       </div>
@@ -45,7 +45,7 @@
               <a
                 style="text-decoration: none;"><span>更新时间：{{media.update_time | date: "yyyy-MM-dd HH:mm:ss"}}</span></a>
               &nbsp;&nbsp;&nbsp;
-              <a *ngIf="authorizationService.currentUser.username == requestUsername" (click)="toDeleteMedia(media._id)"
+              <a *ngIf="authorizationService.currentUser._id == requestAccountId" (click)="toDeleteMedia(media._id)"
                  style="text-decoration: none; color: red;"><span>删除</span></a>
             </p>
           </div>

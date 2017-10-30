@@ -16,9 +16,9 @@ export class ArticleResolveService implements Resolve<any>{
   ){}
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    let username = route.paramMap.get('username');
+    let account_id = route.paramMap.get('account_id');
     let paging = PagingParams.instantiation();
-    return this.articliService.articles(username, this.authorizationService.getCurrentUser().username, false,  paging);
+    return this.articliService.articles(account_id, this.authorizationService.getCurrentUser()._id, false,  paging);
   }
 
 }

@@ -2,9 +2,9 @@
 <p>
   <a style="margin-right: 50px;cursor:default;text-decoration:none;"><span class="glyphicon glyphicon-eye-open"></span>&nbsp;浏览{{doc.visitor}}次</a>
   <a (click)="comment(doc._id, '', '')" style="margin-right: 16px;" ><span class="glyphicon glyphicon-comment"></span></a>
-  <a (click)="praise(doc._id)" style="margin-right: 16px; color: black;"  *ngIf="(doc.praise | isExistsArr: authorizationService.currentUser.username)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
-  <a (click)="praise(doc._id)" style="margin-right: 16px;" *ngIf="!(doc.praise | isExistsArr: authorizationService.currentUser.username)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
-  <a (click)="deleteDocBefore(doc._id)" *ngIf="authorizationService.currentUser.username == doc.username"><span class="glyphicon glyphicon-trash"></span></a>
+  <a (click)="praise(doc._id)" style="margin-right: 16px; color: black;"  *ngIf="(doc.praise | isExistsArr: authorizationService.currentUser._id)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
+  <a (click)="praise(doc._id)" style="margin-right: 16px;" *ngIf="!(doc.praise | isExistsArr: authorizationService.currentUser._id)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
+  <a (click)="deleteDocBefore(doc._id)" *ngIf="authorizationService.currentUser._id == doc.account_id"><span class="glyphicon glyphicon-trash"></span></a>
 </p>
 <ng-container *ngIf="doc.praise.length >0 || doc.comment.replies.length > 0">
   <div class="div-to-hr-1"></div>
@@ -21,8 +21,8 @@
 <div *ngFor="let rep of doc.comment.replies">
   <p>
     <a style="text-decoration: none;" routerLink="/private/info/{{rep.from_name}}">{{rep.from_name}}:</a>
-    <a *ngIf="rep.from_name != authorizationService.currentUser.username" style="text-decoration: none; color:black;" (click)="comment(doc._id, rep._id, rep.from_name)">{{rep.content}}</a>
-    <a *ngIf="rep.from_name == authorizationService.currentUser.username" style="text-decoration: none; color:black;" (click)="deleteCommentBefore(doc._id, rep._id)">{{rep.content}}</a>
+    <a *ngIf="rep.from_name != authorizationService.currentUser._id" style="text-decoration: none; color:black;" (click)="comment(doc._id, rep._id, rep.from_name)">{{rep.content}}</a>
+    <a *ngIf="rep.from_name == authorizationService.currentUser._id" style="text-decoration: none; color:black;" (click)="deleteCommentBefore(doc._id, rep._id)">{{rep.content}}</a>
     <ng-container *ngIf="rep.replies.length > 0">
       <reply  [replies]="rep.replies" (onRemoveReply)="deleteCommentBefore(doc._id, $event)" (onReply)="reply(doc._id, $event)"></reply>
     </ng-container>

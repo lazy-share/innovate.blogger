@@ -16,15 +16,14 @@ import {RelationShip} from "../../vo/attention";
 })
 export class AttentionComponent extends BaseComponent {
 
-  public requestUsername: string;
+  public requestAccountId: string;
   public attentions: RelationShip[] = new Array<RelationShip>();
-  public headPortraits: RelationShip[] = new Array<RelationShip>();
 
   constructor(public attentionService: AttentionService,
               public route: ActivatedRoute,
               public authorizationService: AuthorizationService,) {
     super();
-    this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get("username")).subscribe();
+    this.route.paramMap.switchMap((params: ParamMap) => this.requestAccountId = params.get("account_id")).subscribe();
     this.initAttention();
   }
 
@@ -35,16 +34,7 @@ export class AttentionComponent extends BaseComponent {
           this.sysMsg = rlt.obj.msg;
           return;
         }
-        this.attentions = rlt.obj.data.attentions;
-        this.headPortraits = rlt.obj.data.headPortraits;
-        for (let i in this.headPortraits) {
-          for (let j in this.attentions) {
-            if (this.headPortraits[i].username === this.attentions[j].subject) {
-              this.attentions[j].head_portrait = this.headPortraits[i].head_portrait;
-              break;
-            }
-          }
-        }
+        this.attentions = rlt.obj.data;
       });
   }
 

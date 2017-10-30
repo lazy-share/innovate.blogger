@@ -39,7 +39,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
   /**
    * 初始化变量
    */
-  public requestUsername: string;
+  public requestAccountId: string;
   public paging: Paging = Paging.instantiation();
   public notes: Note[] = new Array<Note>();
   public content: string;
@@ -76,7 +76,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
               public renderer2:Renderer2
   ) {
     super();
-    this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get("username")).subscribe();
+    this.route.paramMap.switchMap((params: ParamMap) => this.requestAccountId = params.get("account_id")).subscribe();
     this.subscription = this.searchService.missionAnnounced$.subscribe(
       keyword => {
         this.doSearch(keyword);
@@ -95,7 +95,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
     }
     let pag = PagingParams.instantiation();
     pag.keyword = keyword;
-    this.noteService.notes(this.requestUsername, this.authorizationService.getCurrentUser().username, pag).subscribe(
+    this.noteService.notes(this.requestAccountId, this.authorizationService.getCurrentUser()._id, pag).subscribe(
       data => {
         if (!data.status) {
           this.showMsg = true;
@@ -157,7 +157,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
     this.pagingParams.pageSize = event.itemsPerPage;
     this.pagingParams.skip = this.pagingParams.getSkip();
 
-    this.noteService.notes(this.requestUsername, this.authorizationService.getCurrentUser().username, this.pagingParams).subscribe(
+    this.noteService.notes(this.requestAccountId, this.authorizationService.getCurrentUser()._id, this.pagingParams).subscribe(
       data => {
         if (!data.status) {
           this.showMsg = true;
@@ -192,7 +192,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
    */
   submitNote() {
     let note = new Note();
-    note.username = this.authorizationService.getCurrentUser().username;
+    note.account_id = this.authorizationService.getCurrentUser()._id;
     note.content = this.content;
     this.noteService.submitNote(note, this.pagingParams).subscribe(
       data => {
@@ -234,7 +234,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
    */
   deleteNote() {
     let note = new Note();
-    note.username = this.authorizationService.getCurrentUser().username;
+    note.account_id = this.authorizationService.getCurrentUser()._id;
     note.id = this.noteId;
     this.noteService.deleteNote(note, this.pagingParams).subscribe(
       data => {
@@ -258,8 +258,8 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
    * @param id
    */
   onPraise(id: string) {
-    let currentUsername = this.authorizationService.getCurrentUser().username;
-    this.noteService.praise(this.requestUsername, currentUsername, id, this.pagingParams).subscribe(
+    let current_account_id = this.authorizationService.getCurrentUser()._id;
+    this.noteService.praise(this.requestAccountId, current_account_id, id, this.pagingParams).subscribe(
       data => {
         if (!data.status) {
           this.showMsg = true;
@@ -315,7 +315,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
     this.renderer2.setProperty(commentDiv, 'hidden', false);
     let commentInput = this.nativeElement.querySelector('.T' + templateId); //评论 input
     if (!parent_id){ //顶级评论发起者
-      this.renderer2.setProperty(commentInput, 'placeholder', '评论' + this.requestUsername);
+      this.renderer2.setProperty(commentInput, 'placeholder', '评论' + this.requestAccountId);
     }else { //子回复
       this.renderer2.setProperty(commentInput, 'placeholder', '回复' + subject);
     }
@@ -337,8 +337,8 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
    * @param id
    */
   submitComment(id:string){
-    this.globalReply.from_name = this.authorizationService.getCurrentUser().username;
-    this.globalReply.username = this.requestUsername;
+    this.globalReply.from_name = this.authorizationService.getCurrentUser()._id;
+    this.globalReply.account_id = this.requestAccountId;
     this.globalReply.content = this.commentContent;
     this.noteService.submitConment(this.globalReply, this.pagingParams).subscribe(
       data => {
@@ -370,7 +370,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
     this.globalReply = new Reply();
     this.globalReply.doc_id = reply.doc_id;
     this.globalReply.id = reply.id;
-    this.globalReply.username = this.requestUsername;
+    this.globalReply.account_id = this.requestAccountId;
     this.modalRef = this.modalService.show(this.appModalTemplateDiv);
   }
 

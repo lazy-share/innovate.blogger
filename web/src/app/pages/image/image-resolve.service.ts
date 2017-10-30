@@ -15,9 +15,9 @@ export class ImageResolveService implements Resolve<any>{
   ){}
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    let requestUsername = route.paramMap.get('username');
-    let currentUsername = this.authorizationService.getCurrentUser().username;
-    return this.imageService.images(requestUsername, currentUsername, PagingParams.instantiation4());
+    let requestAccountId = route.paramMap.get('account_id');
+    let currentUsername = this.authorizationService.getCurrentUser().account_id;
+    return this.imageService.images(requestAccountId, currentUsername, PagingParams.instantiation4());
   }
 
 }

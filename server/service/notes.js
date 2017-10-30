@@ -8,7 +8,7 @@ var mongoose = require('mongoose');
 var NotesModel = mongoose.model('NotesModel');
 var CommentModel = mongoose.model('CommentModel');
 var ReplyModel = mongoose.model('ReplyModel');
-var AccountInfoModel = mongoose.model('AccountInfoModel');
+var AccountModel = mongoose.model('AccountModel');
 var result = require('../common/result');
 var response = require('../common/response');
 var log = require('log4js').getLogger('note');
@@ -19,10 +19,10 @@ var RELATION = require('../common/relation_enum');
 //我的、TA的日记
 exports.notes = function (req, res) {
     var account_id = req.query.account_id;
-    var currentUsername = req.query.currentUsername;
+    var current_account_id = req.query.current_account_id;
     var paging = req.query.paging;
-    if (!account_id || !paging || !currentUsername) {
-        log.error("notes params error; params:" + account_id + '|' + paging + '|' + currentUsername);
+    if (!account_id || !paging || !current_account_id) {
+        log.error("notes params error; params:" + account_id + '|' + paging + '|' + current_account_id);
         res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
         return;
     }
@@ -45,13 +45,13 @@ exports.notes = function (req, res) {
                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                 return;
             }
-            AccountInfoModel.findOne({account_id: account_id}, {head_portrait: 1}).exec(function (err, doc) {
+            AccountModel.findOne({_id: account_id}, {head_portrait: 1}).exec(function (err, doc) {
                 if (err) {
                     log.error('新增日记后查询出错，error:' + err);
                     res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
                     return;
                 }
-                if (currentUsername != account_id) { //异步添加浏览次数
+                if (current_account_id != account_id) { //异步添加浏览次数
                     for (var i in docs){
                         docs[i].visitor = docs[i].visitor + 1;
                         (function (doc) {
@@ -86,7 +86,7 @@ function queryByPaging(res, account_id, paging, logMsg) {
                     res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
                     return;
                 }
-                AccountInfoModel.findOne({account_id: account_id}, {head_portrait: 1}).exec(function (err, doc) {
+                AccountModel.findOne({_id: account_id}, {head_portrait: 1}).exec(function (err, doc) {
                     if (err) {
                         log.error(logMsg + '查询出错，error:' + err);
                         res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
@@ -121,14 +121,23 @@ exports.addNote = function (req, res) {
     note.update_time = nowTime;
     note.create_time = nowTime;
     var newNote = new NotesModel(note);
-    newNote.save(function (err) {
+    AccountModel.findOne({_id: newNote.account_id}).exec(function (err, acc) {
         if (err) {
             log.error('add note err! msg:' + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-       queryByPaging(res, note.account_id, paging, '新增日记后');
-    })
+        newNote.interspace_name = acc.interspace_name;
+        newNote.head_portrait = acc.head_portrait;
+        newNote.save(function (err) {
+            if (err) {
+                log.error('add note err! msg:' + err);
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                return;
+            }
+            queryByPaging(res, note.account_id, paging, '新增日记后');
+        })
+    });
 };
 
 //删除日记心情

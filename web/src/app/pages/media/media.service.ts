@@ -15,11 +15,11 @@ export class MediaService {
   ){
 
   }
-  medias(username:string, paging:PagingParams): Observable<AppResponse>{
+  medias(account_id:string, paging:PagingParams): Observable<AppResponse>{
     return this.http.get<AppResponse>(
       MY_MEDIAS,
       {
-        params: new HttpParams().set('username', username).set('paging', JSON.stringify(paging))
+        params: new HttpParams().set('account_id', account_id).set('paging', JSON.stringify(paging))
       }
     ).map(
       data => {
@@ -28,11 +28,11 @@ export class MediaService {
     );
   }
 
-  deleteMedia(id:string, username:string, paging: PagingParams):Observable<AppResponse>{
+  deleteMedia(id:string, account_id:string, paging: PagingParams):Observable<AppResponse>{
       return this.http.delete<AppResponse>(
         MY_MEDIA,
         {
-          params: new HttpParams().set('id', id).set('paging', JSON.stringify(paging)).set('username', username)
+          params: new HttpParams().set('id', id).set('paging', JSON.stringify(paging)).set('account_id', account_id)
         }
       ).map(
         data => {

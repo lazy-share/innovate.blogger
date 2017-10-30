@@ -15,7 +15,7 @@ import {AppModal} from "../../vo/app-modal";
 })
 export class ArticleDetailComponent extends BaseComponent implements OnInit{
 
-  public requestUsername: string;
+  public requestAccountId: string;
   public globalReplyId:string;
   public article:Article = Article.instantiation();
   public commentContent:string = '';
@@ -37,12 +37,12 @@ export class ArticleDetailComponent extends BaseComponent implements OnInit{
               public renderer2:Renderer2,
               public route: ActivatedRoute) {
     super();
-    this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get('username')).subscribe();
+    this.route.paramMap.switchMap((params: ParamMap) => this.requestAccountId = params.get('account_id')).subscribe();
     this.route.paramMap.switchMap((params: ParamMap) => this.globalReplyId = params.get('id')).subscribe();
   }
 
   ngOnInit(): void {
-    this.articleService.detail(this.globalReplyId, this.requestUsername, this.authorizationService.getCurrentUser().username).subscribe(
+    this.articleService.detail(this.globalReplyId, this.requestAccountId, this.authorizationService.getCurrentUser()._id).subscribe(
       data => {
         if (!data.status) {
           this.showMsg = true;
@@ -70,7 +70,7 @@ export class ArticleDetailComponent extends BaseComponent implements OnInit{
    * @param id
    */
   praise(id:string){
-    let currentUsername = this.authorizationService.getCurrentUser().username;
+    let currentUsername = this.authorizationService.getCurrentUser()._id;
     this.articleService.praise(id, currentUsername).subscribe(
       data => {
         if (!data.status) {
@@ -113,7 +113,7 @@ export class ArticleDetailComponent extends BaseComponent implements OnInit{
    */
   onComment(reply: Reply){
     reply.id = this.article.comment;
-    reply.from_name = this.authorizationService.getCurrentUser().username;
+    reply.from_name = this.authorizationService.getCurrentUser()._id;
     this.globalReply = reply;
     this.commentContent = '';
     this.commentMaxLength = this.initCommentMaxLength;
@@ -137,7 +137,7 @@ export class ArticleDetailComponent extends BaseComponent implements OnInit{
     this.renderer2.setProperty(commentDiv, 'hidden', false);
     let commentInput = this.nativeElement.querySelector('#commentInputEle'); //评论 input
     if (!parent_id){ //顶级评论发起者
-      this.renderer2.setProperty(commentInput, 'placeholder', '评论' + this.requestUsername);
+      this.renderer2.setProperty(commentInput, 'placeholder', '评论' + this.requestAccountId);
     }else { //子回复
       this.renderer2.setProperty(commentInput, 'placeholder', '回复' + subject);
     }

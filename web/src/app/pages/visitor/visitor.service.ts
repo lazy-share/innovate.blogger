@@ -17,11 +17,11 @@ export class VisitorService {
 
   }
 
-  visitors(username:string):Observable<any> {
+  visitors(account_id:string):Observable<any> {
     return this.http.get<AppResponse>(
       MY_VISITORS,
       {
-        params: new HttpParams().set("username", username)
+        params: new HttpParams().set("account_id", account_id)
       }
     ).map(
       data => {

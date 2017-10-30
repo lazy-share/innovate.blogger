@@ -1,4 +1,4 @@
-<sub-nav [requestUsername]="requestUsername" [tab]="4"></sub-nav>
+<sub-nav [requestAccountId]="requestAccountId" [tab]="4"></sub-nav>
 <div class="container">
   <div class="tab-pane" id="panel-6">
     <div class="panel panel-danger">
@@ -7,13 +7,13 @@
       </div>
       <div class="panel-body">
         <div *ngIf="attentions.length > 0">
-          <p *ngIf="authorizationService.currentUser.username == requestUsername" class="text-danger">您关注了</p>
-          <p *ngIf="authorizationService.currentUser.username != requestUsername" class="text-danger">TA关注了</p>
+          <p *ngIf="authorizationService.currentUser._id == requestAccountId" class="text-danger">您关注了</p>
+          <p *ngIf="authorizationService.currentUser._id != requestAccountId" class="text-danger">TA关注了</p>
         </div>
         <hr class="hr">
         <div *ngIf="(attentions.length <= 0)" class="col-md-offset-4 col-lg-offset-4 col-lg-4 col-md-4">
-          <h4 *ngIf="authorizationService.currentUser.username == requestUsername" class="text-danger">您未关注任何人</h4>
-          <h4 *ngIf="authorizationService.currentUser.username != requestUsername" class="text-danger">TA未关注任何人</h4>
+          <h4 *ngIf="authorizationService.currentUser._id == requestAccountId" class="text-danger">您未关注任何人</h4>
+          <h4 *ngIf="authorizationService.currentUser._id != requestAccountId" class="text-danger">TA未关注任何人</h4>
         </div>
         <div *ngIf="(attentions.length > 0)" class="col-lg-12 col-md-12 col-sm-12">
           <ng-container *ngFor="let attention of attentions; let i = index;">

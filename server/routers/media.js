@@ -13,5 +13,5 @@ var mediaService = require('../service/media');
 module.exports = function (router) {
     router.get(webRootApi +'/private/my/medias', mediaService.medias);
     router.delete(webRootApi +'/private/my/media', mediaService.delMedia);
-    router.post(webRootApi +'/private/my/media/upload/:username/:skip/:limit', mediaService.upload);
+    router.post(webRootApi +'/private/my/media/upload/:account_id/:skip/:limit', mediaService.upload);
 };

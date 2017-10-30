@@ -9,7 +9,7 @@ tinymce.PluginManager.add('uploadimage', function (editor) {
         input_f.on('change', function () {
             var form = $("<form/>",
                 {
-                    action: editor.settings.images_upload_url + '/' + editor.settings.username, //设置上传图片的路由，配置在初始化时
+                    action: editor.settings.images_upload_url + '/' + editor.settings.account_id, //设置上传图片的路由，配置在初始化时
                     style: 'display:none',
                     method: 'post',
                     enctype: 'multipart/form-data'

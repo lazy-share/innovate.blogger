@@ -7,7 +7,7 @@ import {MediaResolveService} from "./media-resolve.service";
  */
 const MEDIA_ROUTERS : Routes = [
   {path: '', redirectTo: '/not-found', pathMatch: 'full'},
-  {path: ':username', component: MediaComponent, resolve: {medias: MediaResolveService}}
+  {path: ':account_id', component: MediaComponent, resolve: {medias: MediaResolveService}}
 ];
 @NgModule({
   imports: [RouterModule.forChild(MEDIA_ROUTERS)],

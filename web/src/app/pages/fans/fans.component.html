@@ -1,4 +1,4 @@
-<sub-nav [requestUsername]="requestUsername" [tab]="5"></sub-nav>
+<sub-nav [requestAccountId]="requestAccountId" [tab]="5"></sub-nav>
 <div class="container">
   <div class="tab-pane" id="panel-6">
     <div class="panel panel-danger">
@@ -7,13 +7,13 @@
       </div>
       <div class="panel-body">
         <div *ngIf="fans.length > 0">
-          <p *ngIf="authorizationService.currentUser.username == requestUsername" class="text-danger">关注您的</p>
-          <p *ngIf="authorizationService.currentUser.username != requestUsername" class="text-danger">关注 TA的</p>
+          <p *ngIf="authorizationService.currentUser._id == requestAccountId" class="text-danger">关注您的</p>
+          <p *ngIf="authorizationService.currentUser._id != requestAccountId" class="text-danger">关注 TA的</p>
         </div>
         <hr class="hr">
         <div *ngIf="(fans.length <= 0)" class="col-md-offset-4 col-lg-offset-4 col-lg-4 col-md-4">
-          <h4 *ngIf="authorizationService.currentUser.username == requestUsername" class="text-danger">还没有人关注您</h4>
-          <h4 *ngIf="authorizationService.currentUser.username != requestUsername" class="text-danger">还没有人关注TA</h4>
+          <h4 *ngIf="authorizationService.currentUser._id == requestAccountId" class="text-danger">还没有人关注您</h4>
+          <h4 *ngIf="authorizationService.currentUser._id != requestAccountId" class="text-danger">还没有人关注TA</h4>
         </div>
         <div *ngIf="(fans.length > 0)" class="col-lg-12 col-md-12 col-sm-12">
           <div style="margin-right: 2.5px;margin-left:2.5px;text-align:center; " *ngFor="let fan of fans"
@@ -22,10 +22,10 @@
               <div>
                 <img alt="" style="width:50px; height: 50px;" class="img-circle" src="{{fan.head_portrait}}"/>
               </div>
-              <div *ngIf="authorizationService.currentUser.username == fan.from">
+              <div *ngIf="authorizationService.currentUser._id == fan.from">
                 {{fan.from}}<span style="color:red;">(您自己)</span>
               </div>
-              <div *ngIf="authorizationService.currentUser.username != fan.from">
+              <div *ngIf="authorizationService.currentUser._id != fan.from">
                 {{fan.from}}
               </div>
               <div style="color: palevioletred;">
@@ -35,7 +35,7 @@
           </div>
         </div>
         <hr class="hr">
-        <div *ngIf="authorizationService.currentUser.username != requestUsername"
+        <div *ngIf="authorizationService.currentUser._id != requestAccountId"
              class="col-md-offset-5 col-lg-offset-5 col-lg-2 col-md-2">
           <button (click)="attention()" *ngIf="isShowAttention" type="button" class="btn btn-info"><span
             class="glyphicon glyphicon-plus"></span> 关注他

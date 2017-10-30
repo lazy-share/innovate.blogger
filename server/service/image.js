@@ -13,6 +13,7 @@ var log = require('log4js').getLogger('image');
 var fs = require("fs");
 var relationService = require('./relationship');
 var RELATION = require('../common/relation_enum');
+var AccountModel = mongoose.model('AccountModel');
 
 /**
  * 获取图片列表
@@ -315,40 +316,50 @@ exports.upload = function (req, res) {
         var comment = new CommentModel({
             replies: []
         });
-        var newImage = new ImageModel({
-            visitor: 0,
-            praise: [],
-            account_id: account_id,
-            comment: comment,
-            image_url: filePath,
-            update_time: nowTime,
-            create_time: nowTime
-        });
-        newImage.save(function (err) {
-            if (err){
-                log.error("upload photo success, save to database error: " + err);
+        AccountModel.findOne({_id: account_id}).exec(function (err, acc) {
+            if (err) {
+                console.log('upload photo error: ' + err);
+                log.error("upload photo error: " + err);
                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                 return;
             }
-            skip = parseInt(skip);
-            limit = parseInt(limit);
-            ImageModel.find({account_id: account_id}).sort({update_time: -1}).skip(skip).limit(limit).exec(function (err, images) {
+            var newImage = new ImageModel({
+                visitor: 0,
+                praise: [],
+                account_id: account_id,
+                comment: comment,
+                image_url: filePath,
+                update_time: nowTime,
+                create_time: nowTime,
+                interspace_name: acc.interspace_name,
+                head_portrait: acc.head_portrait
+            });
+            newImage.save(function (err) {
                 if (err){
-                    log.error("upload photo and save photo success, query error: " + err);
+                    log.error("upload photo success, save to database error: " + err);
                     res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                     return;
                 }
-                ImageModel.find({account_id: account_id}).count(function (err, count) {
+                skip = parseInt(skip);
+                limit = parseInt(limit);
+                ImageModel.find({account_id: account_id}).sort({update_time: -1}).skip(skip).limit(limit).exec(function (err, images) {
                     if (err){
                         log.error("upload photo and save photo success, query error: " + err);
                         res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                         return;
                     }
-                    var obj = {images: images, count: count};
-                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
-                });
+                    ImageModel.find({account_id: account_id}).count(function (err, count) {
+                        if (err){
+                            log.error("upload photo and save photo success, query error: " + err);
+                            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                            return;
+                        }
+                        var obj = {images: images, count: count};
+                        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+                    });
+                })
             })
-        })
+        });
     })
 };
 

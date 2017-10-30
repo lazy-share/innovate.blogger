@@ -17,6 +17,8 @@ var articlesSchema = new Schema({
     praise: [String],
     comment: {type: Schema.ObjectId, required: true},
     visitor: {type: Number},
+    interspace_name: {type: String, required: false},
+    head_portrait: {type: String, required: false},
     is_manuscript: {type:Boolean, required: true, default: false},
     create_time: {type: Date, required: true, default: Date.now()},
     update_time: {type: Date, required: true, default: Date.now()}

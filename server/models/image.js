@@ -9,6 +9,8 @@ var imageSchema = new Schema({
     image_url: {type: String, required: true},
     visitor:{type: Number, required: true, default: 0},
     content: {type: String, required: false},
+    interspace_name: {type: String, required: false},
+    head_portrait: {type: String, required: false},
     comment: commentSchema,
     praise: [String],
     is_private: {type: Boolean, required: true, default: false},

@@ -14,8 +14,8 @@ export class RelationResolveService implements Resolve<any>{
 
   }
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): any {
-    let requestUsername = route.paramMap.get('username');
-    if (requestUsername != this.authorizationService.getCurrentUser().username){
+    let requestAccountId = route.paramMap.get('account_id');
+    if (requestAccountId != this.authorizationService.currentUser._id){
       this.router.navigate(['not-ultra-vires']);
     }
     return true;

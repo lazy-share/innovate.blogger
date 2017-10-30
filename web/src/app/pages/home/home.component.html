@@ -23,11 +23,11 @@
                 <ng-container *ngFor="let article of articles; let i = index;">
                   <ng-container *ngIf="i % 2 == 0">
                     <a style="text-decoration: none;"
-                       routerLink="/private/article/detail/{{article.username}}/{{article._id}}">
+                       routerLink="/private/article/detail/{{article.account_id}}/{{article._id}}">
                       <div class="well well-sm">
                         <p>标题：<span style="color:black;">{{article.title}}</span></p>
                         <p>描述：<span style="color:black;">{{article.desc}}</span></p>
-                        <small>—{{article.username}} 发表于:{{article.update_time | date:
+                        <small>—{{article.interspace_name}} 发表于:{{article.update_time | date:
                           "yyyy-MM-dd HH:mm:ss"}}
                         </small>
                       </div>
@@ -40,11 +40,11 @@
                 <ng-container *ngFor="let article of articles; let i = index;">
                   <ng-container *ngIf="i % 2 != 0">
                     <a style="text-decoration: none;"
-                       routerLink="/private/article/detail/{{article.username}}/{{article._id}}">
+                       routerLink="/private/article/detail/{{article.account_id}}/{{article._id}}">
                       <div class="well well-sm">
                         <p>标题：<span style="color:black;">{{article.title}}</span></p>
                         <p>描述：<span style="color:black;">{{article.desc}}</span></p>
-                        <small>—{{article.username}} 发表于:{{article.update_time | date:
+                        <small>—{{article.interspace_name}} 发表于:{{article.update_time | date:
                           "yyyy-MM-dd HH:mm:ss"}}
                         </small>
                       </div>
@@ -88,10 +88,10 @@
               <div class="col-md-6 column">
                 <ng-container *ngFor="let note of notes; let i = index;">
                   <ng-container *ngIf="i % 2 == 0">
-                    <a style="text-decoration: none;" routerLink="/private/note/{{note.username}}">
+                    <a style="text-decoration: none;" routerLink="/private/note/{{note.account_id}}">
                       <div class="well well-sm">
                         <p>说说：<span style="color:black;">{{note.content}}</span></p>
-                        <small>—{{note.username}} 发表于:{{note.update_time | date: "yyyy-MM-dd
+                        <small>—{{note.interspace_name}} 发表于:{{note.update_time | date: "yyyy-MM-dd
                           HH:mm:ss"}}
                         </small>
                       </div>
@@ -103,10 +103,10 @@
               <div class="col-md-6 column">
                 <ng-container *ngFor="let note of notes; let i = index;">
                   <ng-container *ngIf="i % 2 != 0">
-                    <a style="text-decoration: none;" routerLink="/private/note/{{note.username}}">
+                    <a style="text-decoration: none;" routerLink="/private/note/{{note.account_id}}">
                       <div class="well well-sm">
                         <p>说说：<span style="color:black;">{{note.content}}</span></p>
-                        <small>—{{note.username}} 发表于:{{note.update_time | date: "yyyy-MM-dd
+                        <small>—{{note.interspace_name}} 发表于:{{note.update_time | date: "yyyy-MM-dd
                           HH:mm:ss"}}
                         </small>
                       </div>
@@ -151,11 +151,11 @@
                 <carousel>
                   <ng-container *ngFor="let image of images; let i = index;">
                     <slide>
-                      <a routerLink="/private/image/{{image.username}}">
+                      <a routerLink="/private/image/{{image.account_id}}">
                         <div>
                           <img style="width:100%; height: 200px;" class="img-responsive" src="{{image.image_url}}">
                           <div class="carousel-caption">
-                            <h4>{{image.username}}</h4>
+                            <h4>{{image.interspace_name}}</h4>
                             <p>发表于：{{image.update_time | date: "yyyy-MM-dd HH:mm:ss"}}</p>
                           </div>
                         </div>
@@ -171,11 +171,11 @@
                   <ng-container *ngFor="let image of images; let i = index;">
                     <ng-container *ngIf="i % 2 == 0">
                       <slide>
-                        <a routerLink="/private/image/{{image.username}}">
+                        <a routerLink="/private/image/{{image.account_id}}">
                           <div>
                             <img style="width:100%; height: 300px;" class="img-responsive" src="{{image.image_url}}">
                             <div class="carousel-caption">
-                              <h3>{{image.username}}</h3>
+                              <h3>{{image.interspace_name}}</h3>
                               <p>发表于：{{image.update_time | date: "yyyy-MM-dd HH:mm:ss"}}</p>
                             </div>
                           </div>
@@ -190,11 +190,11 @@
                   <ng-container *ngFor="let image of images; let i = index;">
                     <ng-container *ngIf="i % 2 != 0">
                       <slide>
-                        <a routerLink="/private/image/{{image.username}}">
+                        <a routerLink="/private/image/{{image.account_id}}">
                           <div>
                             <img style="width:100%; height: 300px;" class="img-responsive" src="{{image.image_url}}">
                             <div class="carousel-caption">
-                              <h3>{{image.username}}</h3>
+                              <h3>{{image.interspace_name}}</h3>
                               <p>发表于：{{image.update_time | date: "yyyy-MM-dd HH:mm:ss"}}</p>
                             </div>
                           </div>

@@ -15,9 +15,8 @@ import {AuthorizationService} from "../../core/authorization/authorization.servi
 })
 export class VisitorComponent extends BaseComponent implements OnInit{
 
-  public requestUsername:string;
+  public requestAccountId:string;
   public visitors: RelationShip[] = new Array<RelationShip>();
-  public headPortraits:RelationShip[] = new Array<RelationShip>();
 
   constructor(
     public route:ActivatedRoute,
@@ -25,7 +24,7 @@ export class VisitorComponent extends BaseComponent implements OnInit{
     public authorizationService: AuthorizationService
   ){
     super();
-    this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get("username")).subscribe();
+    this.route.paramMap.switchMap((params: ParamMap) => this.requestAccountId = params.get("account_id")).subscribe();
   }
 
   ngOnInit(): void {
@@ -43,16 +42,7 @@ export class VisitorComponent extends BaseComponent implements OnInit{
   }
 
   handlerResult(data :any) {
-    this.visitors = data.data.visitors;
-    this.headPortraits = data.data.headPortraits;
-    for (let i in this.headPortraits){
-      for (let j in this.visitors){
-        if (this.headPortraits[i].username === this.visitors[j].from){
-          this.visitors[j].head_portrait = this.headPortraits[i].head_portrait;
-          break;
-        }
-      }
-    }
+    this.visitors = data.data;
   }
 
 }

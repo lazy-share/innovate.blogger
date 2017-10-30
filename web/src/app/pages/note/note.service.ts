@@ -18,11 +18,11 @@ export class NoteService {
 
   }
 
-  notes(requestUsername: string, currentUsername:string, paging: PagingParams): Observable<AppResponse> {
+  notes(requestAccountId: string, current_account_id:string, paging: PagingParams): Observable<AppResponse> {
     return this.http.get<AppResponse>(
       MY_NOTES,
       {
-        params: new HttpParams().set('username', requestUsername).set('currentUsername',currentUsername).set("paging", JSON.stringify(paging))
+        params: new HttpParams().set('account_id', requestAccountId).set('current_account_id',current_account_id).set("paging", JSON.stringify(paging))
       }
     ).map(
       data => {
@@ -62,10 +62,10 @@ export class NoteService {
     );
   }
 
-  praise(requestUsername:string, currentUsername: string, id: string, paging: PagingParams): Observable<AppResponse> {
+  praise(requestAccountId:string, current_account_id: string, id: string, paging: PagingParams): Observable<AppResponse> {
     return this.http.post<AppResponse>(
       MY_NOTE_PRAISE,
-      {username: requestUsername, from: currentUsername, id: id, paging: paging}
+      {account_id: requestAccountId, from: current_account_id, id: id, paging: paging}
     ).map(
       data => {
         return data;

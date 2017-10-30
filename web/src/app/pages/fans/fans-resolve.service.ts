@@ -15,8 +15,8 @@ export class FansResolveService implements Resolve<any>{
   }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    let username = route.paramMap.get("username");
-    return this.fansService.fans(username);
+    let account_id = route.paramMap.get("account_id");
+    return this.fansService.fans(account_id);
   }
 
 }

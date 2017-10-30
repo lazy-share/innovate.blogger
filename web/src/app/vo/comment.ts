@@ -17,7 +17,7 @@ export class Reply {
   public root_id:string;
   public parent_id:string;
   public doc_id:string;
-  public username:string;
+  public account_id:string;
 
   constructor(){}
 
@@ -33,7 +33,7 @@ export class Reply {
     newReply.root_id = reply.root_id;
     newReply.parent_id = reply.parent_id;
     newReply.doc_id = reply.doc_id;
-    newReply.username = reply.username;
+    newReply.account_id = reply.account_id;
     newReply.replies = reply.replies;
     return newReply;
   }

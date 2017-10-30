@@ -7,7 +7,7 @@ import {AttentionResolveService} from "./attention-resolve.service";
  */
 const ATTENTION_ROUTERS: Routes = [
   {path: '', redirectTo: '/not-found', pathMatch: 'full'},
-  {path: ':username', component: AttentionComponent, resolve: {obj: AttentionResolveService}}
+  {path: ':account_id', component: AttentionComponent, resolve: {obj: AttentionResolveService}}
 ];
 @NgModule({
   imports: [RouterModule.forChild(ATTENTION_ROUTERS)],

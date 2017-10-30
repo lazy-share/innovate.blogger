@@ -9,8 +9,8 @@ import {Observable} from "rxjs";
 export class AttentionResolveService implements Resolve<any>{
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any>{
-    let username = route.paramMap.get("username");
-    return this.attentionService.attentions(username);
+    let account_id = route.paramMap.get("account_id");
+    return this.attentionService.attentions(account_id);
   }
 
   constructor(

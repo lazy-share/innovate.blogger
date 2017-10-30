@@ -7,7 +7,7 @@ import {FansResolveService} from "./fans-resolve.service";
  */
 const FANS_ROUTERS: Routes = [
   {path: '', redirectTo: '/not-found', pathMatch: 'full'},
-  {path: ':username', component: FansComponent, resolve: {obj: FansResolveService}}
+  {path: ':account_id', component: FansComponent, resolve: {obj: FansResolveService}}
 ];
 @NgModule({
   imports: [RouterModule.forChild(FANS_ROUTERS)],

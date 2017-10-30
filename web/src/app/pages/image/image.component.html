@@ -1,13 +1,13 @@
-<sub-nav [requestUsername]="requestUsername" [tab]="7"></sub-nav>
+<sub-nav [requestAccountId]="requestAccountId" [tab]="7"></sub-nav>
 
 <div class="container">
   <div class="row clearfix">
     <div class="panel panel-info">
       <div class="panel-heading">
-        <div *ngIf="authorizationService.currentUser.username != requestUsername">
+        <div *ngIf="authorizationService.currentUser._id != requestAccountId">
           <h3 class="panel-title">图片</h3>
         </div>
-        <a *ngIf="!isShow && authorizationService.currentUser.username == requestUsername" (click)="changeUpload()" class="btn btn-default">上传图片</a>
+        <a *ngIf="!isShow && authorizationService.currentUser._id == requestAccountId" (click)="changeUpload()" class="btn btn-default">上传图片</a>
         <a *ngIf="isShow" (click)="changeUpload()" class="btn btn-default">取消</a>
       </div>
       <div [class.hidden]="!isShow" class="panel-body">

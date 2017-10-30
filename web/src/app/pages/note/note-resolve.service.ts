@@ -17,9 +17,9 @@ export class NoteResolveService implements Resolve<any>{
 
   }
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    let requestUsername = route.paramMap.get('username');
-    let currentUsername = this.authorizationService.getCurrentUser().username;
-    return this.noteService.notes(requestUsername, currentUsername, PagingParams.instantiation());
+    let requestAccountId = route.paramMap.get('account_id');
+    let currentUsername = this.authorizationService.getCurrentUser()._id;
+    return this.noteService.notes(requestAccountId, currentUsername, PagingParams.instantiation());
   }
 
 }

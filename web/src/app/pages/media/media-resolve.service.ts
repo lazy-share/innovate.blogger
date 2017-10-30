@@ -13,10 +13,10 @@ export class MediaResolveService implements Resolve<any> {
 
   }
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<any> {
-    let username = route.paramMap.get('username');
+    let account_id = route.paramMap.get('account_id');
     let paging = PagingParams.instantiation();
     paging.limit = 6;
-    return this.mediaService.medias(username, paging);
+    return this.mediaService.medias(account_id, paging);
   }
 
 }

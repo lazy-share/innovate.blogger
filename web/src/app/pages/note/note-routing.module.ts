@@ -7,7 +7,7 @@ import {NoteResolveService} from "./note-resolve.service";
  */
 const NOTE_ROUTERS: Routes = [
   {path: '', redirectTo: '/not-found', pathMatch: 'full'},
-  {path: ':username', component: NoteComponent, resolve: {notes: NoteResolveService}}
+  {path: ':account_id', component: NoteComponent, resolve: {notes: NoteResolveService}}
 ];
 @NgModule({
   imports: [RouterModule.forChild(NOTE_ROUTERS)],

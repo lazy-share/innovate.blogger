@@ -29,7 +29,7 @@ exports.initSysDefaultArticleType = function () {
 
     for (var i in initData){
         (function (item) {
-            ArticleTypeModel.findOne({username: item.username, name: item.name}).exec(function (err, doc) {
+            ArticleTypeModel.findOne({account_id: item.username, name: item.name}).exec(function (err, doc) {
                 if (err) {
                     console.log('查询出错，errMsg:' + err - ' in ' - item.name);
                 }else if (doc) {
@@ -37,7 +37,7 @@ exports.initSysDefaultArticleType = function () {
                 }else {
                     var newO = new ArticleTypeModel({
                         name: item.name,
-                        username: item.username
+                        account_id: item.account_id
                     });
                     newO.save(function (err) {
                         if (err) {
@@ -55,6 +55,6 @@ exports.initSysDefaultArticleType = function () {
 function ArticleType(username, name) {
     var obj = new Object();
     obj.name = name;
-    obj.username = username;
+    obj.account_id = username;
     return obj;
 }

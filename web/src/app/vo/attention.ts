@@ -5,7 +5,7 @@ export class RelationShip{
   from: string;
   subject: string;
   update_time: Date;
-  username: string;
+  account_id: string;
   head_portrait: string;
 
 

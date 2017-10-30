@@ -16,7 +16,7 @@ import {Component} from "@angular/core";
 })
 export class RelationComponent extends BaseComponent implements OnInit {
 
-  public requestUsername: string;
+  public requestAccountId: string;
   public relations:Relation[] = new Array<Relation>();
   constructor(
     public http:HttpClient,
@@ -25,7 +25,7 @@ export class RelationComponent extends BaseComponent implements OnInit {
     public route: ActivatedRoute
   ){
     super();
-    this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get("username")).subscribe();
+    this.route.paramMap.switchMap((params: ParamMap) => this.requestAccountId = params.get("account_id")).subscribe();
   }
 
 
@@ -33,7 +33,7 @@ export class RelationComponent extends BaseComponent implements OnInit {
     this.http.get<AppResponse>(
       MY_RELATIONS,
       {
-        params: new HttpParams().set('username', this.requestUsername)
+        params: new HttpParams().set('account_id', this.requestAccountId)
       }
     ).subscribe(
       data => {

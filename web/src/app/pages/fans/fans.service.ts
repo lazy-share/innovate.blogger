@@ -13,11 +13,11 @@ export class FansService {
   constructor(public http: HttpClient,public router:Router) {
   }
 
-  fans(username: string): Observable<any> {
+  fans(account_id: string): Observable<any> {
     return this.http.get<AppResponse>(
       MY_FANS,
       {
-        params: new HttpParams().set("username", username)
+        params: new HttpParams().set("account_id", account_id)
       }
     ).map(
       data => {

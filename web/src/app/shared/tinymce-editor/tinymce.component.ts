@@ -47,7 +47,7 @@ export class TinymceEditorComponent implements AfterViewInit, OnDestroy{
   public editor:any;
   ngAfterViewInit() {
     let token = this.authorizationService.getCurrentUser().token;
-    let username = this.authorizationService.getCurrentUser().username;
+    let account_id = this.authorizationService.getCurrentUser()._id;
     tinymce.init({
       selector: '#' + this.elementId,
       language: 'zh_CN',
@@ -67,7 +67,7 @@ export class TinymceEditorComponent implements AfterViewInit, OnDestroy{
       menubar: true,
       browser_spellcheck: true,
       token: token,
-      username:username,
+      account_id:account_id,
       contextmenu: true,
       schema: 'html5',
       autosave_retention: "30m", //指定持续时间编辑器内容应保留在本地存储

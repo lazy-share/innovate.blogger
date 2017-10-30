@@ -7,7 +7,7 @@ import {VisitorResolveService} from "./visitor-resolve.service";
  */
 const VISITOR_ROUTERS: Routes = [
   {path: '', redirectTo: '/not-found', pathMatch: 'full'},
-  {path: ':username', component: VisitorComponent, resolve: {obj: VisitorResolveService}}
+  {path: ':account_id', component: VisitorComponent, resolve: {obj: VisitorResolveService}}
 ];
 @NgModule({
   imports: [RouterModule.forChild(VISITOR_ROUTERS)],

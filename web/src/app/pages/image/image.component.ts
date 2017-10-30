@@ -23,7 +23,7 @@ import {ModalExcuteDeleteType} from "../../constant/modal";
 })
 export class ImageComponent extends BaseComponent implements OnInit{
 
-  public requestUsername:string;
+  public requestAccountId:string;
   public images:Image[] = new Array<Image>();
   public paging:Paging = Paging.instantiation4();
   public pagingParams:PagingParams = PagingParams.instantiation4();
@@ -51,7 +51,7 @@ export class ImageComponent extends BaseComponent implements OnInit{
     public renderer2:Renderer2
   ){
     super();
-    this.route.paramMap.switchMap((params: ParamMap) => this.requestUsername = params.get("username")).subscribe();
+    this.route.paramMap.switchMap((params: ParamMap) => this.requestAccountId = params.get("account_id")).subscribe();
     this.route.data.subscribe((rlt: {images: any}) => {
       if (!rlt.images.status) {
         this.showMsg = true;
@@ -104,7 +104,7 @@ export class ImageComponent extends BaseComponent implements OnInit{
     this.renderer2.setProperty(commentDiv, 'hidden', false);
     let commentInput = this.nativeElement.querySelector('.T' + templateId); //评论 input
     if (!parent_id){ //顶级评论发起者
-      this.renderer2.setProperty(commentInput, 'placeholder', '评论' + this.requestUsername);
+      this.renderer2.setProperty(commentInput, 'placeholder', '评论' + this.requestAccountId);
     }else { //子回复
       this.renderer2.setProperty(commentInput, 'placeholder', '回复' + subject);
     }
@@ -148,7 +148,7 @@ export class ImageComponent extends BaseComponent implements OnInit{
    */
   deleteImage() {
     let image = new Image();
-    image.username = this.authorizationService.getCurrentUser().username;
+    image.account_id = this.authorizationService.getCurrentUser()._id;
     image._id = this.imageId;
     this.imageService.deleteImage(image, this.pagingParams).subscribe(
       data => {
@@ -232,8 +232,8 @@ export class ImageComponent extends BaseComponent implements OnInit{
    * @param id
    */
   onPraise(id: string) {
-    let currentUsername = this.authorizationService.getCurrentUser().username;
-    this.imageService.praise(this.requestUsername, currentUsername, id, this.pagingParams).subscribe(
+    let currentUsername = this.authorizationService.getCurrentUser()._id;
+    this.imageService.praise(this.requestAccountId, currentUsername, id, this.pagingParams).subscribe(
       data => {
         if (!data.status) {
           this.showMsg = true;
@@ -255,8 +255,8 @@ export class ImageComponent extends BaseComponent implements OnInit{
    * @param id
    */
   submitComment(id:string){
-    this.globalReply.from_name = this.authorizationService.getCurrentUser().username;
-    this.globalReply.username = this.requestUsername;
+    this.globalReply.from_name = this.authorizationService.getCurrentUser()._id;
+    this.globalReply.account_id = this.requestAccountId;
     this.globalReply.content = this.commentContent;
     this.imageService.submitConment(this.globalReply, this.pagingParams).subscribe(
       data => {
@@ -288,7 +288,7 @@ export class ImageComponent extends BaseComponent implements OnInit{
     this.globalReply = new Reply();
     this.globalReply.doc_id = reply.doc_id;
     this.globalReply.id = reply.id;
-    this.globalReply.username = this.requestUsername;
+    this.globalReply.account_id = this.requestAccountId;
     this.modalRef = this.modalService.show(this.appModalTemplateDiv);
   }
 
@@ -297,7 +297,7 @@ export class ImageComponent extends BaseComponent implements OnInit{
    */
   initUploadFileConfig(){
     this.uploader = new FileUploader({
-      url: environment.api.uri + MY_IMAGE + '/' + this.authorizationService.getCurrentUser().username
+      url: environment.api.uri + MY_IMAGE + '/' + this.authorizationService.getCurrentUser()._id
       + '/' + this.pagingParams.skip + '/' + this.pagingParams.limit,
       itemAlias: "uploadfile",
       headers: [
@@ -354,7 +354,7 @@ export class ImageComponent extends BaseComponent implements OnInit{
     this.pagingParams.pageSize = event.itemsPerPage;
     this.pagingParams.skip = this.pagingParams.getSkip();
 
-    this.imageService.images(this.requestUsername, this.authorizationService.currentUser.username, this.pagingParams).subscribe(
+    this.imageService.images(this.requestAccountId, this.authorizationService.currentUser.account_id, this.pagingParams).subscribe(
       data => {
         if (!data.status) {
           this.showMsg = true;

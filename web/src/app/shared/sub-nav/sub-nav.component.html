@@ -5,8 +5,11 @@
         <li>
           <a routerLink="/home">首页</a>
         </li>
-        <li class="active">
+        <li>
           <a style="text-decoration: none;" routerLink="/private/info/{{requestAccountId}}">个人中心</a>
+        </li>
+        <li class="active">
+          {{requestAccountId | converToInterSpaceName | async}}
         </li>
       </ul>
     </div>

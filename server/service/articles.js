@@ -206,6 +206,7 @@ exports.addArticle = function (req, res) {
     });
 };
 
+//取消文章
 exports.cancle = function (req, res) {
     var account_id = req.query.account_id;
     if (!account_id){
@@ -372,31 +373,48 @@ exports.praise = function (req, res) {
             return;
         }
         var isExists = false;
+        var tempId = '';
         for (var i in article.praise){
-            if (article.praise[i] == from) { //已经赞过的就取消
+            tempId = String(article.praise[i]._id);
+            if (tempId == from) { //已经赞过的就取消
                 article.praise.splice(i, 1);
                 isExists = true;
                 break;
             }
         }
         if (!isExists){ //添加赞
-            article.praise.push(from);
-            if (from != article.account_id){ //不是自己给自己点赞
-                relationService.addPraiseRelation(article.account_id, from, article._id, RELATION.docType.ARTICLE); //异步插入一条赞动态相关
-            }
+            AccountModel.findOne({_id: from}).exec(function (err, acc) {
+                if (err){
+                    log.error('post praise error:' + err);
+                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                    return;
+                }
+                article.praise.push(acc);
+                if (from != article.account_id){ //不是自己给自己点赞
+                    relationService.addPraiseRelation(article.account_id, from, article._id, RELATION.docType.ARTICLE); //异步插入一条赞动态相关
+                }
+                article.save(function (err) {
+                    if (err){
+                        log.error('post praise error:' + err);
+                        res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                        return;
+                    }
+                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, article));
+                });
+            });
         }else { //删除赞
             if (from != article.account_id){ //不是自己给自己点赞
                 relationService.deletePraiseRelation(article.account_id, from, article._id, RELATION.docType.ARTICLE); //异步删除一条赞动态相关
             }
+            article.save(function (err) {
+                if (err){
+                    log.error('post praise error:' + err);
+                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                    return;
+                }
+                res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, article));
+            });
         }
-        article.save(function (err) {
-            if (err){
-                log.error('post praise error:' + err);
-                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
-                return;
-            }
-            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, article));
-        });
     });
 };
 
@@ -408,42 +426,64 @@ exports.comment = function (req, res) {
         res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
         return;
     }
+    (function (obj) {
+        ArticlesModel.findOne({comment: obj.id}).exec(function (err, article) {
+            if (err) {
+                log.error('article post comment addCommentRelation error:' + err);
+            }
+            if (obj && article && obj.from != article.account_id){ //如果不是自己评论或回复则插入一条动态相关数据
+                relationService.addCommentRelation(article.account_id, reply.from, article._id, RELATION.docType.ARTICLE);
+            }
+        });
+    })(reply);
     CommentModel.findOne({_id: reply.id}).exec(function (err, doc) {
         if (err) {
             log.error('article post comment error:' + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-        var nowTime = new Date();
-        var newReply = new ReplyModel({
-            create_time: nowTime,
-            update_time: nowTime,
-            content: reply.content,
-            from_name: reply.from_name,
-            subject_name: reply.subject_name,
-            parent_id: reply.parent_id
+        var accIds = [];
+        accIds.push(reply.from);
+        accIds.push(reply.subject);
+        AccountModel.find({_id: {$in: accIds}}).exec(function (err, accs) {
+            if (err) {
+                log.error('article post comment error:' + err);
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                return;
+            }
+            var nowTime = new Date();
+            var newReply = {};
+            if (accs[0]._id == accIds[0]){
+                newReply = new ReplyModel({
+                    create_time: nowTime,
+                    update_time: nowTime,
+                    content: reply.content,
+                    from: accs[0],
+                    subject: accs[1],
+                    parent_id: reply.parent_id
+                });
+            }else {
+                newReply = new ReplyModel({
+                    create_time: nowTime,
+                    update_time: nowTime,
+                    content: reply.content,
+                    from: accs[1],
+                    subject: accs[0],
+                    parent_id: reply.parent_id
+                });
+            }
+            if (!reply.parent_id) { //顶级评论发起者
+                doc.replies.push(newReply);
+                updateComment(res, doc);
+                return;
+            }else {
+                var allComment = doc.replies;
+                var newAllComent = recursionAppendChild(newReply, allComment, allComment);
+                doc.replies = newAllComent;
+                doc.toObject();
+                updateComment(res, doc);
+            }
         });
-        (function (obj) {
-            ArticlesModel.findOne({comment: obj.id}).exec(function (err, article) {
-                if (err) {
-                    log.error('article post comment addCommentRelation error:' + err);
-                }
-                if (obj && article && obj.from_name != article.account_id){ //如果不是自己评论或回复则插入一条动态相关数据
-                    relationService.addCommentRelation(article.account_id, reply.from_name, article._id, RELATION.docType.ARTICLE);
-                }
-            });
-        })(reply)
-        if (!reply.parent_id) { //顶级评论发起者
-            doc.replies.push(newReply);
-            updateComment(res, doc);
-            return;
-        }else {
-            var allComment = doc.replies;
-            var newAllComent = recursionAppendChild(newReply, allComment, allComment);
-            doc.replies = newAllComent;
-            doc.toObject();
-            updateComment(res, doc);
-        }
     });
 };
 
@@ -515,16 +555,16 @@ function recursionSpliceChild(rootReply, currentReply, reply) {
         }else {
             if (currentReply[i]._id == reply.id) {
                 //如果本次删除不是自己的评论或回复，则删除一条动态相关数据
-                (function (id, from_name) {
+                (function (id, from) {
                     ArticlesModel.findOne({comment: id}).exec(function (err, article) {
                         if (err) {
                             log.error('article delete comment addCommentRelation error:' + err);
                         }
-                        if (from_name != article.account_id){ //如果不是自己评论或回复删除一条动态相关数据
-                            relationService.deleteCommentRelation(article.account_id, from_name, article._id, RELATION.docType.ARTICLE);
+                        if (frome != article.account_id){ //如果不是自己评论或回复删除一条动态相关数据
+                            relationService.deleteCommentRelation(article.account_id, from, article._id, RELATION.docType.ARTICLE);
                         }
                     });
-                })(reply.root_id, currentReply[i].from_name);
+                })(reply.root_id, currentReply[i].from);
                 currentReply.splice(i, 1);
                 isFindDelete = true;
                 break;

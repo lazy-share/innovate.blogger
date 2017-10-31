@@ -21,7 +21,7 @@ var articleImageSchema = new Schema({
     collection: 'article_image'
 });
 
-articleImageSchema.index({username: 1});
+articleImageSchema.index({account_id: 1});
 articleImageSchema.set('versionKey', '_article_image');
 
 var ArticleImageModel = mongoose.model('ArticleImageModel', articleImageSchema, false);

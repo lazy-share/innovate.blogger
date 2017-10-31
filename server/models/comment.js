@@ -7,10 +7,11 @@
 var mongoose = require('mongoose');
 require('../models/comment');
 var Schema = mongoose.Schema;
+var accountSchema = require('./account').accountSchema;
 
 var replySchema = new Schema({
-    from_name: {type: String, required: true},
-    subject_name: {type: String, required: false},
+    from: {type: accountSchema, required: true},
+    subject: {type: accountSchema, required: false},
     content: {type: String, required: true},
     parent_id: {type:String, required: false},
     create_time: {type: Date, required: true, default: Date.now()},

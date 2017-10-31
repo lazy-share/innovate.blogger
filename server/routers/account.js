@@ -22,4 +22,5 @@ module.exports = function (router) {
     router.post(webRootApi + '/login', accountService.login);
     //修改头像
     router.post(webRootApi + '/private/account/head/:id', accountService.uploadHead);
+    router.get(webRootApi + '/private/account/interspace', accountService.interspace);
 };

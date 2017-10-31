@@ -7,6 +7,7 @@ var result = require('../common/result');
 var response = require('../common/response');
 var log = require('log4js').getLogger('relation');
 var RELATION = require('../common/relation_enum');
+var AccountModel = mongoose.model('AccountModel');
 
 /**
  * 添加赞
@@ -20,21 +21,43 @@ exports.addPraiseRelation = function (subject, from, doc_id, doc_type) {
         log.error('addPraiseRelation param error');
         return;
     }
+    var accIds = [];
+    accIds.push(subject);
+    accIds.push(from);
     var nowTime = new Date();
-    var newRelation = new RelationshipModel({
-        type: RELATION.type.PRAISE,
-        subject: subject,
-        from: from,
-        doc_id: doc_id,
-        doc_type:doc_type,
-        update_time: nowTime,
-        create_time: nowTime
-    });
-    newRelation.save(function (err) {
+    var newRelation = {};
+    AccountModel.find({_id: {$in: accIds}}).exec(function (err, accs) {
         if (err){
             log.error('addPraiseRelation error:' + err);
             return;
         }
+        if (String(accs[0]._id) == accIds[0]){
+            newRelation = new RelationshipModel({
+                type: RELATION.type.PRAISE,
+                subject: accs[0],
+                from: accs[1],
+                doc_id: doc_id,
+                doc_type:doc_type,
+                update_time: nowTime,
+                create_time: nowTime
+            });
+        }else {
+            newRelation = new RelationshipModel({
+                type: RELATION.type.PRAISE,
+                subject: accs[1],
+                from: accs[0],
+                doc_id: doc_id,
+                doc_type:doc_type,
+                update_time: nowTime,
+                create_time: nowTime
+            });
+        }
+        newRelation.save(function (err) {
+            if (err){
+                log.error('addPraiseRelation error:' + err);
+                return;
+            }
+        });
     });
 };
 
@@ -45,21 +68,43 @@ exports.addCommentRelation = function (subject, from, doc_id, doc_type) {
         log.error('addCommentRelation param error');
         return;
     }
+    var accIds = [];
+    accIds.push(subject);
+    accIds.push(from);
     var nowTime = new Date();
-    var newRelation = new RelationshipModel({
-        type: RELATION.type.COMMENT,
-        subject: subject,
-        from: from,
-        doc_id: doc_id,
-        doc_type:doc_type,
-        update_time: nowTime,
-        create_time: nowTime
-    });
-    newRelation.save(function (err) {
+    var newRelation = {};
+    AccountModel.find({_id: {$in: accIds}}).exec(function (err, accs) {
         if (err){
-            log.error('addCommentRelation error:' + err);
+            log.error('addPraiseRelation error:' + err);
             return;
         }
+        if (String(accs[0]._id) == accIds[0]){
+            newRelation = new RelationshipModel({
+                type: RELATION.type.COMMENT,
+                subject: accs[0],
+                from: accs[1],
+                doc_id: doc_id,
+                doc_type:doc_type,
+                update_time: nowTime,
+                create_time: nowTime
+            });
+        }else {
+            newRelation = new RelationshipModel({
+                type: RELATION.type.COMMENT,
+                subject: accs[1],
+                from: accs[0],
+                doc_id: doc_id,
+                doc_type:doc_type,
+                update_time: nowTime,
+                create_time: nowTime
+            });
+        }
+        newRelation.save(function (err) {
+            if (err){
+                log.error('addCommentRelation error:' + err);
+                return;
+            }
+        });
     });
 };
 
@@ -70,7 +115,7 @@ exports.deletePraiseRelation = function (subject, from, doc_id, doc_type) {
         log.error('deletePraiseRelation param error');
         return;
     }
-    var queryOpt = {subject:subject, from: from, doc_id: doc_id, doc_type: doc_type, type: RELATION.type.PRAISE};
+    var queryOpt = {'subject._id':subject, 'from._id': from, doc_id: doc_id, doc_type: doc_type, type: RELATION.type.PRAISE};
     RelationshipModel.findOne(queryOpt).exec(function (err, rel) {
         if (err) {
             log.error('deletePraiseRelation error:' + err);
@@ -96,7 +141,7 @@ exports.deleteCommentRelation = function (subject, from, doc_id, doc_type) {
         log.error('deleteCommentRelation param error');
         return;
     }
-    var queryOpt = {subject:subject, from: from, doc_id: doc_id, doc_type: doc_type, type: RELATION.type.COMMENT};
+    var queryOpt = {'subject._id':subject, 'from._id': from, doc_id: doc_id, doc_type: doc_type, type: RELATION.type.COMMENT};
     RelationshipModel.findOne(queryOpt).exec(function (err, rel) {
         if (err) {
             log.error('deleteCommentRelation error:' + err);
@@ -125,12 +170,12 @@ exports.deletePraiseAndCommentByDeleteDoc = function(docId, docType){
             }
         });
     }
-}
+};
 
 //与我相关列表(赞、评论、关注我的、访问我的)
 exports.praiseAndCommentRelations = function (req, res) {
     var account_id = req.query.account_id;
-    RelationshipModel.find({subject: account_id, type: {$in: [RELATION.type.PRAISE, RELATION.type.COMMENT, RELATION.type.VISITOR, RELATION.type.ATTENTION]}, is_view: false}).exec(function (err, relations) {
+    RelationshipModel.find({'subject._id': account_id, type: {$in: [RELATION.type.PRAISE, RELATION.type.COMMENT, RELATION.type.VISITOR, RELATION.type.ATTENTION]}, is_view: false}).exec(function (err, relations) {
         if (err) {
             log.error('praiseAndCommentRelations error, errMsg:' + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
@@ -143,7 +188,7 @@ exports.praiseAndCommentRelations = function (req, res) {
 //与我相关列表(赞、评论、关注我的、访问我的)
 exports.praiseAndCommentRelationCount = function (req, res) {
     var account_id = req.query.account_id;
-    RelationshipModel.find({subject: account_id, type: {$in: [RELATION.type.PRAISE, RELATION.type.COMMENT, RELATION.type.VISITOR, RELATION.type.ATTENTION]}, is_view: false}).count(function (err, count) {
+    RelationshipModel.find({'subject._id': account_id, type: {$in: [RELATION.type.PRAISE, RELATION.type.COMMENT, RELATION.type.VISITOR, RELATION.type.ATTENTION]}, is_view: false}).count(function (err, count) {
         if (err) {
             log.error('praiseAndCommentRelations error, errMsg:' + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
@@ -162,6 +207,7 @@ exports.deleteRelation = function (req, res) {
         log.error('deleteRelation param error');
         return;
     }
+    //访问和关注做逻辑删除
     if (type == RELATION.type.VISITOR || type == RELATION.type.ATTENTION){
         RelationshipModel.update({_id: id},{is_view: {$set: true}}).exec(function (err) {
             if (err){
@@ -171,6 +217,7 @@ exports.deleteRelation = function (req, res) {
             }
             res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
         });
+        //其它做物理删除
     }else {
         RelationshipModel.remove({_id: id}).exec(function (err) {
             if (err){

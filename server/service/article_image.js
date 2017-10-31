@@ -8,20 +8,19 @@
  */
 var mongoose = require('mongoose');
 var ArticleImageModel = mongoose.model('ArticleImageModel');
+var AccountModel = mongoose.model('AccountModel');
 var result = require('../common/result');
 var response = require('../common/response');
-var sysConnfig = require('../conf/sys_config');
-var env = require("../conf/environments");
 var log = require('log4js').getLogger('articleImage');
 var fs = require("fs");
 
-exports.delByDocId = function (docId, username) {
-    log.info(username + docId);
-    if (!username || !docId) {
+exports.delByDocId = function (docId, account_id) {
+    log.info(account_id + docId);
+    if (!account_id || !docId) {
         log.error('delByDocId param error');
         return;
     }
-    ArticleImageModel.find({username: username, doc_id: docId}).exec(function (err, docs) {
+    ArticleImageModel.find({account_id: account_id, doc_id: docId}).exec(function (err, docs) {
         if (err) {
             log.error('delByDocId  error');
             return;
@@ -38,23 +37,23 @@ exports.delByDocId = function (docId, username) {
                 }
             })(docs[i].image_path)
         }
-        ArticleImageModel.remove({username: username, doc_id: docId}).exec(function (err) {
+        ArticleImageModel.remove({account_id: account_id, doc_id: docId}).exec(function (err) {
             if (err) {
                 log.error('delByDocId  error');
                 return;
             }
-            log.info('delByDocId success' + username);
+            log.info('delByDocId success' + account_id);
         });
     })
 };
 
-exports.setDocId = function (username, docId) {
-    log.info(username + docId);
-    if (!username || !docId) {
+exports.setDocId = function (account_id, docId) {
+    log.info(account_id + docId);
+    if (!account_id || !docId) {
         log.error('setDocId param error');
         return;
     }
-    ArticleImageModel.find({username: username, doc_id: null}).exec(function (err, docs) {
+    ArticleImageModel.find({account_id: account_id, doc_id: null}).exec(function (err, docs) {
         if (err) {
             log.error('setDocId update error');
             return;
@@ -72,13 +71,13 @@ exports.setDocId = function (username, docId) {
     });
 };
 
-exports.deleteTempImagePath = function (username) {
-    log.info(username);
-    if (!username) {
+exports.deleteTempImagePath = function (account_id) {
+    log.info(account_id);
+    if (!account_id) {
         log.error('deleteTempImagePath param error');
         return;
     }
-    ArticleImageModel.find({username: username, doc_id: null}).exec(function (err, docs) {
+    ArticleImageModel.find({account_id: account_id, doc_id: null}).exec(function (err, docs) {
         if (err) {
             log.error('deleteTempImagePath error');
             return;
@@ -95,25 +94,25 @@ exports.deleteTempImagePath = function (username) {
                 }
             })(docs[i].image_path)
         }
-        ArticleImageModel.remove({username: username, doc_id: null}).exec(function (err) {
+        ArticleImageModel.remove({account_id: account_id, doc_id: null}).exec(function (err) {
             if (err) {
                 log.error('deleteTempImagePath remove error');
                 return;
             }
-            log.info('deleteTempImagePath success' + username);
+            log.info('deleteTempImagePath success' + account_id);
         });
     });
 };
 
-exports.addTempImagePath = function (username, path) {
-    log.info(username + path);
-    if (!username || !path) {
+exports.addTempImagePath = function (account_id, path) {
+    log.info(account_id + path);
+    if (!account_id || !path) {
         log.error('addTempImagePath param error');
         return;
     }
     var nowTime = new Date();
     var newDoc = new ArticleImageModel({
-        username: username,
+        account_id: account_id,
         image_path: path,
         doc_id: null,
         update_time: nowTime,
@@ -124,6 +123,6 @@ exports.addTempImagePath = function (username, path) {
             log.error('addTempImagePath error:' + err);
             return;
         }
-        log.info('addTempImagePath success:' + path + '@' + username);
+        log.info('addTempImagePath success:' + path + '@' + account_id);
     });
 };

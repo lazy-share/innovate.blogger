@@ -4,7 +4,7 @@ import {AuthorizationService} from "./authorization.service";
 import {SearchService} from "../search/search.service";
 import {AppResponse} from "../../vo/app-response";
 import {HttpClient, HttpParams} from "@angular/common/http";
-import {MY_RELATION_COUNT} from "../../constant/uri";
+import {MY_RELATION_COUNT, MY_VISITORS} from "../../constant/uri";
 /**
  * Created by lzy on 2017/10/7.
  */
@@ -25,18 +25,35 @@ export class AuthorizationGuardService implements CanActivate, CanActivateChild{
       this.authorizationService.logout();
       this.router.navigate(['login']);
     }
-    var requestUsername = childRoute.paramMap.get('username');
-    if (requestUsername != '' && requestUsername != null && requestUsername != undefined){
+
+    var requestAccountId = childRoute.paramMap.get('account_id');
+    //查与我相关数量
+    if (requestAccountId != '' && requestAccountId != null && requestAccountId != undefined){
       this.http.get<AppResponse>(
         MY_RELATION_COUNT,
         {
-          params: new HttpParams().set('username', requestUsername)
+          params: new HttpParams().set('account_id', requestAccountId)
         }
       ).subscribe(
         data => {
           if (data.status){
             this.authorizationService.setRelationCount(data.data);
           }
+        }
+      );
+    }
+
+    //添加访客
+    if (requestAccountId != undefined && requestAccountId && requestAccountId != this.authorizationService.getCurrentUser()._id) {
+      this.http.post<AppResponse> (
+        MY_VISITORS,
+        {from: this.authorizationService.getCurrentUser()._id, subject: requestAccountId}
+      ).subscribe(
+        data => {
+          //TODO
+        },
+        err => {
+          //TODO
         }
       );
     }

@@ -27,7 +27,7 @@ exports.isExistsAccount = function (req, res, next) {
             account_id = req.params['account_id'];
         }
         log.debug('===================enter isExistsAccount filter account_id: ' + account_id);
-        if (account_id) {
+        if (account_id && account_id != undefined) {
             const AccountModel = mongoose.model('AccountModel');
             AccountModel.findOne({_id: account_id}, function (err, doc) {
                 if (err) {

@@ -6,6 +6,7 @@
  */
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var accountSchema = require('./account').accountSchema;
 
 var articlesSchema = new Schema({
     account_id: {type: Schema.ObjectId, required: true},
@@ -14,7 +15,7 @@ var articlesSchema = new Schema({
     content: {type: String},
     is_private: {type: Boolean, default: false, required: true},
     desc: {type: String},
-    praise: [String],
+    praise: [accountSchema],
     comment: {type: Schema.ObjectId, required: true},
     visitor: {type: Number},
     interspace_name: {type: String, required: false},

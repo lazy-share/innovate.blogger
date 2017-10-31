@@ -22,16 +22,21 @@
               <div class="col-md-6 column">
                 <ng-container *ngFor="let article of articles; let i = index;">
                   <ng-container *ngIf="i % 2 == 0">
-                    <a style="text-decoration: none;"
-                       routerLink="/private/article/detail/{{article.account_id}}/{{article._id}}">
                       <div class="well well-sm">
-                        <p>标题：<span style="color:black;">{{article.title}}</span></p>
-                        <p>描述：<span style="color:black;">{{article.desc}}</span></p>
-                        <small>—{{article.interspace_name}} 发表于:{{article.update_time | date:
-                          "yyyy-MM-dd HH:mm:ss"}}
-                        </small>
-                      </div>
+                        <a style="text-decoration: none;"
+                           routerLink="/private/article/detail/{{article.account_id}}/{{article._id}}">
+                        <div>
+                          <div style="float: left; margin-right: 10px;"><img style="width:50px; height: 50px;" class="img-circle" [src]="article.head_portrait"/></div>
+                          <div style="padding-top: 8px;"><span>标题：<span style="color:black;">{{article.title}}</span></span></div>
+                          <div><span>描述：<span style="color:black;">{{article.desc}}</span></span></div>
+                        </div>
                     </a>
+                        <div class="div-to-hide-hr"></div>
+                        <div>
+                          <span><a style="text-decoration: none;" routerLink="/private/info/{{article.account_id}}">{{article.interspace_name}}</a><span style="color:black;"> 发表于: {{article.update_time | date:
+                          "yyyy-MM-dd HH:mm:ss"}}</span></span>
+                        </div>
+                      </div>
                   </ng-container>
                 </ng-container>
               </div>
@@ -39,16 +44,21 @@
               <div class="col-md-6 column">
                 <ng-container *ngFor="let article of articles; let i = index;">
                   <ng-container *ngIf="i % 2 != 0">
-                    <a style="text-decoration: none;"
-                       routerLink="/private/article/detail/{{article.account_id}}/{{article._id}}">
-                      <div class="well well-sm">
-                        <p>标题：<span style="color:black;">{{article.title}}</span></p>
-                        <p>描述：<span style="color:black;">{{article.desc}}</span></p>
-                        <small>—{{article.interspace_name}} 发表于:{{article.update_time | date:
-                          "yyyy-MM-dd HH:mm:ss"}}
-                        </small>
+                    <div class="well well-sm">
+                      <a style="text-decoration: none;"
+                         routerLink="/private/article/detail/{{article.account_id}}/{{article._id}}">
+                        <div>
+                          <div style="float: left; margin-right: 10px;"><img style="width:50px; height: 50px;" class="img-circle" [src]="article.head_portrait"/></div>
+                          <div style="padding-top: 8px;"><span>标题：<span style="color:black;">{{article.title}}</span></span></div>
+                          <div><span>描述：<span style="color:black;">{{article.desc}}</span></span></div>
+                        </div>
+                      </a>
+                      <div class="div-to-hide-hr"></div>
+                      <div>
+                          <span><a style="text-decoration: none;" routerLink="/private/info/{{article.account_id}}">{{article.interspace_name}}</a><span style="color:black;"> 发表于: {{article.update_time | date:
+                          "yyyy-MM-dd HH:mm:ss"}}</span></span>
                       </div>
-                    </a>
+                    </div>
                   </ng-container>
                 </ng-container>
               </div>
@@ -88,14 +98,16 @@
               <div class="col-md-6 column">
                 <ng-container *ngFor="let note of notes; let i = index;">
                   <ng-container *ngIf="i % 2 == 0">
-                    <a style="text-decoration: none;" routerLink="/private/note/{{note.account_id}}">
                       <div class="well well-sm">
-                        <p>说说：<span style="color:black;">{{note.content}}</span></p>
-                        <small>—{{note.interspace_name}} 发表于:{{note.update_time | date: "yyyy-MM-dd
-                          HH:mm:ss"}}
-                        </small>
+                        <div>
+                          <div style="float: left; margin-right: 10px;"><img style="width:50px; height: 50px;" class="img-circle" [src]="note.head_portrait"/></div>
+                          <div style="padding-top: 8px;"><a style="text-decoration: none;" routerLink="/private/info/{{note.account_id}}">{{note.interspace_name}}</a></div>
+                          <div><span>发表于：{{note.update_time | date: "yyyy-MM-dd HH:mm:ss"}}</span></div>
+                        </div>
+                        <div class="div-to-hide-hr"></div>
+                        <a style="text-decoration: none;" routerLink="/private/note/{{note.account_id}}">
+                        <p style="color: black;">{{note.content}}</p> </a>
                       </div>
-                    </a>
                   </ng-container>
                 </ng-container>
               </div>
@@ -103,14 +115,16 @@
               <div class="col-md-6 column">
                 <ng-container *ngFor="let note of notes; let i = index;">
                   <ng-container *ngIf="i % 2 != 0">
-                    <a style="text-decoration: none;" routerLink="/private/note/{{note.account_id}}">
-                      <div class="well well-sm">
-                        <p>说说：<span style="color:black;">{{note.content}}</span></p>
-                        <small>—{{note.interspace_name}} 发表于:{{note.update_time | date: "yyyy-MM-dd
-                          HH:mm:ss"}}
-                        </small>
+                    <div class="well well-sm">
+                      <div>
+                        <div style="float: left; margin-right: 10px;"><img style="width:50px; height: 50px;" class="img-circle" [src]="note.head_portrait"/></div>
+                        <div style="padding-top: 8px;"><a style="text-decoration: none;" routerLink="/private/info/{{note.account_id}}">{{note.interspace_name}}</a></div>
+                        <div><span>发表于：{{note.update_time | date: "yyyy-MM-dd HH:mm:ss"}}</span></div>
                       </div>
-                    </a>
+                      <div class="div-to-hide-hr"></div>
+                      <a style="text-decoration: none;" routerLink="/private/note/{{note.account_id}}">
+                        <p style="color: black;">{{note.content}}</p> </a>
+                    </div>
                   </ng-container>
                 </ng-container>
               </div>

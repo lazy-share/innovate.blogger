@@ -4,6 +4,8 @@
 var mongoose = require('mongoose');
 var commentSchema = require('./comment').commentSchema;
 var Schema = mongoose.Schema;
+var accountSchema = require('./account').accountSchema;
+
 var imageSchema = new Schema({
     account_id: {type: Schema.ObjectId, required: true},
     image_url: {type: String, required: true},
@@ -12,7 +14,7 @@ var imageSchema = new Schema({
     interspace_name: {type: String, required: false},
     head_portrait: {type: String, required: false},
     comment: commentSchema,
-    praise: [String],
+    praise: [accountSchema],
     is_private: {type: Boolean, required: true, default: false},
     create_time: {type:Date, required: true, default: Date.now()},
     update_time: {type: Date, required: true, default: Date.now()}

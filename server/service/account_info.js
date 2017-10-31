@@ -93,7 +93,7 @@ exports.attentions = function (req, res) {
     }
 
     //我的关注
-    RelationshipModel.find({from: account_id, type: RELATION.type.ATTENTION}).sort({'update_time': -1}).exec(function (err, attentions) {
+    RelationshipModel.find({'from._id': account_id, type: RELATION.type.ATTENTION}).sort({'update_time': -1}).exec(function (err, attentions) {
         if (err) {
             console.log('account info attentions err! msg:' + err);
             log.error('account info attentions err! msg:' + err);
@@ -101,19 +101,7 @@ exports.attentions = function (req, res) {
             return;
         }
         if (attentions && attentions.length > 0){
-            var accountIds = [];
-            for (var i in attentions){
-                accountIds.push(attentions[i].subject);
-            }
-            AccountModel.find({account_id: {$in: accountIds}}).exec(function (err, docs) {
-                if (err) {
-                    console.log('account info attentions err! msg:' + err);
-                    log.error('account info attentions err! msg:' + err);
-                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
-                    return;
-                }
-                res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, docs));
-            });
+            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, attentions));
         }else {
             res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, []));
         }
@@ -133,7 +121,7 @@ function fans(req, res) {
     }
 
     //关注我的
-    RelationshipModel.find({subject: account_id, type: RELATION.type.ATTENTION}).sort({'update_time': -1}).exec(function (err, fans) {
+    RelationshipModel.find({'subject._id': account_id, type: RELATION.type.ATTENTION}).sort({'update_time': -1}).exec(function (err, fans) {
         if (err) {
             console.log('account info fans err! msg:' + err);
             log.error('account info fans err! msg:' + err);
@@ -141,19 +129,7 @@ function fans(req, res) {
             return;
         }
         if (fans && fans.length > 0){
-            var accountIds = [];
-            for (var i in fans){
-                accountIds.push(fans[i].from);
-            }
-            AccountModel.find({account_id: {$in: accountIds}}).exec(function(err, docs){
-                if (err) {
-                    console.log('account info fans err! msg:' + err);
-                    log.error('account info fans err! msg:' + err);
-                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
-                    return;
-                }
-                res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, docs));
-            });
+            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, fans));
         }else {
             res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, []));
         }
@@ -171,7 +147,7 @@ exports.attention = function (req, res) {
         return;
     }
 
-    RelationshipModel.findOne({type: RELATION.type.ATTENTION, from: from, subject: subject}, function (err, doc) {
+    RelationshipModel.findOne({type: RELATION.type.ATTENTION, 'from._id': from, 'subject._id': subject}, function (err, doc) {
             if (err) {
                 log.error('account info post attention error! msg:' + err);
                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
@@ -179,6 +155,7 @@ exports.attention = function (req, res) {
             }
             if (doc) {  //已经关注过
                 doc.set('update_time', Date.now()); //更新时间
+                doc.set('is_view', false);
                 doc.save(function (err) {
                     if (err) {
                         log.error('account info post attention error! msg:' + err);
@@ -191,22 +168,44 @@ exports.attention = function (req, res) {
                 });
             } else {  //没有关注过则添加关注
                 var nowTime = new Date();
-                var relationshipModel = new RelationshipModel({
-                    subject: subject,
-                    from: from,
-                    create_time:nowTime,
-                    update_time:nowTime,
-                    type: RELATION.type.ATTENTION
-                });
-                relationshipModel.save(function (err) {
+                var accIds = [];
+                accIds.push(from);
+                accIds.push(subject);
+                AccountModel.find({_id: {$in: accIds}}).exec(function (err, accs) {
                     if (err) {
                         log.error('account info post attention error! msg:' + err);
                         res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                         return;
-                    } else {
-                        req.query.account_id = subject;
-                        fans(req, res);
                     }
+
+                    var relationshipModel = {};
+                    if (accIds[0] == String(accs[0]._id)){
+                        relationshipModel = new RelationshipModel({
+                            subject: accs[1],
+                            from: accs[0],
+                            create_time:nowTime,
+                            update_time:nowTime,
+                            type: RELATION.type.ATTENTION
+                        });
+                    }else {
+                        relationshipModel = new RelationshipModel({
+                            subject: accs[0],
+                            from: accs[1],
+                            create_time:nowTime,
+                            update_time:nowTime,
+                            type: RELATION.type.ATTENTION
+                        });
+                    }
+                    relationshipModel.save(function (err) {
+                        if (err) {
+                            log.error('account info post attention error! msg:' + err);
+                            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                            return;
+                        } else {
+                            req.query.account_id = subject;
+                            fans(req, res);
+                        }
+                    });
                 });
             }
         }
@@ -224,23 +223,26 @@ exports.cancleAttention = function (req, res) {
         return;
     }
 
-    RelationshipModel.find({type: RELATION.type.ATTENTION, from: from, subject: subject}, function (err, docs) {
+    RelationshipModel.findOne({type: RELATION.type.ATTENTION, 'from._id': from, 'subject._id': subject}, function (err, doc) {
         if (err) {
             log.error('account info delte attention error! msg:' + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-        if (docs && docs.length > 0) {
-            RelationshipModel.remove({type: RELATION.type.ATTENTION, subject: subject, from: from},function (err) {
-                if (err) {
-                    log.error('account info delete attention error! msg:' + err);
-                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
-                    return;
-                }
-                req.query.account_id = subject;
-                fans(req, res);
-            });
+        if (!doc){
+            log.error('account info delte attention error! msg:无此关注数据');
+            res.json(result.json(response.C605.status, response.C605.code, response.C605.msg, null));
+            return;
         }
+        doc.remove(function (err) {
+            if (err) {
+                log.error('account info delete attention error! msg:' + err);
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                return;
+            }
+            req.query.account_id = subject;
+            fans(req, res);
+        });
     })
 };
 
@@ -253,26 +255,14 @@ exports.visitors = function (req, res) {
         res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
         return;
     }
-    RelationshipModel.find({type: RELATION.type.VISITOR, subject: subject}).sort({update_time: -1}).exec(function (err, visitors) {
+    RelationshipModel.find({type: RELATION.type.VISITOR, 'subject._id': subject}).sort({update_time: -1}).exec(function (err, visitors) {
        if (err){
            log.error('account info visitors error! msg:' + err);
            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
            return;
        }
         if (visitors && visitors.length > 0){
-            var accountIds = [];
-            for (var i in visitors){
-                accountIds.push(visitors[i].from);
-            }
-            var query = AccountModel.find({account_id: {$in: accountIds}});
-            query.exec(function (err, docs) {
-                if (err) {
-                    log.error('account info visitors error! msg:' + err);
-                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
-                    return;
-                }
-                res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, docs));
-            });
+            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, visitors));
         }else {
             res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, []));
         }
@@ -289,7 +279,7 @@ exports.addVisitor = function (req, res) {
         res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
         return;
     }
-    RelationshipModel.findOne({subject: subject, from: from, type: RELATION.type.VISITOR}).exec(function (err, doc) {
+    RelationshipModel.findOne({'subject._id': subject, 'from._id': from, type: RELATION.type.VISITOR}).exec(function (err, doc) {
         if (err) {
             log.error('addVisitor error! msg:' + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
@@ -298,6 +288,7 @@ exports.addVisitor = function (req, res) {
         if (doc){ //访问过
             doc.update_time = new Date();
             doc.ip = getClientIp(req);
+            doc.is_view = false;
             doc.save(function (err) {
                 if (err){
                     log.error('addVisitor error! msg:' + err);
@@ -309,23 +300,47 @@ exports.addVisitor = function (req, res) {
         }else {
             var nowTime = new Date();
             var ip = getClientIp(req);
-            var relationshipModel = new RelationshipModel({
-                subject: subject,
-                from: from,
-                create_time:nowTime,
-                update_time:nowTime,
-                ip:ip,
-                type: RELATION.type.VISITOR
-            });
-            relationshipModel.save(function (err) {
+            var accIds = [];
+            accIds.push(from);
+            accIds.push(subject);
+            AccountModel.find({_id: {$in: accIds}}).exec(function (err, accs) {
                 if (err) {
-                    log.error('addVisitor error! msg:' + err);
+                    log.error('account info post visitor error! msg:' + err);
                     res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                     return;
-                } else {
-                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
                 }
+
+                var relationshipModel = {};
+                if (accIds[0] == String(accs[0]._id)){
+                    relationshipModel = new RelationshipModel({
+                        subject: accs[1],
+                        from: accs[0],
+                        create_time:nowTime,
+                        update_time:nowTime,
+                        ip:ip,
+                        type: RELATION.type.VISITOR
+                    });
+                }else {
+                    relationshipModel = new RelationshipModel({
+                        subject: accs[0],
+                        from: accs[1],
+                        create_time:nowTime,
+                        update_time:nowTime,
+                        ip:ip,
+                        type: RELATION.type.VISITOR
+                    });
+                }
+                relationshipModel.save(function (err) {
+                    if (err) {
+                        log.error('addVisitor error! msg:' + err);
+                        res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                        return;
+                    } else {
+                        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
+                    }
+                });
             });
+
         }
     });
 };

@@ -193,6 +193,23 @@ exports.login = function (req, res) {
         });
 };
 
+exports.interspace = function (req, res) {
+    var id = req.query.account_id;
+    if (!id){
+        log.error('interspace params error' + id);
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+        return;
+    }
+    AccountModel.findOne({_id: id}).exec(function (err, doc) {
+        if (err){
+            log.error('interspace error' + err);
+            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+            return;
+        }
+        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, doc.interspace_name));
+    });
+};
+
 //上传头像
 exports.uploadHead = function (req, res) {
     var id = req.params.id;

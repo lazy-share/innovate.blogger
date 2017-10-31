@@ -75,29 +75,53 @@ exports.comment = function (req, res) {
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-        var nowTime = new Date();
-        var newReply = new ReplyModel({
-            create_time: nowTime,
-            update_time: nowTime,
-            content: reply.content,
-            from_name: reply.from_name,
-            subject_name: reply.subject_name,
-            parent_id: reply.parent_id
+        if (doc.account_id != reply.from) {
+            relationService.addCommentRelation(doc.account_id, reply.from, doc._id, RELATION.docType.IMAGE);
+        }
+        var accIds = [];
+        accIds.push(reply.from);
+        accIds.push(reply.subject);
+        AccountModel.find({_id: {$in: accIds}}).exec(function (err, accs) {
+            if (err) {
+                log.error('image post comment error:' + err);
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                return;
+            }
+            var nowTime = new Date();
+            var newReply = {};
+            if (String(accs[0]._id) == accIds[0]){
+                newReply = new ReplyModel({
+                    create_time: nowTime,
+                    update_time: nowTime,
+                    content: reply.content,
+                    from: accs[0],
+                    subject: accs[1],
+                    parent_id: reply.parent_id
+                });
+            }else {
+                newReply = new ReplyModel({
+                    create_time: nowTime,
+                    update_time: nowTime,
+                    content: reply.content,
+                    from: accs[1],
+                    subject: accs[0],
+                    parent_id: reply.parent_id
+                });
+            }
+
+            if (!reply.parent_id) { //顶级评论发起者
+                doc.comment.replies.push(newReply);
+                updateComment(req, res, doc, reply.account_id, req.body.paging);
+                return;
+            }else {
+                var allComment = doc.comment.replies;
+                var newAllComent = recursionAppendChild(newReply, allComment, allComment);
+                doc.comment.replies = newAllComent;
+                doc.toObject();
+                updateComment(req, res, doc, reply.account_id, req.body.paging);
+            }
         });
-        if (doc.account_id != reply.from_name) {
-            relationService.addCommentRelation(doc.account_id, reply.from_name, doc._id, RELATION.docType.IMAGE);
-        }
-        if (!reply.parent_id) { //顶级评论发起者
-            doc.comment.replies.push(newReply);
-            updateComment(req, res, doc, reply.account_id, req.body.paging);
-            return;
-        }else {
-            var allComment = doc.comment.replies;
-            var newAllComent = recursionAppendChild(newReply, allComment, allComment);
-            doc.comment.replies = newAllComent;
-            doc.toObject();
-            updateComment(req, res, doc, reply.account_id, req.body.paging);
-        }
+
     });
 };
 
@@ -185,8 +209,8 @@ function recursionSpliceChild(rootReply, currentReply, reply) {
         }else {
             if (currentReply[i]._id == reply.id) {
                 (function (obj, reply) {
-                    if (obj.from_name != reply.account_id){
-                        relationService.deleteCommentRelation(reply.account_id, obj.from_name, reply.doc_id, RELATION.docType.IMAGE);
+                    if (obj.from != reply.account_id){
+                        relationService.deleteCommentRelation(reply.account_id, obj.from, reply.doc_id, RELATION.docType.IMAGE);
                     }
                 })(currentReply[i], reply);
                 currentReply.splice(i, 1);
@@ -214,13 +238,14 @@ exports.praise = function (req, res) {
     ImageModel.findOne({account_id: account_id, _id: id}).exec(function (err, doc) {
         if (err) {
             log.error('image praise error:' + err);
-            res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-        var praise = doc.praise;
+
         var isExists = false;
-        for (var i in praise){
-            if (praise[i] == from){
+        for (var i in doc.praise){
+            if (String(doc.praise[i]._id) == from){
+                doc.praise.splice(i, 1);
                 isExists = true;
                 break;
             }
@@ -229,17 +254,17 @@ exports.praise = function (req, res) {
             if (doc.account_id != from) { //如果不是自己赞自己，则删除一条动态相关数据
                 relationService.deletePraiseRelation(doc.account_id, from, doc._id, RELATION.docType.IMAGE);
             }
-            ImageModel.update({account_id: account_id, _id: id}, {$pull: {praise: from}}).exec(function (err) {
+            doc.save(function (err) {
                 if (err) {
                     log.error('image praise error:' + err);
-                    res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                     return;
                 }
                 if (paging) {
                     ImageModel.find({account_id: account_id}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
                         if (err) {
                             log.error('删除赞后查询出错，error:' + err);
-                            res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                             return;
                         }
                         res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, docs));
@@ -247,30 +272,39 @@ exports.praise = function (req, res) {
                 }else {
                     res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
                 }
-            });
+            })
         }else {
             if (doc.account_id != from) { //如果不是自己赞自己，则添加一条动态相关数据
                 relationService.addPraiseRelation(doc.account_id, from, doc._id, RELATION.docType.IMAGE);
             }
-            ImageModel.update({account_id: account_id, _id: id}, {$push: {praise: from}}).exec(function (err) {
+            AccountModel.findOne({_id: from}).exec(function (err, acc) {
                 if (err) {
                     log.error('image praise error:' + err);
-                    res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
+                    res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                     return;
                 }
-                if (paging) {
-                    ImageModel.find({account_id: account_id}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
-                        if (err) {
-                            log.error('删除赞后查询出错，error:' + err);
-                            res.json(result.json(response.C606.status, response.C606.code, response.C606.msg, null));
-                            return;
-                        }
-                        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, docs));
-                    });
-                }else {
-                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
-                }
+                doc.praise.push(acc);
+                doc.save(function (err) {
+                    if (err) {
+                        log.error('image praise error:' + err);
+                        res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                        return;
+                    }
+                    if (paging) {
+                        ImageModel.find({account_id: account_id}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, docs) {
+                            if (err) {
+                                log.error('删除赞后查询出错，error:' + err);
+                                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                                return;
+                            }
+                            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, docs));
+                        });
+                    }else {
+                        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
+                    }
+                })
             });
+
         }
     });
 };
@@ -316,50 +350,42 @@ exports.upload = function (req, res) {
         var comment = new CommentModel({
             replies: []
         });
-        AccountModel.findOne({_id: account_id}).exec(function (err, acc) {
-            if (err) {
-                console.log('upload photo error: ' + err);
-                log.error("upload photo error: " + err);
+        var newImage = new ImageModel({
+            visitor: 0,
+            praise: [],
+            account_id: account_id,
+            comment: comment,
+            image_url: filePath,
+            update_time: nowTime,
+            create_time: nowTime,
+            interspace_name: acc.interspace_name,
+            head_portrait: acc.head_portrait
+        });
+        newImage.save(function (err) {
+            if (err){
+                log.error("upload photo success, save to database error: " + err);
                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                 return;
             }
-            var newImage = new ImageModel({
-                visitor: 0,
-                praise: [],
-                account_id: account_id,
-                comment: comment,
-                image_url: filePath,
-                update_time: nowTime,
-                create_time: nowTime,
-                interspace_name: acc.interspace_name,
-                head_portrait: acc.head_portrait
-            });
-            newImage.save(function (err) {
+            skip = parseInt(skip);
+            limit = parseInt(limit);
+            ImageModel.find({account_id: account_id}).sort({update_time: -1}).skip(skip).limit(limit).exec(function (err, images) {
                 if (err){
-                    log.error("upload photo success, save to database error: " + err);
+                    log.error("upload photo and save photo success, query error: " + err);
                     res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                     return;
                 }
-                skip = parseInt(skip);
-                limit = parseInt(limit);
-                ImageModel.find({account_id: account_id}).sort({update_time: -1}).skip(skip).limit(limit).exec(function (err, images) {
+                ImageModel.find({account_id: account_id}).count(function (err, count) {
                     if (err){
                         log.error("upload photo and save photo success, query error: " + err);
                         res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                         return;
                     }
-                    ImageModel.find({account_id: account_id}).count(function (err, count) {
-                        if (err){
-                            log.error("upload photo and save photo success, query error: " + err);
-                            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
-                            return;
-                        }
-                        var obj = {images: images, count: count};
-                        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
-                    });
-                })
+                    var obj = {images: images, count: count};
+                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+                });
             })
-        });
+        })
     })
 };
 

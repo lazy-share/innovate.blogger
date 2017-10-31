@@ -21,7 +21,7 @@
               <a (click)="view(relation._id, relation.type)" style="text-decoration: none;"
                  routerLink="/private/article/detail/{{relation.subject}}/{{relation.doc_id}}">
                 <div>
-                  {{relation.from}}
+                  {{relation.from | converToInterSpaceName | async}}
                   <span *ngIf="relation.type == 3">赞了你的</span>
                   <span *ngIf="relation.type == 4">评论/回复了你的</span>
                   <span *ngIf="relation.type == 1">关注了你的</span>

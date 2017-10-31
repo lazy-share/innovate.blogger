@@ -25,9 +25,34 @@ exports.articles = function (req, res) {
                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                 return;
             }
-
+            var accIds = [];
+            for (var i in articles){
+                accIds.push(articles[i].account_id);
+            }
             var obj = {articles: articles, count: count};
-            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+            if (accIds.length > 0){
+                AccountModel.find({_id: {$in: accIds}}).exec(function (err, accs) {
+                    if (err){
+                        log.error("home articles error:" + err);
+                        res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                        return;
+                    }
+
+                    for (var i = 0; i < articles.length; i++){
+                        for (var j = 0; j < accs.length; j++){
+                            if (String(accs[j]._id) == String(articles[i].account_id)){
+                                articles[i].interspace_name = accs[j].interspace_name;
+                                articles[i].head_portrait = accs[j].head_portrait;
+                                break;
+                            }
+                        }
+                    }
+                    obj.articles = articles;
+                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+                });
+            }else {
+                res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+            }
         });
     });
 };
@@ -37,18 +62,42 @@ exports.notes = function (req, res) {
     paging = JSON.parse(paging);
     NotesModel.find().sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, notes) {
         if (err){
-            log.error("home articles error:" + err);
+            log.error("home notes error:" + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
         NotesModel.find().count(function (err, count) {
             if (err){
-                log.error("home articles error:" + err);
+                log.error("home notes error:" + err);
                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                 return;
             }
             var obj = {notes: notes, count: count};
-            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+            var accIds = [];
+            for (var i in notes){
+                accIds.push(notes[i].account_id);
+            }
+            if (accIds.length > 0){
+                AccountModel.find({_id: {$in: accIds}}).exec(function (err, accs) {
+                    if (err){
+                        log.error("home notes error:" + err);
+                        res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                        return;
+                    }
+                    for (var i in obj.notes){
+                        for (var j in accs){
+                            if (String(accs[j]._id) == String(obj.notes[i].account_id)){
+                                obj.notes[i].interspace_name = accs[j].interspace_name;
+                                obj.notes[i].head_portrait = accs[j].head_portrait;
+                                break;
+                            }
+                        }
+                    }
+                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+                });
+            }else {
+                res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, obj));
+            }
         });
     });
 };
@@ -94,7 +143,31 @@ exports.images = function (req, res) {
                         res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                         return;
                     }
-                    res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, images));
+                    var accIds = [];
+                    for (var i in images){
+                        accIds.push(images[i].account_id);
+                    }
+                    if (accIds.length > 0){
+                        AccountModel.find({_id: {$in: accIds}}).exec(function (err, accs) {
+                            if (err){
+                                log.error("home images error:" + err);
+                                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                                return;
+                            }
+                            for (var i in images){
+                                for (var j in accs){
+                                    if (String(accs[j]._id) == String(images[i].account_id)){
+                                        images[i].interspace_name = accs[j].interspace_name;
+                                        images[i].head_portrait = accs[j].head_portrait;
+                                        break;
+                                    }
+                                }
+                            }
+                            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, images));
+                        });
+                    }else {
+                        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, images));
+                    }
                 });
             });
         });

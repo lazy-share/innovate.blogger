@@ -75,21 +75,6 @@ export class InfoComponent extends BaseComponent implements OnInit, OnDestroy {
         this.initAccountInfo();
         this.selectAddressComponentChild.loadAllProvinces();
       });
-    this.addVisitor();
-  }
-
-
-  addVisitor(){
-    if (this.requestAccountId != this.storageAccountId) {
-      this.infoService.addVisitor(this.requestAccountId, this.storageAccountId).subscribe(
-        data => {
-          //todo 处理添加访客成功
-        },
-        err => {
-          //todo 处理添加访客失败
-        }
-      );
-    }
   }
 
   initField(){

@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs/Observable";
-import {HttpClient, HttpParams, HttpErrorResponse} from "@angular/common/http";
-import {ACCOUNT_INFO, MY_VISITORS} from "../../constant/uri";
+import {HttpClient, HttpErrorResponse, HttpParams} from "@angular/common/http";
+import {ACCOUNT_INFO} from "../../constant/uri";
 import {AppResponse} from "../../vo/app-response";
 import {Account} from "../../vo/account";
 import {Router} from "@angular/router";
@@ -15,17 +15,6 @@ export class InfoService {
     public http: HttpClient,
     public router:Router
   ){}
-
-  addVisitor(subject: string, from:string):Observable<AppResponse> {
-    return this.http.post<AppResponse> (
-      MY_VISITORS,
-      {from: from, subject: subject}
-    ).map(
-      data => {
-        return data;
-      }
-    );
-  }
 
   initAccountInfo(account_id: string): Observable<any> {
     return this.http.get<AppResponse>(

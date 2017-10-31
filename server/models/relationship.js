@@ -8,9 +8,10 @@
  */
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var accountSchema = require('./account').accountSchema;
 var relationshipSchema = new Schema({
-    subject: {type: Schema.ObjectId, required: true, index: 1},
-    from: {type: Schema.ObjectId, required: true, index: 1},
+    subject: {type: accountSchema, required: true, index: 1},
+    from: {type: accountSchema, required: true, index: 1},
     type: {type: Number, required: true, default: 1, enum: [1,2,3,4,5,6]}, //1:关注关系 2:访问关系 3：赞  4：评论  其它预留字段
     ip: {type: String, required: false, index: 1},
     doc_id:{type:Schema.ObjectId, required: false},

@@ -23,7 +23,7 @@ import {FileUploadModule} from "ng2-file-upload";
 import {MyDatePickerModule} from "mydatepicker";
 import {MyDatePickerPipe} from "./form-pipe/my-date-picker";
 import {TinymceEditorComponent} from "./tinymce-editor/tinymce.component";
-import {IsExistsArrPipe, JoinArrPipe} from "./common/common.pipe";
+import {ConverToInterSpaceNamePipe, IsExistsArrPipe, JoinArrPipe} from "./common/common.pipe";
 import {ReplyComponent} from "./reply/reply.component";
 import {EstimateComponent} from "./estimate/estimate.component";
 import {ArticleNavComponent} from "./article-nav/article-nav.component";
@@ -44,6 +44,7 @@ import {ArticleNavComponent} from "./article-nav/article-nav.component";
     FileUploadModule
   ],
   declarations: [
+    ConverToInterSpaceNamePipe,
     CompareToDirective,
     EmailDirective,
     MobileDirective,
@@ -68,6 +69,7 @@ import {ArticleNavComponent} from "./article-nav/article-nav.component";
     ArticleNavComponent
   ],
   exports: [
+    ConverToInterSpaceNamePipe,
     RouterModule,
     PaginationModule,
     TooltipModule,

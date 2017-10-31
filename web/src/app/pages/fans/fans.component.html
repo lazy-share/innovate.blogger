@@ -16,17 +16,17 @@
           <h4 *ngIf="authorizationService.currentUser._id != requestAccountId" class="text-danger">还没有人关注TA</h4>
         </div>
         <div *ngIf="(fans.length > 0)" class="col-lg-12 col-md-12 col-sm-12">
-          <div style="margin-right: 2.5px;margin-left:2.5px;text-align:center; " *ngFor="let fan of fans"
+          <div style="text-align:center; " *ngFor="let fan of fans"
                class="well well-sm">
             <a style="text-decoration: none;" routerLink="/private/info/{{fan.from}}">
               <div>
                 <img alt="" style="width:50px; height: 50px;" class="img-circle" src="{{fan.head_portrait}}"/>
               </div>
               <div *ngIf="authorizationService.currentUser._id == fan.from">
-                {{fan.from}}<span style="color:red;">(您自己)</span>
+                {{fan.interspace_name}}<span style="color:red;">(您自己)</span>
               </div>
               <div *ngIf="authorizationService.currentUser._id != fan.from">
-                {{fan.from}}
+                {{fan.interspace_name}}
               </div>
               <div style="color: palevioletred;">
                 关注时间：{{fan.update_time | date:"yyyy-MM-dd HH:mm:ss"}}

@@ -12,7 +12,7 @@
 <p *ngIf="doc.praise.length > 0">
   <span class="glyphicon glyphicon-thumbs-up"></span>
   <a style="text-decoration: none;" routerLink="/private/info/{{p}}" *ngFor="let p of doc.praise; let i = index;" class="comment-font-color">
-    {{p}}
+    {{p | converToInterSpaceName | async}}
     <span *ngIf="i < (doc.praise.length - 1)">、</span>
   </a>
   <span> 觉得很赞</span>
@@ -20,7 +20,7 @@
 
 <div *ngFor="let rep of doc.comment.replies">
   <p>
-    <a style="text-decoration: none;" routerLink="/private/info/{{rep.from_name}}">{{rep.from_name}}:</a>
+    <a style="text-decoration: none;" routerLink="/private/info/{{rep.from_name}}">{{rep.from_name | converToInterSpaceName | async}}:</a>
     <a *ngIf="rep.from_name != authorizationService.currentUser._id" style="text-decoration: none; color:black;" (click)="comment(doc._id, rep._id, rep.from_name)">{{rep.content}}</a>
     <a *ngIf="rep.from_name == authorizationService.currentUser._id" style="text-decoration: none; color:black;" (click)="deleteCommentBefore(doc._id, rep._id)">{{rep.content}}</a>
     <ng-container *ngIf="rep.replies.length > 0">

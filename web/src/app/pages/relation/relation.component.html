@@ -7,7 +7,7 @@
       </div>
       <div class="panel-body">
         <div *ngIf="relations.length > 0">
-          <p *ngIf="authorizationService.currentUser._id == requestAccountId" class="text-danger">与我相关</p>
+          <button class="btn btn-default" (click)="clear()" type="button">清空所有</button>
         </div>
         <hr class="hr">
         <div *ngIf="(relations.length <= 0)" class="col-md-offset-4 col-lg-offset-4 col-lg-4 col-md-4">
@@ -19,9 +19,9 @@
 
             <ng-container *ngIf="relation.doc_type == 1">
               <a (click)="view(relation._id, relation.type)" style="text-decoration: none;"
-                 routerLink="/private/article/detail/{{relation.subject}}/{{relation.doc_id}}">
+                 routerLink="/private/article/detail/{{relation.subject._id}}/{{relation.doc_id}}">
                 <div>
-                  {{relation.from | converToInterSpaceName | async}}
+                  {{relation.from.interspace_name}}
                   <span *ngIf="relation.type == 3">赞了你的</span>
                   <span *ngIf="relation.type == 4">评论/回复了你的</span>
                   <span *ngIf="relation.type == 1">关注了你的</span>
@@ -29,6 +29,7 @@
                   <span *ngIf="relation.doc_type == 2">说说</span>
                   <span *ngIf="relation.doc_type == 1">文章</span>
                   <span *ngIf="relation.doc_type == 3">图片</span>
+                  <span *ngIf="!relation.doc_type">博客空间</span>
                   <div style="color: palevioletred;">
                     时间：{{relation.update_time | date:"yyyy-MM-dd HH:mm:ss"}}
                   </div>
@@ -37,9 +38,9 @@
             </ng-container>
 
             <ng-container *ngIf="relation.doc_type == 2">
-              <a (click)="view(relation._id, relation.type)" style="text-decoration: none;" routerLink="/private/note/{{relation.subject}}">
+              <a (click)="view(relation._id, relation.type)" style="text-decoration: none;" routerLink="/private/note/{{relation.subject._id}}">
                 <div>
-                  {{relation.from}}
+                  {{relation.from.interspace_name}}
                   <span *ngIf="relation.type == 3">赞了你的</span>
                   <span *ngIf="relation.type == 4">评论/回复了你的</span>
                   <span *ngIf="relation.type == 1">关注了你的</span>
@@ -47,6 +48,7 @@
                   <span *ngIf="relation.doc_type == 2">说说</span>
                   <span *ngIf="relation.doc_type == 1">文章</span>
                   <span *ngIf="relation.doc_type == 3">图片</span>
+                  <span *ngIf="!relation.doc_type">博客空间</span>
                   <div style="color: palevioletred;">
                     时间：{{relation.update_time | date:"yyyy-MM-dd HH:mm:ss"}}
                   </div>
@@ -55,9 +57,9 @@
             </ng-container>
 
             <ng-container *ngIf="!relation.doc_type && relation.type == 1">
-              <a (click)="view(relation._id, relation.type)" style="text-decoration: none;" routerLink="/private/fans/{{relation.subject}}">
+              <a (click)="view(relation._id, relation.type)" style="text-decoration: none;" routerLink="/private/fans/{{relation.subject._id}}">
                 <div>
-                  {{relation.from}}
+                  {{relation.from.interspace_name}}
                   <span *ngIf="relation.type == 3">赞了你的</span>
                   <span *ngIf="relation.type == 4">评论/回复了你的</span>
                   <span *ngIf="relation.type == 1">关注了你的</span>
@@ -65,6 +67,7 @@
                   <span *ngIf="relation.doc_type == 2">说说</span>
                   <span *ngIf="relation.doc_type == 1">文章</span>
                   <span *ngIf="relation.doc_type == 3">图片</span>
+                  <span *ngIf="!relation.doc_type">博客空间</span>
                   <div style="color: palevioletred;">
                     时间：{{relation.update_time | date:"yyyy-MM-dd HH:mm:ss"}}
                   </div>
@@ -73,9 +76,9 @@
             </ng-container>
 
             <ng-container *ngIf="!relation.doc_type && relation.type == 2">
-              <a (click)="view(relation._id, relation.type)" style="text-decoration: none;" routerLink="/private/visitor/{{relation.subject}}">
+              <a (click)="view(relation._id, relation.type)" style="text-decoration: none;" routerLink="/private/visitor/{{relation.subject._id}}">
                 <div>
-                  {{relation.from}}
+                  {{relation.from.interspace_name}}
                   <span *ngIf="relation.type == 3">赞了你的</span>
                   <span *ngIf="relation.type == 4">评论/回复了你的</span>
                   <span *ngIf="relation.type == 1">关注了你的</span>
@@ -83,6 +86,7 @@
                   <span *ngIf="relation.doc_type == 2">说说</span>
                   <span *ngIf="relation.doc_type == 1">文章</span>
                   <span *ngIf="relation.doc_type == 3">图片</span>
+                  <span *ngIf="!relation.doc_type">博客空间</span>
                   <div style="color: palevioletred;">
                     时间：{{relation.update_time | date:"yyyy-MM-dd HH:mm:ss"}}
                   </div>
@@ -91,9 +95,9 @@
             </ng-container>
 
             <ng-container *ngIf="relation.doc_type == 3">
-              <a (click)="view(relation._id, relation.type)" style="text-decoration: none;" routerLink="/private/image/{{relation.subject}}">
+              <a (click)="view(relation._id, relation.type)" style="text-decoration: none;" routerLink="/private/image/{{relation.subject._id}}">
                 <div>
-                  {{relation.from}}
+                  {{relation.from.interspace_name}}
                   <span *ngIf="relation.type == 3">赞了你的</span>
                   <span *ngIf="relation.type == 4">评论/回复了你的</span>
                   <span *ngIf="relation.type == 1">关注了你的</span>
@@ -101,6 +105,7 @@
                   <span *ngIf="relation.doc_type == 2">说说</span>
                   <span *ngIf="relation.doc_type == 1">文章</span>
                   <span *ngIf="relation.doc_type == 3">图片</span>
+                  <span *ngIf="!relation.doc_type">博客空间</span>
                   <div style="color: palevioletred;">
                     时间：{{relation.update_time | date:"yyyy-MM-dd HH:mm:ss"}}
                   </div>
@@ -114,3 +119,12 @@
     </div>
   </div>
 </div>
+<template #appModalTemplate>
+  <div class="modal-body">
+    {{appModal.content}}
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" (click)="cancleModal()">取消</button>
+    <button type="button" class="btn btn-default" (click)="excuteDel()">确定</button>
+  </div>
+</template>

@@ -12,15 +12,15 @@
         <div class="div-to-hide-hr-3"></div>
         <a style="margin-right: 50px;cursor:default;text-decoration:none;"><span class="glyphicon glyphicon-eye-open"></span>&nbsp;阅读&nbsp;{{article.visitor}}&nbsp;次</a>
         <a (click)="comment('', '')" style="margin-right: 16px;" tooltip='分享一下你的看法'><span class="glyphicon glyphicon-comment"></span></a>
-        <a (click)="praise(article._id)" style="margin-right: 16px; color: black;" tooltip='交朋友就从赞开始吧' *ngIf="(article.praise | isExistsArr: authorizationService.currentUser.username)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
-        <a (click)="praise(article._id)" style="margin-right: 16px;" tooltip='交朋友就从赞开始吧' *ngIf="!(article.praise | isExistsArr: authorizationService.currentUser.username)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
+        <a (click)="praise(article._id)" style="margin-right: 16px; color: black;" tooltip='交朋友就从赞开始吧' *ngIf="(article.praise | isExistsArr: authorizationService.currentUser._id)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
+        <a (click)="praise(article._id)" style="margin-right: 16px;" tooltip='交朋友就从赞开始吧' *ngIf="!(article.praise | isExistsArr: authorizationService.currentUser._id)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
         <ng-container *ngIf="article.praise.length > 0 || replys.length > 0">
           <div class="div-to-hr-3"></div>
         </ng-container>
         <p *ngIf="article.praise.length > 0">
           <span class="glyphicon glyphicon-thumbs-up"></span>
-          <a style="text-decoration: none;" routerLink="/private/info/{{p}}" *ngFor="let p of article.praise; let i = index;" class="comment-font-color">
-            {{p}}
+          <a style="text-decoration: none;" routerLink="/private/info/{{p._id}}" *ngFor="let p of article.praise; let i = index;" class="comment-font-color">
+            {{p.interspace_name}}
             <span *ngIf="i < (article.praise.length - 1)">、</span>
           </a>
           <span> 觉得很赞</span>
@@ -28,9 +28,9 @@
 
         <div *ngFor="let rep of replys">
           <p>
-            <a style="text-decoration: none;" routerLink="/private/info/{{rep.from_name}}">{{rep.from_name}}:</a>
-            <a *ngIf="rep.from_name != authorizationService.currentUser.username" style="text-decoration: none; color:black;" (click)="comment(rep._id, rep.from_name)">{{rep.content}}</a>
-            <a *ngIf="rep.from_name == authorizationService.currentUser.username" style="text-decoration: none; color:black;" (click)="deleteCommentBefore(rep._id)">{{rep.content}}</a>
+            <a style="text-decoration: none;" routerLink="/private/info/{{rep.from._id}}">{{rep.from.interspace_name}}:</a>
+            <a *ngIf="rep.from._id != authorizationService.currentUser.id" style="text-decoration: none; color:black;" (click)="comment(rep._id, rep.from._id)">{{rep.content}}</a>
+            <a *ngIf="rep.from._id == authorizationService.currentUser.username" style="text-decoration: none; color:black;" (click)="deleteCommentBefore(rep._id)">{{rep.content}}</a>
             <ng-container *ngIf="rep.replies.length > 0">
               <reply  [replies]="rep.replies" (onRemoveReply)="deleteCommentBefore($event)" (onReply)="onComment($event)"></reply>
             </ng-container>

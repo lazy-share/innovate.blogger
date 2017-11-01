@@ -9,4 +9,5 @@ module.exports = function (router) {
     router.get(webRootApi +'/private/my/relations', relationService.praiseAndCommentRelations);
     router.delete(webRootApi +'/private/my/relation', relationService.deleteRelation);
     router.get(webRootApi +'/private/my/relation/count', relationService.praiseAndCommentRelationCount);
+    router.delete(webRootApi +'/private/my/relation/clear', relationService.clearByAccountId);
 };

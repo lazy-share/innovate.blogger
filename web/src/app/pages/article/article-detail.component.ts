@@ -7,6 +7,7 @@ import {BaseComponent} from "../common/BaseComponent";
 import {Article} from "../../vo/article";
 import {Reply} from "../../vo/comment";
 import {AppModal} from "../../vo/app-modal";
+import {ToInterspaceNameService} from "../../core/common/common.service";
 /**
  * Created by lzy on 2017/10/15.
  */
@@ -35,7 +36,8 @@ export class ArticleDetailComponent extends BaseComponent implements OnInit{
               public modalService: BsModalService,
               public elementRef:ElementRef,
               public renderer2:Renderer2,
-              public route: ActivatedRoute) {
+              public route: ActivatedRoute,
+              public toInterspaceNameService: ToInterspaceNameService) {
     super();
     this.route.paramMap.switchMap((params: ParamMap) => this.requestAccountId = params.get('account_id')).subscribe();
     this.route.paramMap.switchMap((params: ParamMap) => this.globalReplyId = params.get('id')).subscribe();
@@ -113,18 +115,25 @@ export class ArticleDetailComponent extends BaseComponent implements OnInit{
    */
   onComment(reply: Reply){
     reply.id = this.article.comment;
-    reply.from_name = this.authorizationService.getCurrentUser()._id;
+    reply.from = this.authorizationService.getCurrentUser()._id;
     this.globalReply = reply;
     this.commentContent = '';
     this.commentMaxLength = this.initCommentMaxLength;
     this.hideSubmitComment = true;
-    this.openCommentInput(reply.parent_id, reply.subject_name);
+    this.openCommentInput(reply.parent_id, reply.subject);
   }
+
   comment(parent_id:string, subject:string){
     let reply = new Reply();
     reply.parent_id = parent_id;
-    reply.subject_name = subject;
-    this.onComment(reply);
+    reply.id = this.article.comment;
+    reply.from = this.authorizationService.getCurrentUser()._id;
+    reply.subject = subject;
+    this.globalReply = reply;
+    this.commentContent = '';
+    this.commentMaxLength = this.initCommentMaxLength;
+    this.hideSubmitComment = true;
+    this.openCommentInput(reply.parent_id, subject);
   }
 
   /**
@@ -137,9 +146,17 @@ export class ArticleDetailComponent extends BaseComponent implements OnInit{
     this.renderer2.setProperty(commentDiv, 'hidden', false);
     let commentInput = this.nativeElement.querySelector('#commentInputEle'); //评论 input
     if (!parent_id){ //顶级评论发起者
-      this.renderer2.setProperty(commentInput, 'placeholder', '评论' + this.requestAccountId);
+      this.toInterspaceNameService.toInterspaceName(this.requestAccountId).subscribe(
+        data => {
+          this.renderer2.setProperty(commentInput, 'placeholder', '评论' + data.data);
+        }
+      );
     }else { //子回复
-      this.renderer2.setProperty(commentInput, 'placeholder', '回复' + subject);
+      this.toInterspaceNameService.toInterspaceName(subject).subscribe(
+        data => {
+          this.renderer2.setProperty(commentInput, 'placeholder', '回复' + data.data);
+        }
+      );
     }
     commentInput.focus();
   }

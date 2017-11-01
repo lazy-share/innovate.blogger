@@ -187,6 +187,10 @@ exports.praiseAndCommentRelations = function (req, res) {
 
 //与我相关列表(赞、评论、关注我的、访问我的)
 exports.praiseAndCommentRelationCount = function (req, res) {
+   praiseAndCommentRelationCount(req, res);
+};
+
+function praiseAndCommentRelationCount (req, res) {
     var account_id = req.query.account_id;
     RelationshipModel.find({'subject._id': account_id, type: {$in: [RELATION.type.PRAISE, RELATION.type.COMMENT, RELATION.type.VISITOR, RELATION.type.ATTENTION]}, is_view: false}).count(function (err, count) {
         if (err) {
@@ -229,4 +233,29 @@ exports.deleteRelation = function (req, res) {
         });
     }
 
+};
+
+//清空某个账号的所有动态相关
+exports.clearByAccountId = function (req, res) {
+    var account_id = req.query.account_id;
+    if (!account_id){
+        log.error('clearByAccountId params err' + account_id);
+        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
+        return;
+    }
+    RelationshipModel.remove({'subject._id': account_id, type: {$in: [RELATION.type.COMMENT, RELATION.type.PRAISE]}}).exec(function (err) {
+        if (err){
+            log.error('clearByAccountId  err' + err);
+            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+            return;
+        }
+        RelationshipModel.update({'subject._id': account_id, type: {$in: [RELATION.type.VISITOR, RELATION.type.ATTENTION]}, is_view: false}, {is_view: {$set: true}}).exec(function (err) {
+            if (err){
+                log.error('clearByAccountId  err' + err);
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                return;
+            }
+            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
+        });
+    });
 };

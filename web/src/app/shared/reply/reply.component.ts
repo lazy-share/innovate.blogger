@@ -23,7 +23,7 @@ export class ReplyComponent {
   reply(reply:Reply){
     let newReply = Reply.toNew(reply);
     newReply.parent_id = newReply._id;
-    newReply.subject_name = newReply.from_name;
+    newReply.subject = newReply.from._id;
     this.onReply.emit(newReply);
   }
 

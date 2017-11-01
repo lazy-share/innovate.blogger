@@ -12,7 +12,7 @@ import {Observable} from "rxjs/Observable";
 })
 export class IsExistsArrPipe implements PipeTransform {
 
-  transform(value: Array<string>, ele: string): boolean {
+  transform(value: Array<any>, ele: string): boolean {
     if (!(value instanceof Array)){
       return false;
     }
@@ -20,7 +20,7 @@ export class IsExistsArrPipe implements PipeTransform {
       return false;
     }
     for (let i = 0; i < value.length; i++) {
-      if (value[i] == ele) {
+      if (value[i]._id == ele) {
         return true;
       }
     }

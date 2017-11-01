@@ -1,11 +1,11 @@
 <ng-container *ngIf="replies.length > 0">
   <div *ngFor="let r of replies">
-    <a style="text-decoration: none;" routerLink="/private/info/{{r.from_name}}">{{r.from_name }}</a>
-    <a *ngIf="r.from_name != authorizationService.currentUser.username" style="color:black; text-decoration:none;" (click)="reply(r)">回复</a>
-    <a *ngIf="r.from_name == authorizationService.currentUser.username" style="color:black; text-decoration:none;" (click)="removeReply(r._id)">回复</a>
-    <a style="text-decoration: none;" routerLink="/private/info/{{r.subject_name}}">{{r.subject_name }}:</a>
-    <a *ngIf="r.from_name != authorizationService.currentUser.username" style="text-decoration: none; color:black;" (click)="reply(r)">{{r.content}}</a>
-    <a *ngIf="r.from_name == authorizationService.currentUser.username" style="text-decoration: none; color:black;" (click)="removeReply(r._id)">{{r.content}}</a>
+    <a style="text-decoration: none;" routerLink="/private/info/{{r.from._id}}">{{r.from.interspace_name}}</a>
+    <a *ngIf="r.from._id != authorizationService.currentUser._id" style="color:black; text-decoration:none;" (click)="reply(r)">回复</a>
+    <a *ngIf="r.from._id == authorizationService.currentUser._id" style="color:black; text-decoration:none;" (click)="removeReply(r._id)">回复</a>
+    <a style="text-decoration: none;" routerLink="/private/info/{{r.subject._id}}">{{r.subject.interspace_name}}:</a>
+    <a *ngIf="r.from._id != authorizationService.currentUser._id" style="text-decoration: none; color:black;" (click)="reply(r)">{{r.content}}</a>
+    <a *ngIf="r.from._id == authorizationService.currentUser._id" style="text-decoration: none; color:black;" (click)="removeReply(r._id)">{{r.content}}</a>
     <ng-container *ngIf="r.replies.length > 0">
       <reply  [replies]="r.replies" (onRemoveReply)="removeReply($event)" (onReply)="reply($event)"></reply>
     </ng-container>

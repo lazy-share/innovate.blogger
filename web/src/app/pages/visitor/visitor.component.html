@@ -18,15 +18,15 @@
         <div *ngIf="(visitors.length > 0)" class="col-lg-12 col-md-12 col-sm-12">
           <div style="text-align:center;" *ngFor="let visitor of visitors"
                class="well well-sm">
-            <a style="text-decoration: none;" routerLink="/private/info/{{visitor.from}}">
+            <a style="text-decoration: none;" routerLink="/private/info/{{visitor.from._id}}">
               <div>
-                <img alt="" style="width:50px; height: 50px;" class="img-circle" src="{{visitor.head_portrait}}"/>
+                <img alt="" style="width:50px; height: 50px;" class="img-circle" src="{{visitor.from.head_portrait}}"/>
               </div>
-              <div *ngIf="authorizationService.currentUser._id == visitor.from">
-                {{visitor.interspace_name}}<span style="color:red;">(您自己)</span>
+              <div *ngIf="authorizationService.currentUser._id == visitor.from._id">
+                {{visitor.from.interspace_name}}<span style="color:red;">(您自己)</span>
               </div>
-              <div *ngIf="authorizationService.currentUser._id != visitor.from">
-                {{visitor.interspace_name}}
+              <div *ngIf="authorizationService.currentUser._id != visitor.from._id">
+                {{visitor.from.interspace_name}}
               </div>
               <div style="color: palevioletred;">
                 访问时间：{{visitor.update_time | date:"yyyy-MM-dd HH:mm:ss"}}

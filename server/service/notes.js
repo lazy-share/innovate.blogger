@@ -181,7 +181,7 @@ exports.praise = function (req, res) {
         }
         var isExists = false;
         for (var i in doc.praise){
-            if (doc.praise[i] == from){
+            if (String(doc.praise[i]._id) == from){
                 doc.praise.splice(i, 1);
                 isExists = true;
                 break;
@@ -265,7 +265,9 @@ exports.comment = function (req, res) {
         }
         var accIds = [];
         accIds.push(reply.from);
-        accIds.push(reply.subject);
+        if (reply.subject && reply.subject != undefined){
+            accIds.push(reply.subject);
+        }
         AccountModel.find({_id: {$in: accIds}}).exec(function (err, accs) {
             if (err) {
                 log.error('note post comment error:' + err);

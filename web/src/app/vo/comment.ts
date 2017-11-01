@@ -8,8 +8,8 @@ export class Comment {
 export class Reply {
   public id:string;
   public _id:string;
-  public from_name: string;
-  public subject_name: string;
+  public from: any;
+  public subject: any;
   public content: string;
   public create_time: Date;
   public update_time: Date;
@@ -25,8 +25,8 @@ export class Reply {
     let newReply = new Reply();
     newReply.id = reply.id;
     newReply._id = reply._id;
-    newReply.from_name = reply.from_name;
-    newReply.subject_name = reply.subject_name;
+    newReply.from = reply.from;
+    newReply.subject = reply.subject;
     newReply.content = reply.content;
     newReply.create_time = reply.create_time;
     newReply.update_time = reply.update_time;

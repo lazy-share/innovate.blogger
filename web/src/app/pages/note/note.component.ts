@@ -19,6 +19,7 @@ import {Estimate} from "../../vo/estimate";
 import {SearchService} from "../../core/search/search.service";
 import {Subscription} from "rxjs/Subscription";
 import {ModalExcuteDeleteType} from "../../constant/modal";
+import {ToInterspaceNameService} from "../../core/common/common.service";
 /**
  * Created by lzy on 2017/10/6.
  */
@@ -46,7 +47,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
   public contentNumber: number = 200;
   public initContentNumber: number = 200;
   public head_portrait: string;
-  public appModal:AppModal = new AppModal('确定删除', '确定删除吗？', 'confirmDelNoteModal', false);
+  public appModal:AppModal = new AppModal('确定删除', '确定删除吗?', 'confirmDelNoteModal', false);
   public modalRef: BsModalRef;
   public nativeElement = this.elementRef.nativeElement;
   @ViewChild('appModalTemplate')
@@ -73,7 +74,8 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
               public modalService: BsModalService,
               public elementRef:ElementRef,
               public searchService:SearchService,
-              public renderer2:Renderer2
+              public renderer2:Renderer2,
+              public toInterspaceNameService:ToInterspaceNameService
   ) {
     super();
     this.route.paramMap.switchMap((params: ParamMap) => this.requestAccountId = params.get("account_id")).subscribe();
@@ -291,7 +293,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
     this.globalReply = new Reply();
     this.globalReply.doc_id = estimate.doc_id;
     this.globalReply.parent_id = estimate.parent_id;
-    this.globalReply.subject_name = estimate.subject;
+    this.globalReply.subject = estimate.subject;
     this.commentContent = '';
     this.commentMaxLength = this.initCommentMaxLength;
     this.hideSubmitComment = true;
@@ -315,9 +317,17 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
     this.renderer2.setProperty(commentDiv, 'hidden', false);
     let commentInput = this.nativeElement.querySelector('.T' + templateId); //评论 input
     if (!parent_id){ //顶级评论发起者
-      this.renderer2.setProperty(commentInput, 'placeholder', '评论' + this.requestAccountId);
+      this.toInterspaceNameService.toInterspaceName(this.requestAccountId).subscribe(
+        data => {
+          this.renderer2.setProperty(commentInput, 'placeholder', '评论' + data.data);
+        }
+      );
     }else { //子回复
-      this.renderer2.setProperty(commentInput, 'placeholder', '回复' + subject);
+      this.toInterspaceNameService.toInterspaceName(subject).subscribe(
+        data => {
+          this.renderer2.setProperty(commentInput, 'placeholder', '回复' + data.data);
+        }
+      );
     }
     commentInput.focus();
   }
@@ -329,7 +339,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
    */
   onReply(reply:Reply){
     this.globalReply = reply;
-    this.openCommentInput(reply.doc_id, reply.parent_id, reply.from_name);
+    this.openCommentInput(reply.doc_id, reply.parent_id, reply.subject);
   }
 
   /**
@@ -337,7 +347,7 @@ export class NoteComponent extends BaseComponent implements OnInit , AfterViewIn
    * @param id
    */
   submitComment(id:string){
-    this.globalReply.from_name = this.authorizationService.getCurrentUser()._id;
+    this.globalReply.from = this.authorizationService.getCurrentUser()._id;
     this.globalReply.account_id = this.requestAccountId;
     this.globalReply.content = this.commentContent;
     this.noteService.submitConment(this.globalReply, this.pagingParams).subscribe(

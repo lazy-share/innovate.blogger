@@ -49,6 +49,7 @@ export const MY_IMAGE_COMMENT = root + "/private/my/image/comment";
 export const MY_RELATIONS = root + "/private/my/relations";
 export const MY_RELATION = root + "/private/my/relation";
 export const MY_RELATION_COUNT = root + "/private/my/relation/count";
+export const MY_RELATION_CLEAR = root + "/private/my/relation/clear";
 
 export const HOME_ARTICLES = root + "/home/articles";
 export const HOME_NOTES = root + "/home/notes";

@@ -80,7 +80,9 @@ exports.comment = function (req, res) {
         }
         var accIds = [];
         accIds.push(reply.from);
-        accIds.push(reply.subject);
+        if (reply.subject && reply.subject != undefined){
+            accIds.push(reply.subject);
+        }
         AccountModel.find({_id: {$in: accIds}}).exec(function (err, accs) {
             if (err) {
                 log.error('image post comment error:' + err);
@@ -357,9 +359,7 @@ exports.upload = function (req, res) {
             comment: comment,
             image_url: filePath,
             update_time: nowTime,
-            create_time: nowTime,
-            interspace_name: acc.interspace_name,
-            head_portrait: acc.head_portrait
+            create_time: nowTime
         });
         newImage.save(function (err) {
             if (err){

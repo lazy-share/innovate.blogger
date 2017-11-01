@@ -444,7 +444,9 @@ exports.comment = function (req, res) {
         }
         var accIds = [];
         accIds.push(reply.from);
-        accIds.push(reply.subject);
+        if (reply.subject && reply.subject != undefined){
+            accIds.push(reply.subject);
+        }
         AccountModel.find({_id: {$in: accIds}}).exec(function (err, accs) {
             if (err) {
                 log.error('article post comment error:' + err);

@@ -40,7 +40,7 @@ var sysConfig = {
         jwtValidity: 60 * 60 * 24 * 7, // 生产设置为一个礼拜 没有时间单位以秒为准 其它格式"2 days" "3h" "1y"
         redisOpts:{},
         webRootUri: '/v1/api/web',
-        thisDoman: 'http://47.94.226.67',
+        thisDoman: 'http://www.laizhiyuan.xin',
         upload_root_dir: '/usr/local/publish',
         upload_media_dir:  '/media/video',
         upload_header_dir: '/media/images/header',
@@ -48,7 +48,7 @@ var sysConfig = {
         upload_article_dir: '/media/images/article',
         static_path:'/public/web',
         default_upload_dir:  '/usr/local/publish/media',
-        Access_Control_Allow_Origin:'http://47.94.226.67'
+        Access_Control_Allow_Origin:'http://www.laizhiyuan.xin'
     }
 };
 module.exports = sysConfig;

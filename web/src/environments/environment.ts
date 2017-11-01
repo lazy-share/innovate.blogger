@@ -6,9 +6,6 @@
 export const environment = {
   production: false,
   api: {
-    host: 'http://localhost',
-    port: 3000,
     uri: "http://localhost:3000/v1/api/web",
-    picuri: "http://localhost:3000"
   }
 };

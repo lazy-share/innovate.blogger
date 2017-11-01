@@ -17,10 +17,10 @@ export class ImageService {
     public router:Router
   ){}
 
-  praise(requestAccountId:string, currentUsername: string, id: string, paging: PagingParams): Observable<AppResponse> {
+  praise(requestAccountId:string, currentAccountId: string, id: string, paging: PagingParams): Observable<AppResponse> {
     return this.http.post<AppResponse>(
       MY_IMAGE_PRAISE,
-      {account_id: requestAccountId, from: currentUsername, id: id, paging: paging}
+      {account_id: requestAccountId, from: currentAccountId, id: id, paging: paging}
     ).map(
       data => {
         return data;
@@ -65,11 +65,11 @@ export class ImageService {
     );
   }
 
-  images(account_id:string, currentUsername:string, paging:PagingParams):Observable<any>{
+  images(account_id:string, currentAccountId:string, paging:PagingParams):Observable<any>{
     return this.http.get<AppResponse>(
       MY_IMAGES,
       {
-        params: new HttpParams().set('account_id', account_id).set('currentUsername', currentUsername).set('paging', JSON.stringify(paging))
+        params: new HttpParams().set('account_id', account_id).set('currentAccountId', currentAccountId).set('paging', JSON.stringify(paging))
       }
     ).map(
       data => {

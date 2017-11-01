@@ -1,7 +1,6 @@
 <sub-nav [requestAccountId]="requestAccountId" [tab]="7"></sub-nav>
 
 <div class="container">
-  <div class="row clearfix">
     <div class="panel panel-info">
       <div class="panel-heading">
         <div *ngIf="authorizationService.currentUser._id != requestAccountId">
@@ -70,7 +69,6 @@
         </div>
       </div>
     </div>
-  </div>
 </div>
 <template #appModalTemplate>
   <div class="modal-body">

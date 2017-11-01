@@ -2,8 +2,8 @@
  * Created by lzy on 2017/10/2.
  */
 export class RelationShip{
-  from: string;
-  subject: string;
+  from: any;
+  subject: any;
   update_time: Date;
   account_id: string;
   head_portrait: string;

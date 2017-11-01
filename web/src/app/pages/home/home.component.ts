@@ -25,9 +25,9 @@ export class HomeComponent extends BaseComponent implements OnInit{
   public articles: Article[] = new Array<Article>();
   public notes: Note[] = new Array<Note>();
   public articlesPaging = Paging.instantiation10();
-  public notesPaging = Paging.instantiation6();
   public articlesPagingParam = PagingParams.instantiation10();
-  public notesPagingParam = PagingParams.instantiation6();
+  public notesPaging = Paging.instantiation10();
+  public notesPagingParam = PagingParams.instantiation10();
   public images: Image[] = new Array<Image>();
 
   constructor(

@@ -23,7 +23,7 @@ var AccountModel = mongoose.model('AccountModel');
 exports.images = function (req, res) {
     log.info('===============enter images================');
     var account_id = req.query.account_id;
-    var current = req.query.currentUsername;
+    var current = req.query.currentAccountId;
     var paging = req.query.paging;
     if (!account_id || !current || !paging){
         log.error('images params error, ' + account_id + '|' + current + '|' + paging);

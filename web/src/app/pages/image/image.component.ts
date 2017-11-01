@@ -342,12 +342,14 @@ export class ImageComponent extends BaseComponent implements OnInit{
       } else {
         this.showMsg = true;
         this.sysMsg = tempRes.msg;
+        this.uploader.clearQueue();
         setTimeout(() => {this.showMsg = false}, 2000);
       }
     } else {
       // 上传媒体后获取服务器返回的数据错误
       this.showMsg = true;
       this.sysMsg = '上传失败';
+      this.uploader.clearQueue();
       setTimeout(() => {this.showMsg = false}, 2000);
     }
   }
@@ -364,7 +366,7 @@ export class ImageComponent extends BaseComponent implements OnInit{
     this.pagingParams.pageSize = event.itemsPerPage;
     this.pagingParams.skip = this.pagingParams.getSkip();
 
-    this.imageService.images(this.requestAccountId, this.authorizationService.currentUser.account_id, this.pagingParams).subscribe(
+    this.imageService.images(this.requestAccountId, this.authorizationService.getCurrentUser()._id, this.pagingParams).subscribe(
       data => {
         if (!data.status) {
           this.showMsg = true;
@@ -382,8 +384,8 @@ export class ImageComponent extends BaseComponent implements OnInit{
    * 上传/取消
    */
   changeUpload(){
-    if (this.isShow && this.uploader.isUploading){
-      this.uploader.cancelAll();
+    if (this.isShow){
+      this.uploader.clearQueue();
     }
     this.isShow = !this.isShow;
   }

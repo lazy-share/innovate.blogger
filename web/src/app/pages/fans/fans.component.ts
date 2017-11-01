@@ -48,7 +48,7 @@ export class FansComponent extends BaseComponent implements OnInit{
   initComponent() {
     let flag = true;
     for (let fan in this.fans) {
-      if (this.fans[fan].from == this.authorizationService.getCurrentUser()._id) {
+      if (this.fans[fan].from._id == this.authorizationService.getCurrentUser()._id) {
         flag = false;
         break;
       }

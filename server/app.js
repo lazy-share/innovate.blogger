@@ -26,7 +26,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(sysConf.static_path, express.static(path.join(__dirname, '/public/web')));
 app.use(bodyParser({uploadDir: sysConf.default_upload_dir}));
-app.all('*', appFilter.crossDomain);
+if (env == 'dev'){
+    app.all('*', appFilter.crossDomain);
+}
 app.use(appFilter.security);
 app.all(/^\/v1\/api\/web\/private\/(account|my)\/.*$/, appFilter.isExistsAccount);
 appInit.initRouters(routers, routerPath);

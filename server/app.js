@@ -14,7 +14,7 @@ const routers = express.Router();
 const modelPath = path.join(__dirname, 'models');
 const routerPath = path.join(__dirname, 'routers');
 appInit.initModels(modelPath);
-//require('./job/news_wangyi')();
+require('./job/news_wangyi')();
 require('./db_script/article-type-script').initSysDefaultArticleType();
 //require('./db_script/address-script')();
 //require('./db_script/news-type-script')();

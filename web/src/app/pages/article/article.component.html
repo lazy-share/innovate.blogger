@@ -94,10 +94,10 @@
             <div class="hidden-xs" style="float: left; margin-right: 50px;"><a
               style="text-decoration: none; cursor: default;color: burlywood;">发表于{{article.update_time | date:
               "yyyy-MM-dd HH:mm:ss"}}</a></div>
-            <div class="hidden-xs" *ngIf="authorizationService.currentUser._id == requestAccountId"
+            <div *ngIf="authorizationService.currentUser._id == requestAccountId"
                  style="float: left; margin-right: 10px;"><a (click)="toEditArticle(article._id)" style="text-decoration: none; cursor: pointer;">编辑</a>
             </div>
-            <div class="hidden-xs" *ngIf="authorizationService.currentUser._id == requestAccountId"><a
+            <div *ngIf="authorizationService.currentUser._id == requestAccountId"><a
               (click)="toDeleteArticle(article._id)" style="text-decoration: none; cursor: pointer; color: red;">删除</a>
             </div>
           </div>

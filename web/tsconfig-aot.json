@@ -27,6 +27,8 @@
     "src/app/pages/note/note.module.ts",
     "src/app/pages/register/register.module.ts",
     "src/app/pages/visitor/visitor.module.ts",
+    "src/app/pages/relation/relation.module.ts",
+    "src/app/pages/image/image.module.ts",
     "src/main-aot.ts"
   ],
 

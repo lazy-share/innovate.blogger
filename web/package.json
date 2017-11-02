@@ -6,6 +6,7 @@
     "ng": "ng",
     "start": "ng serve --disable-host-check",
     "build": "ng build --prod --build-optimizer",
+    "build:aot": "ngc -p tsconfig-aot.json",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

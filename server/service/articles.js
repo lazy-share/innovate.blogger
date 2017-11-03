@@ -432,7 +432,10 @@ exports.comment = function (req, res) {
                 log.error('article post comment addCommentRelation error:' + err);
             }
             if (obj && article && obj.from != article.account_id){ //如果不是自己评论或回复则插入一条动态相关数据
-                relationService.addCommentRelation(article.account_id, reply.from, article._id, RELATION.docType.ARTICLE);
+                relationService.addCommentRelation(article.account_id, obj.from, article._id, RELATION.docType.ARTICLE);
+            }
+            if (obj && article && obj.parent_id && obj.parent_id != undefined && obj.subject != article.account_id){//如果评论或回复的对象不是自己则插入一条动态相关数据
+                relationService.addCommentRelation(obj.subject, obj.from, article._id, RELATION.docType.ARTICLE);
             }
         });
     })(reply);

@@ -263,6 +263,9 @@ exports.comment = function (req, res) {
         if (doc.account_id != reply.from) {
             relationService.addCommentRelation(doc.account_id, reply.from, doc._id, RELATION.docType.NOTE);
         }
+        if (reply && doc && reply.parent_id && reply.parent_id != undefined && reply.subject != doc.account_id){//如果评论或回复的对象不是自己则插入一条动态相关数据
+            relationService.addCommentRelation(reply.subject, reply.from, doc._id, RELATION.docType.ARTICLE);
+        }
         var accIds = [];
         accIds.push(reply.from);
         if (reply.subject && reply.subject != undefined){

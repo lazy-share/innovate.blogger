@@ -26,10 +26,6 @@
                   <span *ngIf="relation.type == 4">评论/回复了你</span>
                   <span *ngIf="relation.type == 1">关注了你</span>
                   <span *ngIf="relation.type == 2">访问了你</span>
-                  <span *ngIf="relation.doc_type == 2 && authorizationService.currentUser._id == relation.subject._id">说说</span>
-                  <span *ngIf="relation.doc_type == 1 && authorizationService.currentUser._id == relation.subject._id">文章</span>
-                  <span *ngIf="relation.doc_type == 3 && authorizationService.currentUser._id == relation.subject._id">图片</span>
-                  <span *ngIf="!relation.doc_type && authorizationService.currentUser._id == relation.subject._id">博客空间</span>
                   <div style="color: palevioletred;">
                     时间：{{relation.update_time | date:"yyyy-MM-dd HH:mm:ss"}}
                   </div>
@@ -45,10 +41,6 @@
                   <span *ngIf="relation.type == 4">评论/回复了你</span>
                   <span *ngIf="relation.type == 1">关注了你</span>
                   <span *ngIf="relation.type == 2">访问了你</span>
-                  <span *ngIf="relation.doc_type == 2 && authorizationService.currentUser._id == relation.subject._id">说说</span>
-                  <span *ngIf="relation.doc_type == 1 && authorizationService.currentUser._id == relation.subject._id">文章</span>
-                  <span *ngIf="relation.doc_type == 3 && authorizationService.currentUser._id == relation.subject._id">图片</span>
-                  <span *ngIf="!relation.doc_type && authorizationService.currentUser._id == relation.subject._id">博客空间</span>
                   <div style="color: palevioletred;">
                     时间：{{relation.update_time | date:"yyyy-MM-dd HH:mm:ss"}}
                   </div>
@@ -64,10 +56,6 @@
                   <span *ngIf="relation.type == 4">评论/回复了你</span>
                   <span *ngIf="relation.type == 1">关注了你</span>
                   <span *ngIf="relation.type == 2">访问了你</span>
-                  <span *ngIf="relation.doc_type == 2 && authorizationService.currentUser._id == relation.subject._id">说说</span>
-                  <span *ngIf="relation.doc_type == 1 && authorizationService.currentUser._id == relation.subject._id">文章</span>
-                  <span *ngIf="relation.doc_type == 3 && authorizationService.currentUser._id == relation.subject._id">图片</span>
-                  <span *ngIf="!relation.doc_type && authorizationService.currentUser._id == relation.subject._id">博客空间</span>
                   <div style="color: palevioletred;">
                     时间：{{relation.update_time | date:"yyyy-MM-dd HH:mm:ss"}}
                   </div>
@@ -83,10 +71,6 @@
                   <span *ngIf="relation.type == 4">评论/回复了你</span>
                   <span *ngIf="relation.type == 1">关注了你</span>
                   <span *ngIf="relation.type == 2">访问了你</span>
-                  <span *ngIf="relation.doc_type == 2 && authorizationService.currentUser._id == relation.subject._id">说说</span>
-                  <span *ngIf="relation.doc_type == 1 && authorizationService.currentUser._id == relation.subject._id">文章</span>
-                  <span *ngIf="relation.doc_type == 3 && authorizationService.currentUser._id == relation.subject._id">图片</span>
-                  <span *ngIf="!relation.doc_type && authorizationService.currentUser._id == relation.subject._id">博客空间</span>
                   <div style="color: palevioletred;">
                     时间：{{relation.update_time | date:"yyyy-MM-dd HH:mm:ss"}}
                   </div>
@@ -102,10 +86,6 @@
                   <span *ngIf="relation.type == 4">评论/回复了你</span>
                   <span *ngIf="relation.type == 1">关注了你</span>
                   <span *ngIf="relation.type == 2">访问了你</span>
-                  <span *ngIf="relation.doc_type == 2 && authorizationService.currentUser._id == relation.subject._id">说说</span>
-                  <span *ngIf="relation.doc_type == 1 && authorizationService.currentUser._id == relation.subject._id">文章</span>
-                  <span *ngIf="relation.doc_type == 3 && authorizationService.currentUser._id == relation.subject._id">图片</span>
-                  <span *ngIf="!relation.doc_type && authorizationService.currentUser._id == relation.subject._id">博客空间</span>
                   <div style="color: palevioletred;">
                     时间：{{relation.update_time | date:"yyyy-MM-dd HH:mm:ss"}}
                   </div>

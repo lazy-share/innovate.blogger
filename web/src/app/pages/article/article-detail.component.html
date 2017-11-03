@@ -29,8 +29,8 @@
         <div *ngFor="let rep of replys">
           <p>
             <a style="text-decoration: none;" routerLink="/private/info/{{rep.from._id}}">{{rep.from.interspace_name}}:</a>
-            <a *ngIf="rep.from._id != authorizationService.currentUser.id" style="text-decoration: none; color:black;" (click)="comment(rep._id, rep.from._id)">{{rep.content}}</a>
-            <a *ngIf="rep.from._id == authorizationService.currentUser.username" style="text-decoration: none; color:black;" (click)="deleteCommentBefore(rep._id)">{{rep.content}}</a>
+            <a *ngIf="rep.from._id != authorizationService.currentUser._id" style="text-decoration: none; color:black;" (click)="comment(rep._id, rep.from._id)">{{rep.content}}</a>
+            <a *ngIf="rep.from._id == authorizationService.currentUser._id" style="text-decoration: none; color:black;" (click)="deleteCommentBefore(rep._id)">{{rep.content}}</a>
             <ng-container *ngIf="rep.replies.length > 0">
               <reply  [replies]="rep.replies" (onRemoveReply)="deleteCommentBefore($event)" (onReply)="onComment($event)"></reply>
             </ng-container>

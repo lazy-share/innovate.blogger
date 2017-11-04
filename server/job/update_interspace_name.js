@@ -9,10 +9,11 @@ var ImageModel = mongoose.model('ImageModel');
 var NotesModel = mongoose.model('NotesModel');
 var RelationshipModel = mongoose.model('RelationshipModel');
 const log = require('log4js').getLogger("update_interspace_name");
+var mongoose = require('mongoose');
 
 module.exports = function () {
     //setInterval(controller, 1000 * 60 * 30); //30分钟执行一次
-    setInterval(start, 1000 * 60 * 1); //30分钟执行一次
+    setInterval(start, 1000 * 60 * 0.3); //30分钟执行一次
 };
 
 function controller() {
@@ -53,13 +54,15 @@ function start() {
 function updateRelation(logs) {
     for (var i in logs) {
         (function (obj) {
-            RelationshipModel.find({$or: [{'from._id': obj.account_id,'subject._id': obj.account_id}]}).exec(function (err, docs) {
+            var accountId = String(obj.account_id);
+            accountId = mongoose.Types.ObjectId(accountId);
+            RelationshipModel.find({$or: [{'from._id': accountId,'subject._id': accountId}]}).exec(function (err, docs) {
                 if (err) {
                     log.error('updateRelation error: ' + err);
                     return;
                 }
                 if (!docs || docs.length < 1){
-                    log.info('updateRelation relation id' + obj._id + '查无数据');
+                    log.info('updateRelation relation id' + accountId + '查无数据');
                     return;
                 }
                 for (var i in docs){
@@ -159,14 +162,15 @@ function updateNotePraise(logs) {
                             for (var k in doc.praise){
                                 if (doc.praise[k]._id == obj.account_id){
                                     doc.praise[k].inter_space_name = obj.new_interspace_name;
-                                    doc.save(function (err) {
-                                        if (err){
-                                            log.error('updateNotePraise err' + err);
-                                        }
-                                    });
                                     break;
                                 }
                             }
+                            doc.toObject();
+                            doc.save(function (err) {
+                                if (err){
+                                    log.error('updateNotePraise error: ' + err);
+                                }
+                            });
                         })(logs[e], doc)
                     }
                 }
@@ -189,6 +193,17 @@ function updateImageComment(logs) {
             (function (doc) {
                 var replies = doc.comment.replies;
                 for (var j in logs){
+                    var recursionUpdateReplyInterspaceName = function (replies, log) {
+                        if (replies && replies.length > 0){
+                            for (var i in replies){
+                                if (replies[i]._id == log.account_id){
+                                    replies[i].inter_space_name = log.new_interspace_name;
+                                }
+                                return recursionUpdateReplyInterspaceName(replies[i].replies, log);
+                            }
+                        }
+                        return;
+                    }
                     recursionUpdateReplyInterspaceName(replies, logs[j]);
                 }
                 doc.save(function (err) {
@@ -199,19 +214,6 @@ function updateImageComment(logs) {
             })(docs[i])
         }
     });
-}
-
-function recursionUpdateReplyInterspaceName(replies, log) {
-    if (replies && replies.length > 0){
-        for (var i in replies){
-            if (replies[i]._id == log.account_id){
-                replies[i].inter_space_name = log.new_interspace_name;
-            }
-            recursionUpdateReplyInterspaceName(replies[i].replies, log);
-        }
-    }else {
-        return;
-    }
 }
 
 function updateNoteComment(logs) {
@@ -228,6 +230,17 @@ function updateNoteComment(logs) {
             (function (doc) {
                 var replies = doc.comment.replies;
                 for (var j in logs){
+                    var recursionUpdateReplyInterspaceName = function (replies, log) {
+                        if (replies && replies.length > 0){
+                            for (var i in replies){
+                                if (replies[i]._id == log.account_id){
+                                    replies[i].inter_space_name = log.new_interspace_name;
+                                }
+                                return recursionUpdateReplyInterspaceName(replies[i].replies, log);
+                            }
+                        }
+                        return;
+                    }
                     recursionUpdateReplyInterspaceName(replies, logs[j]);
                 }
                 doc.save(function (err) {
@@ -254,6 +267,17 @@ function updateComment(logs) {
             (function (doc) {
                 var replies = doc.replies;
                 for (var j in logs){
+                    var recursionUpdateReplyInterspaceName = function (replies, log) {
+                        if (replies && replies.length > 0){
+                            for (var i in replies){
+                                if (replies[i]._id == log.account_id){
+                                    replies[i].inter_space_name = log.new_interspace_name;
+                                }
+                                return recursionUpdateReplyInterspaceName(replies[i].replies, log);
+                            }
+                        }
+                        return;
+                    }
                     recursionUpdateReplyInterspaceName(replies, logs[j]);
                 }
                 doc.save(function (err) {

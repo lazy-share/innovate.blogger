@@ -15,6 +15,7 @@ var sysConnfig = require('../conf/sys_config');
 var env = require("../conf/environments");
 var fs = require("fs");
 var RELATION = require('../common/relation_enum');
+var UpdateInterspaceNameLogModel = mongoose.model('UpdateInterspaceNameLogModel');
 
 //基本信息
 exports.details = function (req, res) {
@@ -46,7 +47,8 @@ exports.details = function (req, res) {
 //编辑基本信息
 exports.update = function (req, res) {
     var accountInfo = JSON.parse(req.body.params.updates[0].value);
-    accountInfo.update_time = new Date();
+    var nowTime = new Date();
+    accountInfo.update_time = nowTime;
     log.info("============enter account info update accountInfo:" + JSON.stringify(accountInfo));
     var account_id = accountInfo.account_id;
 
@@ -55,12 +57,33 @@ exports.update = function (req, res) {
         return;
     }
 
-    AccountModel.findOne({_id: account_id}).exec(function (err, account) {
+    AccountInfoModel.update({account_id: account_id}, {$set: accountInfo}).exec(function (err) {
         if (err) {
             console.log('update account info error, msg: ' + err);
             log.error('update account info err! msg:' + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
+        }
+        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
+    });
+
+    /*AccountModel.findOne({_id: account_id}).exec(function (err, account) {
+        if (err) {
+            console.log('update account info error, msg: ' + err);
+            log.error('update account info err! msg:' + err);
+            res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+            return;
+        }
+        var updateInterspaceNameLogModel = null;
+        if (account.interspace_name != accountInfo.interspace_name){
+            updateInterspaceNameLogModel = new UpdateInterspaceNameLogModel({
+                create_time: nowTime,
+                update_time: nowTime,
+                old_interspace_name: account.interspace_name,
+                new_interspace_name: accountInfo.interspace_name,
+                account_id: account._id,
+                is_opt: false
+            });
         }
         account.interspace_name = accountInfo.interspace_name;
         account.save(function (err) {
@@ -69,6 +92,36 @@ exports.update = function (req, res) {
                 log.error('update account info err! msg:' + err);
                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                 return;
+            }
+            if (updateInterspaceNameLogModel != null){
+                UpdateInterspaceNameLogModel.findOne({account_id: account._id}).exec(function (err, log) {
+                    if (err) {
+                        console.log('update account info select updateInterspaceNameLogModel error, msg: ' + err);
+                        log.error('update account info select updateInterspaceNameLogModel err! msg:' + err);
+                        return;
+                    }
+                    if (log){
+                        log.is_opt = false;
+                        log.old_interspace_name = updateInterspaceNameLogModel.old_interspace_name;
+                        log.new_interspace_name = updateInterspaceNameLogModel.new_interspace_name;
+                        log.update_time = updateInterspaceNameLogModel.update_time;
+                        log.save(function (err) {
+                            if (err) {
+                                console.log('update account info updateInterspaceNameLogModel error, msg: ' + err);
+                                log.error('update account info updateInterspaceNameLogModel err! msg:' + err);
+                                return;
+                            }
+                        });
+                    }else {
+                        updateInterspaceNameLogModel.save(function (err) {
+                            if (err) {
+                                console.log('update account info updateInterspaceNameLogModel error, msg: ' + err);
+                                log.error('update account info updateInterspaceNameLogModel err! msg:' + err);
+                                return;
+                            }
+                        });
+                    }
+                });
             }
             AccountInfoModel.update({account_id: account_id}, {$set: accountInfo}).exec(function (err) {
                 if (err) {
@@ -79,7 +132,7 @@ exports.update = function (req, res) {
                 }
                 res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));});
         });
-    });
+    });*/
 
 };
 

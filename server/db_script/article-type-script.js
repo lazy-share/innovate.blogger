@@ -29,7 +29,7 @@ exports.initSysDefaultArticleType = function () {
 
     for (var i in initData){
         (function (item) {
-            ArticleTypeModel.findOne({account_id: item.username, name: item.name}).exec(function (err, doc) {
+            ArticleTypeModel.findOne({account_id: item.account_id, name: item.name}).exec(function (err, doc) {
                 if (err) {
                     console.log('查询出错，errMsg:' + err - ' in ' - item.name);
                 }else if (doc) {

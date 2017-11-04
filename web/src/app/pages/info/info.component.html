@@ -23,17 +23,18 @@
           </div>
         </div>
 
-        <div class="form-group">
+       <!-- <div class="form-group">
           <label for="interspace_name" class="col-sm-2 control-label">博客空间名称</label>
           <div class="col-sm-3">
-            <input class="form-control" maxlength="15" mixlength="2" #interspace_name="ngModel" [disabled]="!isShow" name="interspace_name"
+            <input class="form-control" maxlength="15" required mixlength="2" #interspace_name="ngModel" [disabled]="!isShow" name="interspace_name"
                    [(ngModel)]="accountInfo.interspace_name" id="interspace_name" type="text" placeholder="请输入博客空间名称"/>
             <div *ngIf="interspace_name.invalid && (interspace_name.dirty || interspace_name.touched)">
+              <span *ngIf="interspace_name.errors.required" class="errorMsg">博客空间名称不能为空</span>
               <span *ngIf="interspace_name.errors.maxlength" class="errorMsg">长度不能大于15</span>
               <span *ngIf="interspace_name.errors.mixlength" class="errorMsg">长度不能小于2</span>
             </div>
           </div>
-        </div>
+        </div>-->
 
         <div class="form-group">
           <label class="col-sm-2 control-label">性别</label>

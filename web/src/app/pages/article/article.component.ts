@@ -116,7 +116,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
       if (this.isShow){
         this.timeSaveArticle();
       }
-    }, 30000); //30s
+    }, 60000); //一分钟
   }
 
   /**

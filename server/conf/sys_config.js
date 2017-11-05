@@ -37,7 +37,7 @@ var sysConfig = {
         dbDbAdminUsername: 'dbadmin',
         dbDbAdminPwd: '123456',
         jwtSecret:'laizhiyuan666',
-        jwtValidity: 60 * 60 * 24 * 7, // 生产设置为一个礼拜 没有时间单位以秒为准 其它格式"2 days" "3h" "1y"
+        jwtValidity: 60 * 60 * 24 * 1, // 生产设置为24小时 没有时间单位以秒为准 其它格式"2 days" "3h" "1y"
         redisOpts:{},
         webRootUri: '/v1/api/web',
         thisDoman: 'http://www.laizhiyuan.xin',

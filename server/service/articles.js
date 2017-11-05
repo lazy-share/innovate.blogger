@@ -109,14 +109,33 @@ exports.article = function (req, res) {
  * @param res
  */
 exports.editArticle = function (req, res) {
-    var account_id = req.body.account_id;
     var article = req.body.article;
-    if (!account_id || !article) {
-        log.error('edit article params error: account_id or article is null' + account_id + '|' + article);
+    if (!article) {
+        log.error('edit article params error:  article is null' + article);
         res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
         return;
     }
+    var articleId = article.id;
+    if (articleId){
+        ArticlesModel.findOne({_id: articleId}).exec(function (err, doc) {
+            if (err) {
+                log.error('edit article error, errMsg:' + err);
+                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
+                return;
+            }
+            if (doc){
+                updateArticle(req, res, article);
+            }else {
+                addArticle(req, res, article);
+            }
+        });
+    }else {
+        addArticle(req, res, article);
+    }
 
+};
+
+function updateArticle(req, res, article) {
     var updateOpt = {
         is_private: article.isPrivate,
         title: article.title,
@@ -126,33 +145,19 @@ exports.editArticle = function (req, res) {
         update_time: new Date(),
         is_manuscript: article.isManuscript
     };
-    ArticlesModel.update({account_id: account_id, _id: article.id}, {$set: updateOpt}).exec(function (err) {
+    ArticlesModel.update({account_id: article.account_id, _id: article.id}, {$set: updateOpt}).exec(function (err) {
         if (err) {
             log.error('edit article error, errMsg:' + err);
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-        artilceImageService.setDocId(account_id, article.id);
+        artilceImageService.setDocId(article.account_id, article.id);
         var paging = req.body.paging;
-        ArticlesModel.find({account_id: account_id, is_manuscript: article.isManuscript}).sort({update_time: -1}).skip(paging.skip).limit(paging.limit).exec(function (err, articles) {
-            if (err) {
-                log.error('edit article error, errMsg:' + err);
-                res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
-                return;
-            }
-            res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, {articles: articles}));
-        });
+        queryByPaging(res, article, paging, '编辑后查询');
     });
-};
+}
 
-//新增文章
-exports.addArticle = function (req, res) {
-    var article = req.body.article;
-    if (!article) {
-        log.error('addArticle error, params article is null or empty');
-        res.json(result.json(response.C601.status, response.C601.code, response.C601.msg, null));
-        return;
-    }
+function addArticle(req, res, article) {
     var nowTime = new Date();
     var comment = new CommentModel({
         replies: []
@@ -199,12 +204,16 @@ exports.addArticle = function (req, res) {
                     }
                     artilceImageService.setDocId(articleDoc.account_id, articleDoc._id);
                     var paging = req.body.paging;
+                    if (!paging){
+                        res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, articleDoc._id));
+                        return;
+                    }
                     queryByPaging(res, article, paging, '新增文章后');
                 });
             });
         });
     });
-};
+}
 
 //取消文章
 exports.cancle = function (req, res) {

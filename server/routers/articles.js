@@ -12,7 +12,6 @@ const webRootApi = (require('../conf/sys_config')[env]).webRootUri;
 
 module.exports = function (router) {
     router.get(webRootApi + '/private/my/articles', articlesService.articles);
-    router.post(webRootApi + '/private/my/article', articlesService.addArticle);
     router.get(webRootApi + '/private/my/article', articlesService.article);
     router.get(webRootApi + '/private/my/article/detail', articlesService.detail);
     router.post(webRootApi + '/private/my/article/praise', articlesService.praise);

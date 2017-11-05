@@ -49,6 +49,8 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
   public isManuscript:boolean = false; //草稿箱/文章
   public subscription: Subscription;
   public modalExcuteDeleteType:ModalExcuteDeleteType;
+  public interval: any;
+  public isTimeSave = false;
 
   constructor(public authorizationService: AuthorizationService,
               public articleService: ArticleService,
@@ -98,6 +100,7 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
   ngOnDestroy() {
     // prevent memory leak when component destroyed
     this.subscription.unsubscribe();
+    clearInterval(this.interval);
   }
 
   ngOnInit(): void {
@@ -109,6 +112,11 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
       }
       this.initData(data.articles.data);
     });
+    this.interval = setInterval(() => {
+      if (this.isShow){
+        this.timeSaveArticle();
+      }
+    }, 30000); //30s
   }
 
   /**
@@ -242,9 +250,17 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
    */
   changeBtn() {
     if (this.isShow) {
+      if (this.isTimeSave){
+        this.showSuccess = true;
+        this.successMsg = '已保存到草稿箱';
+        setTimeout(() => {this.showSuccess = false}, 2000);
+        this.isTimeSave = false;
+        this.clearTinyMceEdit(false);
+      }else {
+        this.clearTinyMceEdit(true);
+      }
     }
     this.isShow = !this.isShow;
-    this.clearTinyMceEdit();
   }
 
   /**
@@ -280,27 +296,22 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
   }
 
   /**
-   * 保存文章
+   * 定时保存文章
    */
-  submitArticle(isManuscript:boolean) {
+  timeSaveArticle() {
     if (!this.globalTypeId) {
-      this.showMsg = true;
-      this.sysMsg = '请选择文章类型';
-      setTimeout(() => {this.showMsg = false}, 2000);
       return;
     }
     if (!this.globalArticleTitle) {
-      this.showMsg = true;
-      this.sysMsg = '请输入文章标题';
-      setTimeout(() => {this.showMsg = false}, 2000);
       return;
     }
     if (!this.globalArticleDesc) {
-      this.showMsg = true;
-      this.sysMsg = '请输入文章描述';
-      setTimeout(() => {this.showMsg = false}, 2000);
       return;
     }
+    if (!this.globalArticleContent) {
+      return;
+    }
+    this.isEdit = true;
     let article = new Article();
     article.content = this.globalArticleContent;
     article.account_id = this.authorizationService.getCurrentUser()._id;
@@ -308,21 +319,22 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
     article.desc = this.globalArticleDesc;
     article.title = this.globalArticleTitle;
     article.isPrivate = this.globalArticleIsPrivate;
-    article.isManuscript = isManuscript;
-    this.articleService.submitArticle(article, this.pagingParams).subscribe(
+    article.isManuscript = true;
+    article.id = this.globalArticleId;
+    this.articleService.timeSaveArticle(article).subscribe(
       data => {
-        if (!data.status) {
-          this.showMsg = true;
-          this.sysMsg = data.msg;
-          setTimeout(() => {this.showMsg = false}, 3000);
-          return;
+        if (data.status) {
+          if (!this.globalArticleId){
+            if (data.data){
+              this.globalArticleId = data.data;
+            }
+          }
+          this.isEdit = false;
+          this.isTimeSave = true;
         }
-        this.handleSaveOrEditAfterResponse(data);
       },
       err => {
-        this.showMsg = true;
-        this.sysMsg = '服务器错误';
-        setTimeout(() => {this.showMsg = false}, 3000);
+        this.isEdit = false;
       }
     );
   }
@@ -468,19 +480,21 @@ export class ArticleComponent extends BaseComponent implements OnDestroy, AfterV
     if (data.data.count){ //编辑不查这个
       this.paging.bigTotalItems = data.data.count;
     }
-    this.clearTinyMceEdit();
+    this.clearTinyMceEdit(false);
   }
 
-  clearTinyMceEdit(){
-    this.articleService.calcleArticle(this.authorizationService.getCurrentUser()._id).subscribe(
-      data => {
-        if (!data.status){
-          this.showMsg = true;
-          this.sysMsg = data.msg;
-          setTimeout(() => {this.showMsg = false}, 2000);
+  clearTinyMceEdit(flag:boolean){
+    if (flag){
+      this.articleService.calcleArticle(this.authorizationService.getCurrentUser()._id).subscribe(
+        data => {
+          if (!data.status){
+            this.showMsg = true;
+            this.sysMsg = data.msg;
+            setTimeout(() => {this.showMsg = false}, 2000);
+          }
         }
-      }
-    );
+      );
+    }
     this.globalArticleDesc = '';
     this.globalArticleTitle = '';
     this.globalArticleContent = '';

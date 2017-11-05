@@ -7,7 +7,7 @@
       </div>
       <div *ngIf="authorizationService.currentUser._id == requestAccountId">
         <button [class.hidden]="isShow" class="btn btn-default" (click)="changeBtn()" type="button">写文章</button>
-        <button [class.hidden]="!isShow" class="btn btn-default" (click)="changeBtn()" type="button">取消</button>
+        <button [class.hidden]="!isShow" class="btn btn-default" (click)="changeBtn()" type="button">返回</button>
         <button [class.hidden]="isShow" class="btn btn-default" (click)="listForDrafts(false)" type="button">文章列表</button>
         <button [class.hidden]="isShow" class="btn btn-default" (click)="listForDrafts(true)" type="button">草稿箱</button>
       </div>
@@ -53,15 +53,6 @@
       <div class="div-to-hide-hr"></div>
       <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
       <div class="form-inline" *ngIf="(globalArticleContent != '' && globalArticleContent != null && !isEdit)">
-        <div (click)="submitArticle(true)" class="well well-sm col-lg-6 col-md-6 col-sm-6 col-xs-6 text-center shou">
-          <span style="color: #8a6d3b;">保存为草稿</span>
-        </div>
-        <div (click)="submitArticle(false)" class="well well-sm col-lg-6 col-md-6 col-sm-6 col-xs-6 text-center shou"
-             style="float: right;">
-          <span style="color: #2b669a;">发&nbsp;&nbsp;表</span>
-        </div>
-      </div>
-      <div class="form-inline" *ngIf="(globalArticleContent != '' && globalArticleContent != null && isEdit)">
         <div (click)="confirmEditArticle(true)"
              class="well well-sm col-lg-6 col-md-6 col-sm-6 col-xs-6 text-center shou">
           <span style="color: #8a6d3b;">保存为草稿</span>
@@ -70,6 +61,11 @@
              class="well well-sm col-lg-6 col-md-6 col-sm-6 col-xs-6 text-center shou"
              style="float: right;">
           <span style="color: #2b669a;">发&nbsp;&nbsp;表</span>
+        </div>
+      </div>
+      <div class="form-inline" *ngIf="isEdit">
+        <div class="well well-sm col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center shou">
+          <span style="color: black;">正在自动保存，请稍等...</span>
         </div>
       </div>
     </div>

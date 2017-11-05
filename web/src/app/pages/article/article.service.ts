@@ -112,15 +112,15 @@ export class ArticleService {
   }
 
   /**
-   * 保存文章
+   * 定时保存文章
    * @param article
    * @param paging
    * @returns {Observable<R>}
    */
-  submitArticle(article:Article, paging:PagingParams):Observable<AppResponse>{
-      return this.http.post(
+  timeSaveArticle(article:Article):Observable<AppResponse>{
+      return this.http.put(
         MY_ARTICLE,
-        {article: article, paging: paging}
+        {article: article}
       ).map(
         data => {
           return data;
@@ -230,7 +230,7 @@ export class ArticleService {
   confirmEditArticle(article:Article, paging: PagingParams):Observable<AppResponse>{
     return this.http.put(
       MY_ARTICLE,
-      {article: article, paging: paging, account_id: this.authorizationService.getCurrentUser()._id}
+      {article: article, paging: paging}
     ).map(
       data => {
         return data;

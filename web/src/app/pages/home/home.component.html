@@ -246,7 +246,7 @@
           </li>
         </ng-container>
       </ul>
-      <div id="myTabContent" class="tab-content">
+      <div id="myTabContent" *ngIf="news.length > 0" class="tab-content">
         <div class="tab-pane fade in active" id="home">
           <div class="panel panel-warning">
             <div class="panel-heading">

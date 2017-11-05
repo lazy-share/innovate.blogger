@@ -249,11 +249,19 @@ exports.clearByAccountId = function (req, res) {
             res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
             return;
         }
-        RelationshipModel.update({'subject._id': account_id, type: {$in: [RELATION.type.VISITOR, RELATION.type.ATTENTION]}, is_view: false}, {is_view: {$set: true}}).exec(function (err) {
+        RelationshipModel.find({'subject._id': account_id, type: {$in: [RELATION.type.VISITOR, RELATION.type.ATTENTION]}, is_view: false}).exec(function (err, relas) {
             if (err){
                 log.error('clearByAccountId  err' + err);
                 res.json(result.json(response.C500.status, response.C500.code, response.C500.msg, null));
                 return;
+            }
+            for (var i in relas){
+                (function (obj) {
+                    obj.is_view = true;
+                    obj.save(function (err) {
+                        log.error('clearByAccountId error' + err);
+                    });
+                })(relas[i])
             }
             res.json(result.json(response.C200.status, response.C200.code, response.C200.msg, null));
         });

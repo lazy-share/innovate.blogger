@@ -28,7 +28,7 @@
                         <div>
                           <div style="float: left; margin-right: 10px;"><img style="width:50px; height: 50px;" class="img-circle" [src]="article.head_portrait"/></div>
                           <div style="padding-top: 8px;"><span>标题：<span style="color:black;">{{article.title}}</span></span></div>
-                          <div><span>描述：<span style="color:black;">{{article.desc}}</span></span></div>
+                          <div class="formatDiv"><span>描述：<span style="color:black;">{{article.desc}}</span></span></div>
                         </div>
                     </a>
                         <div class="div-to-hide-hr"></div>
@@ -50,7 +50,7 @@
                         <div>
                           <div style="float: left; margin-right: 10px;"><img style="width:50px; height: 50px;" class="img-circle" [src]="article.head_portrait"/></div>
                           <div style="padding-top: 8px;"><span>标题：<span style="color:black;">{{article.title}}</span></span></div>
-                          <div><span>描述：<span style="color:black;">{{article.desc}}</span></span></div>
+                          <div class="formatDiv"><span>描述：<span style="color:black;">{{article.desc}}</span></span></div>
                         </div>
                       </a>
                       <div class="div-to-hide-hr"></div>
@@ -106,7 +106,7 @@
                         </div>
                         <div class="div-to-hide-hr"></div>
                         <a style="text-decoration: none;" routerLink="/private/note/{{note.account_id}}">
-                        <p style="color: black;">{{note.content}}</p> </a>
+                        <div class="formatDiv" style="color: black;">{{note.content}}</div> </a>
                       </div>
                   </ng-container>
                 </ng-container>
@@ -123,7 +123,7 @@
                       </div>
                       <div class="div-to-hide-hr"></div>
                       <a style="text-decoration: none;" routerLink="/private/note/{{note.account_id}}">
-                        <p style="color: black;">{{note.content}}</p> </a>
+                        <div class="formatDiv" style="color: black;">{{note.content}}</div> </a>
                     </div>
                   </ng-container>
                 </ng-container>

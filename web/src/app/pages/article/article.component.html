@@ -81,8 +81,8 @@
 
       <div [class.hidden]="paging.bigTotalItems < 0">
         <div class="well well-sm" *ngFor="let article of articles">
-          <h4 [innerHTML]="article.title"></h4>
-          <div [innerHTML]="article.desc"></div>
+          <div class="formatDiv"><h4 [innerHTML]="article.title"></h4></div>
+          <div class="formatDiv" [innerHTML]="article.desc"></div>
           <div class="div-to-hide-hr-2"></div>
           <div>
             <div style="float: left; margin-right: 30px;" *ngIf="!article.is_manuscript"><a style="cursor:default;text-decoration:none;"><span

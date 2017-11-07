@@ -188,3 +188,10 @@ a {
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
+
+.formatDiv {
+  width: 100%;
+  display:block;
+  word-break: break-all;
+  word-wrap: break-word;
+}

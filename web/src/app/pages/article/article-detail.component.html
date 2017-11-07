@@ -7,7 +7,7 @@
     <div class="panel-body">
       <div *ngIf="showSuccess" class="alert alert-success">{{successMsg}}</div>
       <div *ngIf="showMsg" class="alert alert-danger">{{sysMsg}}</div>
-      <div [innerHTML]="article.content"></div>
+      <div class="formatDiv" [innerHTML]="article.content"></div>
       <ng-container *ngIf="article && !article.is_manuscript">
         <div class="div-to-hide-hr-3"></div>
         <a style="margin-right: 50px;cursor:default;text-decoration:none;"><span class="glyphicon glyphicon-eye-open"></span>&nbsp;阅读&nbsp;{{article.visitor}}&nbsp;次</a>

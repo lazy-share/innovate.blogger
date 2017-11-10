@@ -1,6 +1,6 @@
 <div class="div-to-hide-hr"></div>
 <p>
-  <a style="margin-right: 50px;cursor:default;text-decoration:none;"><span class="glyphicon glyphicon-eye-open"></span>&nbsp;浏览{{doc.visitor}}次</a>
+  <a style="margin-right: 40px;cursor:default;text-decoration:none;"><span class="glyphicon glyphicon-eye-open"></span>&nbsp;浏览{{doc.visitor}}次</a>
   <a (click)="comment(doc._id, '', '')" style="margin-right: 16px;" ><span class="glyphicon glyphicon-comment"></span></a>
   <a (click)="praise(doc._id)" style="margin-right: 16px; color: black;"  *ngIf="(doc.praise | isExistsArr: authorizationService.currentUser._id)"><span class="glyphicon glyphicon-thumbs-up"></span></a>
   <a (click)="praise(doc._id)" style="margin-right: 16px;" *ngIf="!(doc.praise | isExistsArr: authorizationService.currentUser._id)"><span class="glyphicon glyphicon-thumbs-up"></span></a>

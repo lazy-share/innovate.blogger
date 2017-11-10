@@ -39,7 +39,7 @@
             <div><span>{{note.update_time | date: "yyyy-MM-dd HH:mm:ss"}}</span></div>
           </div>
           <div class="div-to-hide-hr"></div>
-          <p>{{note.content}}</p>
+          <div class="formatDiv">{{note.content}}</div>
 
           <estimate [doc]="note" (onComment)="onComment($event)" (onPraise)="onPraise($event)"
                     (onReply)="onReply($event)" (onDeleteDocBefore)="onDeleteDocBefore($event)" (onDeleteCommentBefore)="onDeleteCommentBefore($event)"></estimate>

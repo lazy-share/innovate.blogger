@@ -118,7 +118,7 @@ export class ArticleService {
    * @returns {Observable<R>}
    */
   timeSaveArticle(article:Article):Observable<AppResponse>{
-      return this.http.put(
+      return this.http.put<AppResponse>(
         MY_ARTICLE,
         {article: article}
       ).map(
@@ -228,7 +228,7 @@ export class ArticleService {
    * @returns {Observable<R>}
    */
   confirmEditArticle(article:Article, paging: PagingParams):Observable<AppResponse>{
-    return this.http.put(
+    return this.http.put<AppResponse>(
       MY_ARTICLE,
       {article: article, paging: paging}
     ).map(

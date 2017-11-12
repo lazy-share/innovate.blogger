@@ -49,8 +49,8 @@ export class HomeComponent extends BaseComponent implements OnInit{
   ngOnInit(): void {
     this.loadNewsTypes();
     this.loadArticles();
-    this.loadNotes();
-    this.loadImages();
+   // this.loadNotes();
+   // this.loadImages();
   }
 
   loadImages(){
@@ -127,6 +127,10 @@ export class HomeComponent extends BaseComponent implements OnInit{
         this.notesPaging.bigCurrentPage = 1;
       }
       this.loadNotes();
+    }else if (type == '3'){
+      if (this.images.length < 1){
+        this.loadImages();
+      }
     }
   }
 

@@ -13,7 +13,7 @@ export class RegisterService {
   constructor(public http: HttpClient) {
   }
 
-  validate(username: string): Observable<any> {
+  validate(username: string): Observable<AppResponse> {
 
     return this.http.get<AppResponse>(
       REGISTER_VILIDATE ,
@@ -27,10 +27,10 @@ export class RegisterService {
       })
   }
 
-  register(account: Account): Observable<any> {
-    return this.http.post(
+  register(accountObj: Account): Observable<AppResponse> {
+    return this.http.post<AppResponse>(
       REGISTER,
-      {account: account}
+      {account: accountObj}
     ).map(
       data => {
         return data;

@@ -12,7 +12,7 @@ import {BaseComponent} from "../common/BaseComponent";
 })
 export class RegisterComponent extends BaseComponent implements OnInit{
 
-  public account: Account;
+  public account: Account = Account.instantiation();
   public isRepeatedAccount: boolean = false;
   public validateMsg:string = "";
 

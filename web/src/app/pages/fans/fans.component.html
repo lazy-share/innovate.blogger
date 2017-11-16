@@ -36,7 +36,7 @@
         </div>
         <hr class="hr">
         <div *ngIf="authorizationService.currentUser._id != requestAccountId"
-             class="col-md-offset-5 col-lg-offset-5 col-lg-2 col-md-2">
+             class="col-md-offset-5 col-lg-offset-5 col-xs-offset-4 col-sm-offset-4 col-lg-2 col-md-2 col-sm-4 col-xs-4">
           <button (click)="attention()" *ngIf="isShowAttention" type="button" class="btn btn-info"><span
             class="glyphicon glyphicon-plus"></span> 关注他
           </button>

@@ -19,9 +19,9 @@
           <ng-container *ngFor="let attention of attentions; let i = index;">
             <a style="text-decoration: none;" routerLink="/private/info/{{attention.subject._id}}">
               <div style="text-align:center;" class="well well-sm">
-                <div>
+                <!--<div>
                   <img alt="" style="width:50px; height: 50px;" class="img-circle" src="{{attention.subject.head_portrait}}"/>
-                </div>
+                </div>-->
                 <div style="widht:100%;height:100%;word-wrap: break-word">
                   {{attention.subject.interspace_name}}
                 </div>

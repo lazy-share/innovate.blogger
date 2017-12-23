@@ -19,9 +19,9 @@
           <div style="text-align:center; " *ngFor="let fan of fans"
                class="well well-sm">
             <a style="text-decoration: none;" routerLink="/private/info/{{fan.from._id}}">
-              <div>
+              <!--<div>
                 <img alt="" style="width:50px; height: 50px;" class="img-circle" src="{{fan.from.head_portrait}}"/>
-              </div>
+              </div>-->
               <div *ngIf="authorizationService.currentUser._id == fan.from._id">
                 {{fan.from.interspace_name}}<span style="color:red;">(您自己)</span>
               </div>

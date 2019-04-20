@@ -99,7 +99,7 @@ test -d ${publish_root_dir}/web && tar -zcvf ${back_web_pre_publish_dir}/${back_
 
 #copy current resources to publish
 cp -R ${build_server_sources_dir} ${publish_root_dir}/
-cp -R ${build_web_sources_dir} ${publish_root_dir}/
+cp -R ${build_web_sources_dir}/web ${publish_root_dir}/
 
 #restart server
 pid=`pm2 list | grep "${publish_server_name}" | awk '{print $2}'`

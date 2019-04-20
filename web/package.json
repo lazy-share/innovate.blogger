@@ -24,7 +24,6 @@
     "@angular/platform-browser-dynamic": "^4.2.4",
     "@angular/platform-server": "^4.4.6",
     "@angular/router": "^4.2.4",
-    "@angular/cli": "1.4.9",
     "angular-calendar": "^0.21.2",
     "core-js": "^2.4.1",
     "intl": "^1.2.5",

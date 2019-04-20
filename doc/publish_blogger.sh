@@ -28,7 +28,7 @@ upload_image_header_dir=${publish_root_dir}/media/images/header
 upload_image_article_dir=${publish_root_dir}/media/images/article
 upload_image_photo_dir=${publish_root_dir}/media/images/photo
 init_header_file=${build_server_sources_dir}/public/web/images/header/initHead.jpg
-git_address=https://github.com/lzy369/innovate.blogger
+git_address=git@github.com:lazy-demo/innovate.blogger.git
 
 test ! -d ${upload_video_dir} && mkdir -p ${upload_video_dir}
 test ! -d ${upload_image_header_dir} && mkdir -p ${upload_image_header_dir}
@@ -74,8 +74,13 @@ sleep 2s
 
 #clone project
 cd ${build_root_dir} && echo "============> current dir `pwd`"
-test -d ${clone_project_dir} && rm -rf ${clone_project_dir}
-git clone -b ${branch} ${git_address}
+if [ -d $clone_project_dir ]; then
+        cd $clone_project_dir
+        git pull origin $branch
+else
+        cd $build_root_dir
+        git clone -b $branch $git_address
+fi;
 test $? != 0 && echo "git clone faild" && exit 1
 sleep 3s
 
@@ -91,6 +96,7 @@ cp -R ${clone_project_dir}/temp/uploadimage ${build_web_sources_dir}/node_module
 cp  ${init_header_file} ${upload_image_header_dir}/
 
 #build web pages
+ng update @angular/cli --migrate-only --from=7.3.8
 npm run build
 
 #back pre publish version

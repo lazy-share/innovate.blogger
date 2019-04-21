@@ -2,6 +2,7 @@
 ###### 下载项目
 ```
 git clone https://github.com/lazy-share/innovate.blogger.git
+git checkout develop
 ```
 ###### 安装node6
 下载地址：

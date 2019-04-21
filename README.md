@@ -4,83 +4,128 @@
 git clone https://github.com/lazy-share/innovate.blogger.git
 ```
 ###### 安装node6
+下载地址：
 ```
 https://nodejs.org/dist/latest-v6.x/node-v6.17.1-win-x86.zip
 ```
-###### 安装nginx
+安装方式比较简单，具体不截图，如果确实没有能力安装，可以查阅网络资料，建议安装版本为6.x
+
+安装好之后配置环境变量，安装和配置好之后通过cmd下面命令进行验证
+
+```html
+node -v
+npm -v
 ```
-http://nginx.org/download/nginx-1.6.3.zip
-```
+
 
 ###### 安装mongodb
+
+自行查阅网络资料，这里给出我的一篇博客供参考。或者也可以参考官方文档或其它网络资料。
+```
+https://blog.csdn.net/lzy_zhi_yuan/article/details/76438864
+```
+版本号目前最新为4.0.9，可以直接下载4.0.9版本
+
+安装好之后启动，配置权限，配置方式如下：
+(如果不熟悉mongodb权限配置的可以参考我的这篇博客)
+建议直接阅读官方文档进行学习
+```
+https://blog.csdn.net/lzy_zhi_yuan/article/details/76571696
+```
+```html
+//命令行连接
+mongo
+//切换admin库
+use admin
+//创建账号管理员账号useradmin
+db.createUser(
+{user: "useradmin",
+pwd: "123456",
+roles: ["userAdminAnyDatabase"]}
+)
+//重启mongod服务，开启验证权限
+mongod --auth
+//Ctrl + C后再次命令行连接
+mongo
+//切换admin库
+use admin
+//验证到拥有创建用户的权限到admin数据库
+db.auth("useradmin", "123456")
+//创建数据库管理员账号dbadmin
+db.createUser({
+user: "dbadmin",
+pwd: "123456",
+roles:["readWriteAnyDatabase", "dbAdminAnyDatabase", "clusterAdmin"]
+})
+//切换到admin数据库
+use admin
+//验证到拥有创建数据库的权限到admin数据库
+db.auth("dbadmin", "123456")
+//创建blogger数据库
+use blogger
+//创建拥有读写blogger数据库账号
+db.createUser(
+{
+user:"laizhiyuan",
+pwd:"123456",
+roles:["readWrite"]
+}
+)
+//切换到blogger数据库
+use blogger
+db.auth("laizhiyuan", "123456")
+//在数据库blogger上创建集合example
+db.createCollection("example")
+
+至此，我们创建了博客需要的数据库blogger，且配置好了安全权限，很好。
+
+```
+###### 构建项目
+安装好node以及启动好了mongodb后就开始构建项目
+
+通过cmd命令行窗口cd 到innovate.blogger目录下,下面以$BLOGGER_HOME代表该目录。
+```html
+1、cd $BLOGGER_HOME/server
+2、npm install
+3、首次启动放开$BLOGGER_HOME/server/app.js文件的下面三行初始化数据代码注释：
+require('./db_script/article-type-script').initSysDefaultArticleType();
+require('./db_script/address-script')();
+require('./db_script/news-type-script')();
+4、启动后台服务
+node $BLOGGER_HOME/server/bin/www
+5、Ctrl + C停止，注释初始化代码
+//require('./db_script/article-type-script').initSysDefaultArticleType();
+//require('./db_script/address-script')();
+//require('./db_script/news-type-script')();
+6、再次启动后台服务
+node $BLOGGER_HOME/server/bin/www
+7、cd $BLOGGER_HOME/web
+8、npm install
+9、将$BLOGGER_HOME/temp 复制到$BLOGGER_HOME/web/node_modules/tinymce/plugins目录下
+10、npm start
+11、浏览器访问：http://127.0.0.1:4200
+
+至此，本地部署完成。
+
 ```
 
+## 生产部署
+生产部署有自动化部署脚本，放置位置为：
+```html
+$BLOGGER_HOME/doc/publish_blogger.sh
 ```
+1、在生产环境安装好nodejs和mongodb以及nginx
 
-## 生产环境部署
+2、mongodb配置需要参考上面本地部署方式设置好权限和数据库
 
-###### 创建tarball目录
-mkdir -p /usr/local/zip
+3、配置好环境变量
 
-###### 下载项目
-git https://github.com/lazy-share/innovate.blogger.git
+4、全局安装pm2
 
-###### 准备centos7
-例如阿里云/腾讯云
+npm install pm2 -g
 
-
-###### 准备域名
-例如：www.laizhiy.cn
-
-没有域名直接ip访问也行
-###### 安装mongodb
-vi /etc/yum.repos.d/mongodb-org-4.0.repo
-内容如下：
-
-```angular2html
-[mongodb-org-4.0]
-name=MongoDB Repository
-baseurl=https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/4.0/x86_64/
-gpgcheck=1
-enabled=1
-gpgkey=https://www.mongodb.org/static/pgp/server-4.0.asc
-```
-yum安装命令：
-```angular2html
-yum install -y mongodb-org-4.0.9 mongodb-org-server-4.0.9 mongodb-org-shell-4.0.9 mongodb-org-mongos-4.0.9 mongodb-org-tools-4.0.9
-```
-防止yum更新
-vi /etc/yum.conf
-末尾追加：
-```angular2html
-exclude = mongodb-org，mongodb-org-server，mongodb-org-shell，mongodb-org-mongos，mongodb-org-tools
-```
-
-启动：
-```angular2html
-systemctl start mongod
-```
-
-###### 安装nginx
-```angular2html
-cd /usr/local/zip
-wget http://nginx.org/download/nginx-1.6.3.tar.gz
-tar -zxvf nginx-1.6.3.tar.gz -C ../
-cd ../nginx-1.6.3
-yum install gc gcc gcc-c++ pcre-devel zlib-devel make wget openssl-devel libxml2-devel libxslt-devel gd-devel perl-ExtUtils-Embed GeoIP-devel gperftools gperftools-devel libatomic_ops-devel perl-ExtUtils-Embed dpkg-dev libpcrecpp0 libgd2-xpm-dev libgeoip-dev libperl-dev -y
-
-cd /usr/local/nginx-1.6.3
-./configure
-make
-make install
-```
-vi /etc/profile
-```angular2html
-export NG_HOME=/usr/local/nginx
-export PATH=$PATH:$NG_HOME/sbin
-```
-nginx.conf内容如下：
-```angular2html
+nginx配置文件内容如下：
+```html
 worker_processes  1;
 
 events {
@@ -97,41 +142,36 @@ http {
     server {
         listen       80;
         server_name  www.laizhiy.cn;
-	
-	location /media {
+	    location /v1/api {
+            proxy_pass http://www.laizhiy.cn:3000/v1/api;
+        }
+	    location /media {
             root /;
             rewrite ^/media/(.*)$ /usr/local/publish/media/$1 break;
           
         }
-
         location / {
             root   /usr/local/publish/web;
             index  index.html;
         }
-
-        location /v1/api {
-            proxy_pass http://localhost:3000/v1/api;
-        }
-
-        error_page   500 502 503 504  /50x.html;
-        location = /50x.html {
-            root   html;
-        }
     }
-
 }
 
 ```
+###### 说明:
+1、其中www.laizhiy.cn需要改为你自己的域名或ip
 
+2、然后全局搜索项目关键字www.laizhiy.cn，改为你的域名或ip
 
-###### 安装nodejs
-```angular2html
-cd /usr/local/zip
-wget https://nodejs.org/dist/v10.15.3/node-v10.15.3-linux-x64.tar.xz
-tar -xvf node-v10.15.3-linux-x64.tar.xz -C ../
+3、将publish_blogger.sh上传到你的服务器
 
-```
+4、转为unix文件格式
 
-###### 安装pm2
+yum install dos2unix
 
-######
+dos2unix publish_blogger
+
+5、执行脚本
+
+sh publish_blogger
+

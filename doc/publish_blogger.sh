@@ -96,7 +96,7 @@ cp -R ${clone_project_dir}/temp/uploadimage ${build_web_sources_dir}/node_module
 cp  ${init_header_file} ${upload_image_header_dir}/
 
 #build web pages
-ng update @angular/cli --migrate-only --from=7.3.8
+npm run build:aot
 npm run build
 
 #back pre publish version

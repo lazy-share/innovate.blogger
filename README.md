@@ -177,3 +177,7 @@ dos2unix publish_blogger
 
 sh publish_blogger
 
+###### 关注我
+
+![微信公众号](https://github.com/lazy-share/generate-db-dict/blob/master/images/weixin.jpg)
+
